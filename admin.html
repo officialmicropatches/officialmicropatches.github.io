@@ -618,6 +618,15 @@
             <option value="complete">Complete</option>
           </select>
         </div>
+        <div class="add-form-group">
+          <div class="add-label">Patch Photo URL <span style="color:var(--text-dim)">(optional)</span></div>
+          <input
+            class="add-input"
+            id="add-img"
+            type="text"
+            placeholder="patches/filename.jpg or full URL"
+          />
+        </div>
         <button class="btn btn-gold" style="white-space:nowrap;" onclick="addEntry()">+ Add Entry</button>
       </div>
     </div>
@@ -802,12 +811,22 @@ function renderQueue() {
     <div class="queue-item" id="qi-${i}">
       <div class="q-num">#${i + 1}</div>
 
-      <input
-        class="q-name-input"
-        value="${escHtml(entry.name)}"
-        placeholder="Agency / Department / Unit"
-        oninput="updateName(${i}, this.value)"
-      />
+      <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
+        <input
+          class="q-name-input"
+          style="width:100%;"
+          value="${escHtml(entry.name)}"
+          placeholder="Agency / Department / Unit"
+          oninput="updateName(${i}, this.value)"
+        />
+        <input
+          class="q-name-input"
+          style="width:100%; font-size:10px; color:var(--text-dim);"
+          value="${escHtml(entry.img || '')}"
+          placeholder="Photo URL (optional) — patches/file.jpg or full URL"
+          oninput="updateImg(${i}, this.value)"
+        />
+      </div>
 
       <select class="q-status-select" onchange="updateStatus(${i}, this.value)">
         <option value="queued"      ${entry.status === 'queued'      ? 'selected' : ''}>Queued</option>
@@ -830,10 +849,15 @@ function renderQueue() {
 function addEntry() {
   const nameEl   = document.getElementById("add-name");
   const statusEl = document.getElementById("add-status");
+  const imgEl    = document.getElementById("add-img");
   const name     = nameEl.value.trim();
   if (!name) { nameEl.focus(); return; }
-  queue.push({ name, status: statusEl.value });
-  nameEl.value = "";
+  const entry = { name, status: statusEl.value };
+  const img = imgEl.value.trim();
+  if (img) entry.img = img;
+  queue.push(entry);
+  nameEl.value   = "";
+  imgEl.value    = "";
   statusEl.value = "queued";
   markDirty();
   renderQueue();
@@ -850,6 +874,14 @@ function updateName(i, val) {
   markDirty();
   renderExport();
   document.getElementById("queue-count").textContent = queue.length + " entr" + (queue.length === 1 ? "y" : "ies");
+}
+
+function updateImg(i, val) {
+  const v = val.trim();
+  if (v) queue[i].img = v;
+  else   delete queue[i].img;
+  markDirty();
+  renderExport();
 }
 
 function updateStatus(i, val) {
@@ -886,11 +918,14 @@ function clearQueue() {
    EXPORT
    ============================================================ */
 function renderExport() {
-  const lines = queue.map(e =>
-    `  { name: ${JSON.stringify(e.name)}, status: ${JSON.stringify(e.status)} }`
-  ).join(",\n");
+  const lines = queue.map(e => {
+    let s = `  { name: ${JSON.stringify(e.name)}, status: ${JSON.stringify(e.status)}`;
+    if (e.img) s += `, img: ${JSON.stringify(e.img)}`;
+    s += " }";
+    return s;
+  }).join(",\n");
   document.getElementById("export-box").textContent =
-    "const QUEUE = [\n" + lines + (lines ? "\n" : "") + "];";
+    "const DEFAULT_QUEUE = [\n" + lines + (lines ? "\n" : "") + "];";
 }
 
 function copyExport() {
