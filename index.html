@@ -1776,7 +1776,14 @@ function copyEmail() {
 
   /* Triple-click trigger */
   var _ac = 0, _at = null;
-  document.getElementById("admin-trigger").addEventListener("click", function(e) {
+  document.getElementById("admin-trigger").addEventListener("mousedown", function(e) {
+    e.preventDefault();
+    _ac++;
+    clearTimeout(_at);
+    if (_ac >= 3) { _ac = 0; adminOpen(); return; }
+    _at = setTimeout(function() { _ac = 0; }, 600);
+  });
+  document.getElementById("admin-trigger").addEventListener("touchend", function(e) {
     e.preventDefault();
     _ac++;
     clearTimeout(_at);
