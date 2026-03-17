@@ -1001,6 +1001,9 @@
       font-size: 28px;
       letter-spacing: 0.1em;
       color: var(--text);
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: default;
     }
     .footer-brand span { color: var(--gold); }
 
@@ -1772,16 +1775,13 @@ function copyEmail() {
   let dirty = false;
 
   /* Triple-click trigger */
-  let clickTimer = null, clickCount = 0;
-  document.getElementById("admin-trigger").addEventListener("click", function() {
-    clickCount++;
-    clearTimeout(clickTimer);
-    clickTimer = setTimeout(function() { clickCount = 0; }, 500);
-    if (clickCount >= 3) {
-      clickCount = 0;
-      clearTimeout(clickTimer);
-      adminOpen();
-    }
+  var _ac = 0, _at = null;
+  document.getElementById("admin-trigger").addEventListener("click", function(e) {
+    e.preventDefault();
+    _ac++;
+    clearTimeout(_at);
+    if (_ac >= 3) { _ac = 0; adminOpen(); return; }
+    _at = setTimeout(function() { _ac = 0; }, 600);
   });
 
   function getPass() { return localStorage.getItem(PW_KEY) || "micropatches"; }
