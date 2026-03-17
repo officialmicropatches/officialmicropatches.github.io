@@ -726,6 +726,265 @@
     }
 
     /* ============================================================
+       QUEUE PHOTO THUMBNAIL
+       ============================================================ */
+    .queue-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 3px;
+      object-fit: cover;
+      border: 1px solid var(--gold-border);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity var(--t);
+    }
+    .queue-thumb:hover { opacity: 0.8; }
+
+    .thumb-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .thumb-modal-overlay.open { display: flex; }
+    .thumb-modal-img {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 6px;
+      border: 1px solid var(--gold-border);
+    }
+    .thumb-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      background: none;
+      border: none;
+    }
+
+    /* ============================================================
+       SUBMIT PATCH MODAL
+       ============================================================ */
+    .smodal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px 16px 40px;
+      overflow-y: auto;
+    }
+    .smodal-overlay.open { display: flex; }
+
+    .smodal {
+      background: var(--bg-surface);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    .smodal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .smodal-title {
+      font-family: var(--font-head);
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      color: var(--text);
+    }
+
+    .smodal-x {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: color var(--t);
+    }
+    .smodal-x:hover { color: var(--text); }
+
+    .smodal-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .smodal-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: -4px;
+    }
+
+    .sfield {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .sfield label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .sfield input,
+    .sfield textarea {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text);
+      width: 100%;
+      transition: border-color var(--t);
+      outline: none;
+      resize: none;
+    }
+
+    .sfield input:focus,
+    .sfield textarea:focus {
+      border-color: var(--gold-border);
+    }
+
+    .sfield input::placeholder,
+    .sfield textarea::placeholder {
+      color: var(--text-dim);
+    }
+
+    .sfield textarea { min-height: 90px; line-height: 1.55; }
+
+    /* File upload zone */
+    .file-zone {
+      border: 1px dashed var(--gold-border);
+      border-radius: var(--radius);
+      padding: 18px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: background var(--t), border-color var(--t);
+      position: relative;
+    }
+    .file-zone:hover { background: var(--gold-faint); border-color: var(--gold); }
+    .file-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .file-zone-icon {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+    .file-zone-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .file-zone-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--gold);
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    .smodal-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 2px 0;
+    }
+
+    .ssubmit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: #060606;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 20px;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: background var(--t), transform var(--t);
+    }
+    .ssubmit-btn:hover  { background: var(--gold-bright); transform: translateY(-1px); }
+    .ssubmit-btn:active { transform: translateY(0); }
+    .ssubmit-btn:disabled {
+      background: var(--gold-dim);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .smodal-note {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .smodal-success {
+      display: none;
+      padding: 32px 20px;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .smodal-success.show { display: flex; }
+
+    .smodal-success-icon {
+      font-size: 36px;
+      color: var(--gold);
+      font-family: var(--font-head);
+      letter-spacing: 0.05em;
+    }
+
+    .smodal-success-title {
+      font-family: var(--font-head);
+      font-size: 24px;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    .smodal-success-msg {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
        SECTION 9 — FOOTER
        ============================================================ */
     .footer {
@@ -848,12 +1107,10 @@
           class="q-btn q-btn-outline"
           onclick="toggleQueue()"
         >View Full Queue</button>
-        <a
-          href="https://www.instagram.com/micropatches"
+        <button
           class="q-btn q-btn-fill"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Submit Your Patch</a>
+          onclick="openSubmitModal()"
+        >Submit Your Patch</button>
       </div>
 
       <p class="queue-note">
@@ -1144,6 +1401,9 @@
    Fields:
      name   — Department or agency name (string)
      status — "queued" | "in-progress" | "complete"
+     img    — (optional) URL to a patch photo. Add this after
+              receiving a submission. Can be a GitHub-hosted image
+              path like "patches/ocso.jpg" or any full URL.
    ============================================================= */
 const QUEUE = [
   { name: "Orange County Sheriff's Office",  status: "queued" },
@@ -1172,9 +1432,13 @@ function renderQueue() {
 
   rowsEl.innerHTML = visible.map((entry, i) => {
     const b = BADGE[entry.status] || BADGE["queued"];
+    const thumb = entry.img
+      ? `<img class="queue-thumb" src="${entry.img}" alt="patch photo" onclick="openThumbModal('${entry.img}')" />`
+      : "";
     return `
       <div class="queue-row">
         <div class="queue-num">#${i + 1}</div>
+        ${thumb}
         <div class="queue-name">${entry.name}</div>
         <div class="q-badge ${b.cls}">${b.label}</div>
       </div>`;
@@ -1201,9 +1465,13 @@ function toggleQueue() {
 
   rowsEl.innerHTML = list.map((entry, i) => {
     const b = BADGE[entry.status] || BADGE["queued"];
+    const thumb = entry.img
+      ? `<img class="queue-thumb" src="${entry.img}" alt="patch photo" onclick="openThumbModal('${entry.img}')" />`
+      : "";
     return `
       <div class="queue-row">
         <div class="queue-num">#${i + 1}</div>
+        ${thumb}
         <div class="queue-name">${entry.name}</div>
         <div class="q-badge ${b.cls}">${b.label}</div>
       </div>`;
@@ -1250,6 +1518,66 @@ document.querySelectorAll(".anim").forEach((el, i) => {
   el.style.transitionDelay = `${i * 0.07}s`;
   observer.observe(el);
 });
+/* ── Submit Patch modal ───────────────────────────────────── */
+function openSubmitModal() {
+  document.getElementById("submit-modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeSubmitModal() {
+  document.getElementById("submit-modal").classList.remove("open");
+  document.body.style.overflow = "";
+  // Reset form and success state after close
+  setTimeout(() => {
+    document.getElementById("submit-form").style.display = "";
+    document.getElementById("submit-success").classList.remove("show");
+    document.getElementById("submit-form").reset();
+    document.getElementById("file-name").textContent = "";
+    document.getElementById("submit-btn").disabled = false;
+    document.getElementById("submit-btn").textContent = "SUBMIT REQUEST";
+  }, 300);
+}
+function handleSubmitOverlayClick(e) {
+  if (e.target === document.getElementById("submit-modal")) closeSubmitModal();
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  document.getElementById("file-name").textContent = file ? file.name : "";
+}
+async function handleSubmitForm(e) {
+  e.preventDefault();
+  const btn  = document.getElementById("submit-btn");
+  const form = document.getElementById("submit-form");
+  btn.disabled    = true;
+  btn.textContent = "Sending...";
+  const data = new FormData(form);
+  try {
+    const res = await fetch("https://formsubmit.co/ajax/OfficialMicroPatches@gmail.com", {
+      method: "POST",
+      body: data,
+      headers: { "Accept": "application/json" }
+    });
+    if (res.ok) {
+      form.style.display = "none";
+      document.getElementById("submit-success").classList.add("show");
+    } else {
+      throw new Error("bad response");
+    }
+  } catch {
+    btn.disabled    = false;
+    btn.textContent = "SUBMIT REQUEST";
+    alert("Something went wrong. Please DM us on Instagram or email OfficialMicroPatches@gmail.com directly.");
+  }
+}
+
+/* ── Patch photo viewer ───────────────────────────────────── */
+function openThumbModal(src) {
+  document.getElementById("thumb-modal-img").src = src;
+  document.getElementById("thumb-modal").classList.add("open");
+}
+function closeThumbModal() {
+  document.getElementById("thumb-modal").classList.remove("open");
+}
+
 /* ── Email modal ──────────────────────────────────────────── */
 function openEmailModal() {
   document.getElementById("email-modal").style.display = "flex";
@@ -1265,6 +1593,94 @@ function copyEmail() {
   });
 }
 </script>
+
+<!-- SUBMIT PATCH MODAL -->
+<div id="submit-modal" class="smodal-overlay" onclick="handleSubmitOverlayClick(event)">
+  <div class="smodal">
+
+    <div class="smodal-head">
+      <div class="smodal-title">SUBMIT YOUR PATCH</div>
+      <button class="smodal-x" onclick="closeSubmitModal()">&#x2715;</button>
+    </div>
+
+    <!-- Success state -->
+    <div class="smodal-success" id="submit-success">
+      <div class="smodal-success-icon">&#10003;</div>
+      <div class="smodal-success-title">Request Received</div>
+      <div class="smodal-success-msg">
+        We got your submission and will be in touch. Your patch will be added
+        to the queue once we review everything. Thank you for your service.
+      </div>
+      <button class="ssubmit-btn" style="margin-top:8px;" onclick="closeSubmitModal()">Close</button>
+    </div>
+
+    <!-- Form -->
+    <form id="submit-form" class="smodal-body" onsubmit="handleSubmitForm(event)">
+
+      <div class="smodal-sub">Contact Info</div>
+
+      <div class="sfield">
+        <label>Full Name *</label>
+        <input type="text" name="name" placeholder="John Smith" required />
+      </div>
+
+      <div class="sfield">
+        <label>Email Address *</label>
+        <input type="email" name="email" placeholder="your@email.com" required />
+      </div>
+
+      <div class="sfield">
+        <label>Phone Number</label>
+        <input type="tel" name="phone" placeholder="(555) 000-0000" />
+      </div>
+
+      <div class="smodal-divider"></div>
+      <div class="smodal-sub">Patch Details</div>
+
+      <div class="sfield">
+        <label>Agency / Department / Unit *</label>
+        <input type="text" name="agency" placeholder="e.g. Maricopa County Sheriff's Office" required />
+      </div>
+
+      <div class="sfield">
+        <label>Describe Your Patch *</label>
+        <textarea
+          name="description"
+          placeholder="Be as detailed as possible. Include colors, text on the patch, symbols, shape, any numbers or years, what branch or department it is from, and anything else that would help us identify or recreate it accurately. If it is hard to find online, extra detail goes a long way."
+          required
+        ></textarea>
+      </div>
+
+      <div class="sfield">
+        <label>Photo of Your Patch (optional but helpful)</label>
+        <div class="file-zone" id="file-zone">
+          <input type="file" name="attachment" accept="image/*" onchange="handleFileSelect(event)" />
+          <div class="file-zone-icon">&#128247;</div>
+          <div class="file-zone-label">Tap to upload a photo</div>
+          <div class="file-zone-name" id="file-name"></div>
+        </div>
+      </div>
+
+      <input type="hidden" name="_subject" value="New MicroPatch Queue Submission" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_template" value="table" />
+
+      <button type="submit" class="ssubmit-btn" id="submit-btn">SUBMIT REQUEST</button>
+
+      <p class="smodal-note">
+        Your patch will be placed in the standard queue. You will only pay the
+        product cost ($12.99) when it is ready. No charge to submit.
+      </p>
+
+    </form>
+  </div>
+</div>
+
+<!-- PATCH PHOTO VIEWER -->
+<div id="thumb-modal" class="thumb-modal-overlay" onclick="closeThumbModal()">
+  <button class="thumb-modal-close" onclick="closeThumbModal()">&#x2715; Close</button>
+  <img id="thumb-modal-img" class="thumb-modal-img" src="" alt="Patch" />
+</div>
 
 <!-- EMAIL MODAL -->
 <div id="email-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; padding:24px;">
