@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="MicroPatches — 3D Printed Patch Keychains for LEO, Fire, and Military. USA Made. No Minimum Orders. Phoenix, Arizona." />
+  <meta name="description" content="MicroPatches — 3D Printed Patch Keychains for LEO, Fire, Military, and EMS. USA Made. No Minimum Orders. Phoenix, Arizona." />
   <title>MicroPatches — 3D Printed Patch Keychains</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -319,6 +319,26 @@
       letter-spacing: 0.07em;
       line-height: 1.5;
     }
+
+    .custom-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 15px 16px;
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold-border);
+      font-family: var(--font-head);
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      border-radius: var(--radius);
+      margin-top: 8px;
+      transition: background var(--t), border-color var(--t), transform var(--t);
+      gap: 10px;
+    }
+    .custom-btn:hover  { background: var(--gold-faint); border-color: var(--gold); transform: translateY(-1px); }
+    .custom-btn:active { transform: translateY(0); }
 
     /* ============================================================
        SECTION 3 — QUEUE
@@ -638,7 +658,7 @@
     </div>
 
     <div class="brand-name">MICRO<span>PATCHES</span></div>
-    <div class="tagline">3D Printed Patch Keychains &nbsp;&middot;&nbsp; LEO &nbsp;&middot;&nbsp; Fire &nbsp;&middot;&nbsp; Military</div>
+    <div class="tagline">3D Printed Patch Keychains &nbsp;&middot;&nbsp; LEO &nbsp;&middot;&nbsp; Fire &nbsp;&middot;&nbsp; Military &nbsp;&middot;&nbsp; EMS</div>
     <div class="handle-pill">@micropatches</div>
     <div class="live-clock" id="clock">--:-- --</div>
   </header>
@@ -662,6 +682,14 @@
       Keychains $12.99 &nbsp;&middot;&nbsp; Magnets $12.99 &nbsp;&middot;&nbsp; Croc Charms $7.99<br>
       No Minimum Orders. Ever.
     </div>
+    <a
+      href="https://www.instagram.com/micropatches"
+      class="custom-btn"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      CUSTOM ORDER &nbsp;&#8599;
+    </a>
     <div class="accent-bar"></div>
   </div>
 
