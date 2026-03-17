@@ -1425,6 +1425,12 @@ let QUEUE = (function() {
 /* How many entries to show before the "+ X more" line */
 const QUEUE_VISIBLE = 4;
 
+/* Called by Firebase module when Firestore data arrives */
+window.updateQueueFromFirestore = function(items) {
+  QUEUE = items;
+  renderQueue();
+};
+
 /* ── Badge config ─────────────────────────────────────────── */
 const BADGE = {
   "queued":      { cls: "q-queued",      label: "Queued"      },
@@ -1568,6 +1574,11 @@ async function handleSubmitForm(e) {
     if (res.ok) {
       form.style.display = "none";
       document.getElementById("submit-success").classList.add("show");
+      if (window.fbAddSubmission) {
+        const sub = {};
+        data.forEach((v, k) => { if (!k.startsWith("_")) sub[k] = v; });
+        window.fbAddSubmission(sub);
+      }
     } else {
       throw new Error("bad response");
     }
@@ -1895,6 +1906,7 @@ function copyEmail() {
   window.admSave = function() {
     QUEUE = adminQueue.map(function(e) { return Object.assign({}, e); });
     try { localStorage.setItem(QUEUE_KEY, JSON.stringify(QUEUE)); } catch(e) {}
+    if (window.fbSaveQueue) window.fbSaveQueue(QUEUE);
     dirty = false;
     document.getElementById("adm-save-btn").textContent = "SAVED ✓";
     setTimeout(function() { document.getElementById("adm-save-btn").textContent = "SAVE"; }, 2000);
@@ -1906,6 +1918,7 @@ function copyEmail() {
     try { localStorage.removeItem(QUEUE_KEY); } catch(e) {}
     QUEUE = DEFAULT_QUEUE.map(function(e) { return Object.assign({}, e); });
     adminQueue = QUEUE.map(function(e) { return Object.assign({}, e); });
+    if (window.fbSaveQueue) window.fbSaveQueue(QUEUE);
     dirty = false;
     admRender();
     renderQueue();
@@ -1928,6 +1941,61 @@ function copyEmail() {
     }
   });
 })();
+</script>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
+    authDomain: "patch-559c8.firebaseapp.com",
+    projectId: "patch-559c8",
+    storageBucket: "patch-559c8.firebasestorage.app",
+    messagingSenderId: "584233188985",
+    appId: "1:584233188985:web:7be3979a2ad505bc711ea8",
+    measurementId: "G-WCE9XXHF2F"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  /* Load queue from Firestore on page load */
+  (async () => {
+    try {
+      const snap = await getDoc(doc(db, "config", "queue"));
+      if (snap.exists()) {
+        const items = snap.data().items;
+        if (Array.isArray(items) && items.length > 0 && window.updateQueueFromFirestore) {
+          window.updateQueueFromFirestore(items);
+        }
+      }
+    } catch (e) {
+      console.warn("Firebase queue load failed:", e);
+    }
+  })();
+
+  /* Save queue to Firestore */
+  window.fbSaveQueue = async function(items) {
+    try {
+      await setDoc(doc(db, "config", "queue"), { items });
+    } catch (e) {
+      console.warn("Firebase queue save failed:", e);
+    }
+  };
+
+  /* Store patch submission in Firestore */
+  window.fbAddSubmission = async function(data) {
+    try {
+      await addDoc(collection(db, "submissions"), {
+        ...data,
+        submittedAt: serverTimestamp()
+      });
+    } catch (e) {
+      console.warn("Firebase submission save failed:", e);
+    }
+  };
 </script>
 
 <!-- EMAIL MODAL -->
