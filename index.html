@@ -1388,8 +1388,8 @@
        SECTION 9 — FOOTER
        ============================================================ -->
   <footer class="footer anim">
-    <div class="footer-brand" id="admin-trigger">MICRO<span>PATCHES</span></div>
-    <div class="footer-sub">Phoenix, Arizona &nbsp;&middot;&nbsp; USA Made, Always</div>
+    <div class="footer-brand">MICRO<span>PATCHES</span></div>
+    <div class="footer-sub">Phoenix, Arizona &nbsp;&middot;&nbsp; <span id="admin-trigger" style="cursor:default;">USA</span> Made, Always</div>
   </footer>
 
 </div><!-- /page -->
@@ -1774,22 +1774,7 @@ function copyEmail() {
   let adminQueue = [];
   let dirty = false;
 
-  /* Triple-click trigger */
-  var _ac = 0, _at = null;
-  document.getElementById("admin-trigger").addEventListener("mousedown", function(e) {
-    e.preventDefault();
-    _ac++;
-    clearTimeout(_at);
-    if (_ac >= 3) { _ac = 0; adminOpen(); return; }
-    _at = setTimeout(function() { _ac = 0; }, 600);
-  });
-  document.getElementById("admin-trigger").addEventListener("touchend", function(e) {
-    e.preventDefault();
-    _ac++;
-    clearTimeout(_at);
-    if (_ac >= 3) { _ac = 0; adminOpen(); return; }
-    _at = setTimeout(function() { _ac = 0; }, 600);
-  });
+  document.getElementById("admin-trigger").addEventListener("click", function() { adminOpen(); });
 
   function getPass() { return localStorage.getItem(PW_KEY) || "micropatches"; }
 
