@@ -1385,7 +1385,7 @@
        SECTION 9 — FOOTER
        ============================================================ -->
   <footer class="footer anim">
-    <div class="footer-brand">MICRO<span>PATCHES</span></div>
+    <div class="footer-brand" id="admin-trigger">MICRO<span>PATCHES</span></div>
     <div class="footer-sub">Phoenix, Arizona &nbsp;&middot;&nbsp; USA Made, Always</div>
   </footer>
 
@@ -1413,13 +1413,10 @@ const DEFAULT_QUEUE = [
   { name: "18th Airborne Corps",             status: "queued" },
 ];
 
-/* Load from admin panel (localStorage) if available, else use defaults above */
-const QUEUE = (function() {
-  try {
-    const saved = localStorage.getItem("mp_queue");
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return DEFAULT_QUEUE;
+/* Admin panel saves to localStorage under this key */
+let QUEUE = (function() {
+  try { const s = localStorage.getItem("mp_queue"); if (s) return JSON.parse(s); } catch(e) {}
+  return DEFAULT_QUEUE.map(e => Object.assign({}, e));
 })();
 
 /* How many entries to show before the "+ X more" line */
@@ -1690,6 +1687,256 @@ function copyEmail() {
   <button class="thumb-modal-close" onclick="closeThumbModal()">&#x2715; Close</button>
   <img id="thumb-modal-img" class="thumb-modal-img" src="" alt="Patch" />
 </div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:2000; overflow-y:auto; padding:24px 16px;">
+<div style="max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:14px;">
+
+  <!-- Header -->
+  <div style="display:flex; align-items:center; justify-content:space-between;">
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.12em; color:#C9A84C;">ADMIN PANEL</div>
+    <button onclick="adminClose()" style="background:none; border:1px solid rgba(255,255,255,0.12); color:#888; border-radius:4px; padding:6px 12px; font-family:'Share Tech Mono',monospace; font-size:11px; cursor:pointer;">CLOSE</button>
+  </div>
+
+  <!-- Login screen -->
+  <div id="admin-login" style="background:#101010; border:1px solid rgba(201,168,76,0.2); border-radius:6px; padding:24px; display:flex; flex-direction:column; gap:12px;">
+    <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:0.1em; color:#888;">ENTER PASSWORD</div>
+    <input id="admin-pw-input" type="password" placeholder="Password"
+      style="background:#080808; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#ebebeb; font-family:'Share Tech Mono',monospace; font-size:13px; padding:10px 12px; outline:none;"
+      onkeydown="if(event.key==='Enter') adminLogin()" />
+    <div id="admin-pw-err" style="color:#e55; font-family:'Share Tech Mono',monospace; font-size:11px; display:none;">Incorrect password.</div>
+    <button onclick="adminLogin()"
+      style="background:#C9A84C; color:#080808; border:none; border-radius:4px; padding:10px; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:0.08em; cursor:pointer;">UNLOCK</button>
+  </div>
+
+  <!-- Main admin UI (shown after login) -->
+  <div id="admin-main" style="display:none; flex-direction:column; gap:14px;">
+
+    <!-- Queue editor -->
+    <div style="background:#101010; border:1px solid rgba(201,168,76,0.2); border-radius:6px; overflow:hidden;">
+      <div style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.12em; color:#888;">QUEUE — <span id="adm-count">0</span> entries</div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="admSave()" id="adm-save-btn"
+            style="background:#C9A84C; color:#080808; border:none; border-radius:3px; padding:5px 12px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.06em; cursor:pointer;">SAVE</button>
+          <button onclick="admReset()"
+            style="background:none; border:1px solid rgba(255,255,255,0.1); color:#888; border-radius:3px; padding:5px 10px; font-family:'Share Tech Mono',monospace; font-size:10px; cursor:pointer;">RESET</button>
+        </div>
+      </div>
+      <div id="adm-list" style="display:flex; flex-direction:column;"></div>
+      <!-- Add row -->
+      <div style="padding:10px 12px; border-top:1px solid rgba(255,255,255,0.06); display:flex; gap:8px; flex-wrap:wrap;">
+        <input id="adm-add-name" type="text" placeholder="Agency / Dept / Unit"
+          style="flex:1; min-width:140px; background:#080808; border:1px solid rgba(255,255,255,0.08); border-radius:3px; color:#ebebeb; font-family:'Share Tech Mono',monospace; font-size:12px; padding:7px 10px; outline:none;"
+          onkeydown="if(event.key==='Enter') admAdd()" />
+        <select id="adm-add-status"
+          style="background:#080808; border:1px solid rgba(255,255,255,0.08); border-radius:3px; color:#ebebeb; font-family:'Share Tech Mono',monospace; font-size:12px; padding:7px 8px; outline:none; cursor:pointer;">
+          <option value="queued">Queued</option>
+          <option value="in-progress">In Progress</option>
+          <option value="complete">Complete</option>
+        </select>
+        <input id="adm-add-img" type="text" placeholder="Photo URL (optional)"
+          style="flex:1; min-width:120px; background:#080808; border:1px solid rgba(255,255,255,0.08); border-radius:3px; color:#ebebeb; font-family:'Share Tech Mono',monospace; font-size:12px; padding:7px 10px; outline:none;" />
+        <button onclick="admAdd()"
+          style="background:#C9A84C; color:#080808; border:none; border-radius:3px; padding:7px 14px; font-family:'Share Tech Neue',monospace; font-size:12px; cursor:pointer; white-space:nowrap;">+ ADD</button>
+      </div>
+    </div>
+
+    <!-- Change password -->
+    <div style="background:#101010; border:1px solid rgba(255,255,255,0.07); border-radius:6px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+      <div style="font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.12em; color:#888;">CHANGE PASSWORD</div>
+      <div style="display:flex; gap:8px;">
+        <input id="adm-new-pw" type="password" placeholder="New password"
+          style="flex:1; background:#080808; border:1px solid rgba(255,255,255,0.08); border-radius:3px; color:#ebebeb; font-family:'Share Tech Mono',monospace; font-size:12px; padding:7px 10px; outline:none;"
+          onkeydown="if(event.key==='Enter') admChangePw()" />
+        <button onclick="admChangePw()"
+          style="background:none; border:1px solid rgba(201,168,76,0.3); color:#C9A84C; border-radius:3px; padding:7px 12px; font-family:'Share Tech Mono',monospace; font-size:11px; cursor:pointer;">SET</button>
+      </div>
+      <div id="adm-pw-msg" style="font-family:'Share Tech Mono',monospace; font-size:10px; color:#4caf7a; display:none;">Password updated.</div>
+    </div>
+
+    <!-- Log out -->
+    <button onclick="admLogout()"
+      style="background:none; border:1px solid rgba(255,255,255,0.08); color:#555; border-radius:4px; padding:9px; font-family:'Share Tech Mono',monospace; font-size:11px; cursor:pointer; letter-spacing:0.08em;">LOG OUT</button>
+
+  </div><!-- /admin-main -->
+</div><!-- /inner -->
+</div><!-- /admin-overlay -->
+
+<script>
+/* ── Admin panel ──────────────────────────────────────────── */
+(function() {
+  const PW_KEY   = "mp_admin_pw";
+  const QUEUE_KEY = "mp_queue";
+  let adminQueue = [];
+  let dirty = false;
+
+  /* Triple-click trigger */
+  let clickTimer = null, clickCount = 0;
+  document.getElementById("admin-trigger").addEventListener("click", function() {
+    clickCount++;
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(function() { clickCount = 0; }, 500);
+    if (clickCount >= 3) {
+      clickCount = 0;
+      clearTimeout(clickTimer);
+      adminOpen();
+    }
+  });
+
+  function getPass() { return localStorage.getItem(PW_KEY) || "micropatches"; }
+
+  window.adminOpen = function() {
+    document.getElementById("admin-overlay").style.display = "block";
+    document.body.style.overflow = "hidden";
+    document.getElementById("admin-pw-input").value = "";
+    document.getElementById("admin-pw-err").style.display = "none";
+    document.getElementById("admin-login").style.display = "flex";
+    document.getElementById("admin-main").style.display = "none";
+    setTimeout(function() { document.getElementById("admin-pw-input").focus(); }, 50);
+  };
+
+  window.adminClose = function() {
+    if (dirty && !confirm("You have unsaved changes. Close anyway?")) return;
+    document.getElementById("admin-overlay").style.display = "none";
+    document.body.style.overflow = "";
+  };
+
+  window.adminLogin = function() {
+    const val = document.getElementById("admin-pw-input").value;
+    if (val === getPass()) {
+      document.getElementById("admin-login").style.display = "none";
+      document.getElementById("admin-main").style.display = "flex";
+      adminLoadQueue();
+    } else {
+      document.getElementById("admin-pw-err").style.display = "block";
+      document.getElementById("admin-pw-input").select();
+    }
+  };
+
+  window.admLogout = function() {
+    document.getElementById("admin-main").style.display = "none";
+    document.getElementById("admin-login").style.display = "flex";
+    document.getElementById("admin-pw-input").value = "";
+    dirty = false;
+  };
+
+  function adminLoadQueue() {
+    adminQueue = QUEUE.map(function(e) { return Object.assign({}, e); });
+    dirty = false;
+    admRender();
+  }
+
+  function admRender() {
+    document.getElementById("adm-count").textContent = adminQueue.length;
+    const list = document.getElementById("adm-list");
+    if (adminQueue.length === 0) {
+      list.innerHTML = '<div style="padding:14px; font-family:\'Share Tech Mono\',monospace; font-size:11px; color:#444; text-align:center;">No entries. Add one below.</div>';
+      return;
+    }
+    list.innerHTML = adminQueue.map(function(e, i) {
+      return '<div style="display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.04); flex-wrap:wrap;">'
+        + '<div style="font-family:\'Share Tech Mono\',monospace; font-size:10px; color:#555; min-width:22px;">#' + (i+1) + '</div>'
+        + '<div style="display:flex; flex-direction:column; gap:3px; flex:1; min-width:120px;">'
+        + '<input value="' + escA(e.name) + '" placeholder="Name"'
+        + ' style="background:#080808; border:1px solid rgba(255,255,255,0.07); border-radius:3px; color:#ebebeb; font-family:\'Share Tech Mono\',monospace; font-size:12px; padding:5px 8px; outline:none; width:100%;"'
+        + ' oninput="admUpdateName(' + i + ', this.value)" />'
+        + '<input value="' + escA(e.img || '') + '" placeholder="Photo URL (optional)"'
+        + ' style="background:#080808; border:1px solid rgba(255,255,255,0.07); border-radius:3px; color:#888; font-family:\'Share Tech Mono\',monospace; font-size:10px; padding:4px 8px; outline:none; width:100%;"'
+        + ' oninput="admUpdateImg(' + i + ', this.value)" />'
+        + '</div>'
+        + '<select style="background:#080808; border:1px solid rgba(255,255,255,0.07); border-radius:3px; color:#ebebeb; font-family:\'Share Tech Mono\',monospace; font-size:11px; padding:5px 6px; outline:none; cursor:pointer;"'
+        + ' onchange="admUpdateStatus(' + i + ', this.value)">'
+        + '<option value="queued"' + (e.status==='queued'?' selected':'') + '>Queued</option>'
+        + '<option value="in-progress"' + (e.status==='in-progress'?' selected':'') + '>In Progress</option>'
+        + '<option value="complete"' + (e.status==='complete'?' selected':'') + '>Complete</option>'
+        + '</select>'
+        + '<div style="display:flex; flex-direction:column; gap:2px;">'
+        + '<button onclick="admMove(' + i + ',-1)" ' + (i===0?'disabled':'') + ' style="background:none; border:1px solid rgba(255,255,255,0.08); color:#666; border-radius:2px; padding:2px 6px; cursor:pointer; font-size:10px;">▲</button>'
+        + '<button onclick="admMove(' + i + ',1)" ' + (i===adminQueue.length-1?'disabled':'') + ' style="background:none; border:1px solid rgba(255,255,255,0.08); color:#666; border-radius:2px; padding:2px 6px; cursor:pointer; font-size:10px;">▼</button>'
+        + '</div>'
+        + '<button onclick="admRemove(' + i + ')" style="background:none; border:1px solid rgba(220,60,60,0.3); color:#c55; border-radius:3px; padding:5px 8px; cursor:pointer; font-size:11px;">✕</button>'
+        + '</div>';
+    }).join("");
+  }
+
+  function escA(s) { return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+  function markDirty() {
+    dirty = true;
+    document.getElementById("adm-save-btn").textContent = "SAVE*";
+  }
+
+  window.admUpdateName = function(i, v) { adminQueue[i].name = v; markDirty(); document.getElementById("adm-count").textContent = adminQueue.length; };
+  window.admUpdateImg  = function(i, v) { v = v.trim(); if (v) adminQueue[i].img = v; else delete adminQueue[i].img; markDirty(); };
+  window.admUpdateStatus = function(i, v) { adminQueue[i].status = v; markDirty(); };
+
+  window.admMove = function(i, dir) {
+    var j = i + dir;
+    if (j < 0 || j >= adminQueue.length) return;
+    var tmp = adminQueue[i]; adminQueue[i] = adminQueue[j]; adminQueue[j] = tmp;
+    markDirty();
+    admRender();
+  };
+
+  window.admRemove = function(i) {
+    adminQueue.splice(i, 1);
+    markDirty();
+    admRender();
+  };
+
+  window.admAdd = function() {
+    var nameEl = document.getElementById("adm-add-name");
+    var name = nameEl.value.trim();
+    if (!name) { nameEl.focus(); return; }
+    var entry = { name: name, status: document.getElementById("adm-add-status").value };
+    var img = document.getElementById("adm-add-img").value.trim();
+    if (img) entry.img = img;
+    adminQueue.push(entry);
+    nameEl.value = "";
+    document.getElementById("adm-add-img").value = "";
+    document.getElementById("adm-add-status").value = "queued";
+    markDirty();
+    admRender();
+  };
+
+  window.admSave = function() {
+    QUEUE = adminQueue.map(function(e) { return Object.assign({}, e); });
+    try { localStorage.setItem(QUEUE_KEY, JSON.stringify(QUEUE)); } catch(e) {}
+    dirty = false;
+    document.getElementById("adm-save-btn").textContent = "SAVED ✓";
+    setTimeout(function() { document.getElementById("adm-save-btn").textContent = "SAVE"; }, 2000);
+    renderQueue();
+  };
+
+  window.admReset = function() {
+    if (!confirm("Reset queue to defaults? This will discard changes.")) return;
+    try { localStorage.removeItem(QUEUE_KEY); } catch(e) {}
+    QUEUE = DEFAULT_QUEUE.map(function(e) { return Object.assign({}, e); });
+    adminQueue = QUEUE.map(function(e) { return Object.assign({}, e); });
+    dirty = false;
+    admRender();
+    renderQueue();
+  };
+
+  window.admChangePw = function() {
+    var pw = document.getElementById("adm-new-pw").value.trim();
+    if (!pw) return;
+    localStorage.setItem(PW_KEY, pw);
+    document.getElementById("adm-new-pw").value = "";
+    var msg = document.getElementById("adm-pw-msg");
+    msg.style.display = "block";
+    setTimeout(function() { msg.style.display = "none"; }, 2500);
+  };
+
+  /* Close on Escape */
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && document.getElementById("admin-overlay").style.display !== "none") {
+      adminClose();
+    }
+  });
+})();
+</script>
 
 <!-- EMAIL MODAL -->
 <div id="email-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; align-items:center; justify-content:center; padding:24px;">
