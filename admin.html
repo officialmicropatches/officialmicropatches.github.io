@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MicroPatches — Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:           #080808;
+      --bg-surface:   #101010;
+      --bg-surface-2: #161616;
+      --gold:         #C9A84C;
+      --gold-dim:     #8A6E2F;
+      --gold-bright:  #DDB85A;
+      --gold-faint:   rgba(201, 168, 76, 0.07);
+      --gold-border:  rgba(201, 168, 76, 0.22);
+      --green:        #4CAF7A;
+      --green-faint:  rgba(76, 175, 122, 0.07);
+      --green-border: rgba(76, 175, 122, 0.22);
+      --red:          #e05555;
+      --red-faint:    rgba(224, 85, 85, 0.08);
+      --red-border:   rgba(224, 85, 85, 0.25);
+      --text:         #EBEBEB;
+      --text-muted:   #888;
+      --text-dim:     #444;
+      --border:       rgba(255, 255, 255, 0.06);
+      --radius:       4px;
+      --radius-lg:    8px;
+      --font-head:    'Bebas Neue', sans-serif;
+      --font-mono:    'Share Tech Mono', monospace;
+      --font-body:    'Inter', sans-serif;
+      --t:            0.18s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      background-image:
+        linear-gradient(rgba(201, 168, 76, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 168, 76, 0.025) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 16px 64px;
+    }
+
+    /* ── Gate ───────────────────────────────────────────────── */
+    #gate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      padding: 24px;
+    }
+
+    .gate-logo {
+      font-family: var(--font-head);
+      font-size: 34px;
+      letter-spacing: 0.12em;
+      color: var(--text);
+      text-align: center;
+    }
+    .gate-logo span { color: var(--gold); }
+
+    .gate-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    .gate-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .gate-input {
+      background: #080808;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      padding: 11px 14px;
+      width: 100%;
+      outline: none;
+      letter-spacing: 0.08em;
+      transition: border-color var(--t);
+    }
+    .gate-input:focus { border-color: rgba(201, 168, 76, 0.5); }
+
+    .gate-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--gold);
+      color: #060606;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-head);
+      font-size: 20px;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: background var(--t);
+    }
+    .gate-btn:hover { background: var(--gold-bright); }
+
+    .gate-error {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--red);
+      text-align: center;
+      letter-spacing: 0.08em;
+      min-height: 14px;
+    }
+
+    .gate-hint {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      text-align: center;
+      letter-spacing: 0.06em;
+      line-height: 1.6;
+    }
+
+    /* ── Admin panel ────────────────────────────────────────── */
+    #admin { display: none; }
+
+    .admin-header {
+      padding: 32px 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .admin-brand {
+      font-family: var(--font-head);
+      font-size: 30px;
+      letter-spacing: 0.1em;
+      color: var(--text);
+    }
+    .admin-brand span { color: var(--gold); }
+
+    .admin-meta {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all var(--t);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #060606;
+      font-weight: 700;
+      border-color: var(--gold);
+    }
+    .btn-gold:hover { background: var(--gold-bright); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--gold);
+      border-color: var(--gold-border);
+    }
+    .btn-outline:hover { background: var(--gold-faint); border-color: var(--gold); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border-color: var(--red-border);
+    }
+    .btn-danger:hover { background: var(--red-faint); }
+
+    .btn-muted {
+      background: transparent;
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+    .btn-muted:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 10px;
+    }
+
+    .btn-icon {
+      padding: 5px 8px;
+      font-size: 13px;
+    }
+
+    /* ── Section ────────────────────────────────────────────── */
+    .section { margin-top: 24px; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    /* ── Status badge ───────────────────────────────────────── */
+    .q-badge {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+    .b-queued      { background: rgba(201,168,76,0.10); color: var(--gold);  border: 1px solid rgba(201,168,76,0.2); }
+    .b-in-progress { background: rgba(76,130,200,0.12); color: #7ec8e3;      border: 1px solid rgba(76,130,200,0.25); }
+    .b-complete    { background: rgba(76,175,122,0.10); color: var(--green); border: 1px solid rgba(76,175,122,0.2); }
+
+    /* ── Queue table ────────────────────────────────────────── */
+    .queue-empty {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    .queue-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background var(--t);
+    }
+    .queue-item:last-child { border-bottom: none; }
+    .queue-item:hover { background: var(--bg-surface-2); }
+
+    .q-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      min-width: 22px;
+    }
+
+    .q-name-input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 4px 8px;
+      outline: none;
+      transition: border-color var(--t), background var(--t);
+      min-width: 0;
+    }
+    .q-name-input:focus {
+      border-color: rgba(201, 168, 76, 0.4);
+      background: #080808;
+    }
+    .q-name-input::placeholder { color: var(--text-dim); }
+
+    .q-status-select {
+      background: #0a0a0a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      padding: 4px 6px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color var(--t);
+    }
+    .q-status-select:focus { border-color: rgba(201, 168, 76, 0.4); }
+    .q-status-select option { background: #111; }
+
+    .q-move-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .q-move-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-dim);
+      width: 22px;
+      height: 18px;
+      cursor: pointer;
+      font-size: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--t), border-color var(--t);
+      padding: 0;
+    }
+    .q-move-btn:hover { color: var(--gold); border-color: var(--gold-border); }
+    .q-move-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .q-del-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-dim);
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--t), border-color var(--t), background var(--t);
+      flex-shrink: 0;
+    }
+    .q-del-btn:hover { color: var(--red); border-color: var(--red-border); background: var(--red-faint); }
+
+    /* ── Add entry form ─────────────────────────────────────── */
+    .add-form {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      padding: 14px;
+      background: var(--bg-surface-2);
+      border-top: 1px solid var(--border);
+    }
+
+    .add-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .add-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .add-input,
+    .add-select {
+      background: #080808;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 8px 10px;
+      outline: none;
+      transition: border-color var(--t);
+      width: 100%;
+      -webkit-appearance: none;
+    }
+    .add-input:focus,
+    .add-select:focus { border-color: rgba(201, 168, 76, 0.5); }
+    .add-input::placeholder { color: #3a3a3a; }
+    .add-select { cursor: pointer; }
+    .add-select option { background: #111; }
+
+    /* ── Save bar ───────────────────────────────────────────── */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(8, 8, 8, 0.96);
+      border-top: 1px solid var(--gold-border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+
+    .save-bar-left {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    .save-status {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      min-width: 100px;
+      text-align: right;
+    }
+    .save-status.saved  { color: var(--green); }
+    .save-status.unsaved { color: var(--gold); }
+
+    /* ── Export section ─────────────────────────────────────── */
+    .export-box {
+      background: #060606;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #7ec8e3;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.7;
+      max-height: 260px;
+      overflow-y: auto;
+      user-select: all;
+    }
+
+    /* ── Change password section ────────────────────────────── */
+    .change-pw-form {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .pw-input {
+      background: #080808;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      flex: 1;
+      min-width: 160px;
+      transition: border-color var(--t);
+    }
+    .pw-input:focus { border-color: rgba(201, 168, 76, 0.5); }
+
+    /* ── Info box ───────────────────────────────────────────── */
+    .info-box {
+      background: var(--gold-faint);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+    }
+    .info-box strong { color: var(--gold); }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-top: 28px;
+    }
+
+    /* ── Toast ──────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--bg-surface);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      padding: 10px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 200;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── PASSWORD GATE ─────────────────────────────────────────── -->
+<div id="gate">
+  <div style="text-align:center; display:flex; flex-direction:column; gap:8px; align-items:center;">
+    <div class="gate-logo">MICRO<span>PATCHES</span></div>
+    <div class="gate-label">Admin Panel</div>
+  </div>
+
+  <div class="gate-box">
+    <input
+      class="gate-input"
+      id="pw-input"
+      type="password"
+      placeholder="Enter password"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') checkPassword()"
+    />
+    <button class="gate-btn" onclick="checkPassword()">ENTER</button>
+    <div class="gate-error" id="gate-error"></div>
+    <div class="gate-hint">
+      Default password: <strong style="color:var(--gold)">micropatches</strong><br>
+      Change it in the Settings section after logging in.
+    </div>
+  </div>
+</div>
+
+<!-- ── ADMIN PANEL ───────────────────────────────────────────── -->
+<div id="admin">
+<div class="page">
+
+  <div class="admin-header">
+    <div>
+      <div class="admin-brand">MICRO<span>PATCHES</span></div>
+      <div class="admin-meta">Queue Admin &nbsp;&middot;&nbsp; Local Session</div>
+    </div>
+    <div class="btn-row">
+      <a href="/" class="btn btn-muted" style="display:inline-flex;align-items:center;gap:6px;">
+        &#8592; View Site
+      </a>
+      <button class="btn btn-muted" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="info-box">
+    <strong>How this works:</strong> Changes you make here are saved to your browser's local storage and
+    immediately reflected on the live queue panel when you view the site in <strong>this browser</strong>.
+    To make changes permanent for all visitors, click <strong>Copy Code</strong> in the Export section
+    and paste the array into <code style="color:#7ec8e3">index.html</code> (the <code style="color:#7ec8e3">QUEUE</code> constant).
+  </div>
+
+  <!-- ── QUEUE SECTION ──────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-label">Live Queue &mdash; <span id="queue-count" style="color:var(--text-muted)">0 entries</span></div>
+
+    <div class="panel">
+      <div id="queue-list"></div>
+
+      <!-- Add new entry -->
+      <div class="add-form">
+        <div class="add-form-group">
+          <div class="add-label">Agency / Department / Unit</div>
+          <input
+            class="add-input"
+            id="add-name"
+            type="text"
+            placeholder="e.g. Phoenix PD, 101st Airborne"
+            onkeydown="if(event.key==='Enter') addEntry()"
+          />
+        </div>
+        <div class="add-form-group" style="max-width:160px; flex:0 0 160px;">
+          <div class="add-label">Status</div>
+          <select class="add-select" id="add-status">
+            <option value="queued">Queued</option>
+            <option value="in-progress">In Progress</option>
+            <option value="complete">Complete</option>
+          </select>
+        </div>
+        <div class="add-form-group">
+          <div class="add-label">Patch Photo URL <span style="color:var(--text-dim)">(optional)</span></div>
+          <input
+            class="add-input"
+            id="add-img"
+            type="text"
+            placeholder="patches/filename.jpg or full URL"
+          />
+        </div>
+        <button class="btn btn-gold" style="white-space:nowrap;" onclick="addEntry()">+ Add Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTION BUTTONS ─────────────────────────────────────── -->
+  <div style="margin-top:14px;" class="btn-row">
+    <button class="btn btn-outline" onclick="saveQueue()">&#10003; Save to Browser</button>
+    <button class="btn btn-muted" onclick="resetToDefaults()">Reset to Defaults</button>
+    <button class="btn btn-danger" onclick="clearQueue()">Clear All</button>
+  </div>
+
+  <!-- ── EXPORT SECTION ─────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-label">Export &mdash; Make Changes Permanent</div>
+    <div class="panel">
+      <div style="padding:14px; display:flex; flex-direction:column; gap:10px;">
+        <div style="font-family:var(--font-mono); font-size:10px; color:var(--text-muted); line-height:1.6; letter-spacing:0.04em;">
+          Copy this array and replace the <code style="color:#7ec8e3">QUEUE</code> constant in <code style="color:#7ec8e3">index.html</code>.
+          This makes the queue permanent for all visitors on all browsers.
+        </div>
+        <div class="export-box" id="export-box"></div>
+        <button class="btn btn-outline" onclick="copyExport()">&#128203; Copy Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS SECTION ───────────────────────────────────── -->
+  <div class="section">
+    <div class="divider" style="margin-bottom:28px;"></div>
+    <div class="section-label">Settings</div>
+
+    <div class="panel">
+      <div style="padding:18px; display:flex; flex-direction:column; gap:14px;">
+
+        <div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--gold); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px;">Change Password</div>
+          <div class="change-pw-form">
+            <input class="pw-input" id="new-pw" type="password" placeholder="New password" />
+            <input class="pw-input" id="confirm-pw" type="password" placeholder="Confirm password" />
+            <button class="btn btn-outline" onclick="changePassword()">Update</button>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:9px; color:var(--text-dim); margin-top:6px; letter-spacing:0.05em;">
+            Password is stored in your browser's local storage. You will need to re-enter it after clearing site data.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div style="padding-bottom: 80px;"></div>
+
+</div><!-- /page -->
+</div><!-- /admin -->
+
+<!-- ── SAVE BAR (fixed bottom) ───────────────────────────────── -->
+<div class="save-bar" id="save-bar" style="display:none;">
+  <div class="save-bar-left">MicroPatches Admin &nbsp;&middot;&nbsp; Queue Manager</div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <div class="save-status unsaved" id="save-status">Unsaved changes</div>
+    <button class="btn btn-gold btn-sm" onclick="saveQueue()">Save</button>
+  </div>
+</div>
+
+<!-- ── TOAST ─────────────────────────────────────────────────── -->
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const DEFAULT_PASSWORD = "micropatches"; // Change via Settings after login
+const STORAGE_KEY_QUEUE = "mp_queue";
+const STORAGE_KEY_PW    = "mp_admin_pw";
+
+/* Default queue — keep in sync with index.html */
+const DEFAULT_QUEUE = [
+  { name: "Orange County Sheriff's Office",  status: "queued" },
+  { name: "Davie County Sheriff's Office",   status: "queued" },
+  { name: "North Carolina Highway Patrol",   status: "queued" },
+  { name: "Globe Arizona PD",                status: "queued" },
+  { name: "18th Airborne Corps",             status: "queued" },
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let queue     = [];
+let dirty     = false;
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function getStoredPassword() {
+  return localStorage.getItem(STORAGE_KEY_PW) || DEFAULT_PASSWORD;
+}
+
+function checkPassword() {
+  const val = document.getElementById("pw-input").value;
+  if (val === getStoredPassword()) {
+    document.getElementById("gate").style.display  = "none";
+    document.getElementById("admin").style.display = "block";
+    document.getElementById("save-bar").style.display = "flex";
+    loadQueue();
+  } else {
+    const err = document.getElementById("gate-error");
+    err.textContent = "Incorrect password.";
+    document.getElementById("pw-input").value = "";
+    setTimeout(() => { err.textContent = ""; }, 3000);
+  }
+}
+
+function logout() {
+  document.getElementById("admin").style.display = "none";
+  document.getElementById("save-bar").style.display = "none";
+  document.getElementById("gate").style.display   = "flex";
+  document.getElementById("pw-input").value = "";
+}
+
+function changePassword() {
+  const np = document.getElementById("new-pw").value.trim();
+  const cp = document.getElementById("confirm-pw").value.trim();
+  if (!np) { showToast("Enter a new password."); return; }
+  if (np !== cp) { showToast("Passwords do not match."); return; }
+  localStorage.setItem(STORAGE_KEY_PW, np);
+  document.getElementById("new-pw").value    = "";
+  document.getElementById("confirm-pw").value = "";
+  showToast("Password updated!");
+}
+
+/* Enter key on gate */
+document.getElementById("pw-input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") checkPassword();
+});
+
+/* ============================================================
+   QUEUE MANAGEMENT
+   ============================================================ */
+function loadQueue() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_QUEUE);
+    queue = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_QUEUE));
+  } catch(e) {
+    queue = JSON.parse(JSON.stringify(DEFAULT_QUEUE));
+  }
+  dirty = false;
+  renderQueue();
+  renderExport();
+  updateSaveStatus();
+}
+
+function saveQueue() {
+  localStorage.setItem(STORAGE_KEY_QUEUE, JSON.stringify(queue));
+  dirty = false;
+  updateSaveStatus();
+  showToast("Queue saved to browser!");
+}
+
+function markDirty() {
+  dirty = true;
+  updateSaveStatus();
+}
+
+function updateSaveStatus() {
+  const el = document.getElementById("save-status");
+  el.textContent = dirty ? "Unsaved changes" : "Saved";
+  el.className   = "save-status " + (dirty ? "unsaved" : "saved");
+}
+
+function renderQueue() {
+  const list = document.getElementById("queue-list");
+  document.getElementById("queue-count").textContent = queue.length + " entr" + (queue.length === 1 ? "y" : "ies");
+
+  if (queue.length === 0) {
+    list.innerHTML = '<div class="queue-empty">No entries yet. Add one below.</div>';
+    renderExport();
+    return;
+  }
+
+  list.innerHTML = queue.map((entry, i) => `
+    <div class="queue-item" id="qi-${i}">
+      <div class="q-num">#${i + 1}</div>
+
+      <div style="flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;">
+        <input
+          class="q-name-input"
+          style="width:100%;"
+          value="${escHtml(entry.name)}"
+          placeholder="Agency / Department / Unit"
+          oninput="updateName(${i}, this.value)"
+        />
+        <input
+          class="q-name-input"
+          style="width:100%; font-size:10px; color:var(--text-dim);"
+          value="${escHtml(entry.img || '')}"
+          placeholder="Photo URL (optional) — patches/file.jpg or full URL"
+          oninput="updateImg(${i}, this.value)"
+        />
+      </div>
+
+      <select class="q-status-select" onchange="updateStatus(${i}, this.value)">
+        <option value="queued"      ${entry.status === 'queued'      ? 'selected' : ''}>Queued</option>
+        <option value="in-progress" ${entry.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+        <option value="complete"    ${entry.status === 'complete'    ? 'selected' : ''}>Complete</option>
+      </select>
+
+      <div class="q-move-btns">
+        <button class="q-move-btn" onclick="moveEntry(${i}, -1)" ${i === 0 ? 'disabled' : ''} title="Move up">&#9650;</button>
+        <button class="q-move-btn" onclick="moveEntry(${i},  1)" ${i === queue.length - 1 ? 'disabled' : ''} title="Move down">&#9660;</button>
+      </div>
+
+      <button class="q-del-btn" onclick="removeEntry(${i})" title="Remove">&#10005;</button>
+    </div>
+  `).join("");
+
+  renderExport();
+}
+
+function addEntry() {
+  const nameEl   = document.getElementById("add-name");
+  const statusEl = document.getElementById("add-status");
+  const imgEl    = document.getElementById("add-img");
+  const name     = nameEl.value.trim();
+  if (!name) { nameEl.focus(); return; }
+  const entry = { name, status: statusEl.value };
+  const img = imgEl.value.trim();
+  if (img) entry.img = img;
+  queue.push(entry);
+  nameEl.value   = "";
+  imgEl.value    = "";
+  statusEl.value = "queued";
+  markDirty();
+  renderQueue();
+}
+
+function removeEntry(i) {
+  queue.splice(i, 1);
+  markDirty();
+  renderQueue();
+}
+
+function updateName(i, val) {
+  queue[i].name = val;
+  markDirty();
+  renderExport();
+  document.getElementById("queue-count").textContent = queue.length + " entr" + (queue.length === 1 ? "y" : "ies");
+}
+
+function updateImg(i, val) {
+  const v = val.trim();
+  if (v) queue[i].img = v;
+  else   delete queue[i].img;
+  markDirty();
+  renderExport();
+}
+
+function updateStatus(i, val) {
+  queue[i].status = val;
+  markDirty();
+  renderExport();
+}
+
+function moveEntry(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= queue.length) return;
+  [queue[i], queue[j]] = [queue[j], queue[i]];
+  markDirty();
+  renderQueue();
+}
+
+function resetToDefaults() {
+  if (!confirm("Reset the queue to the original hardcoded defaults? This cannot be undone.")) return;
+  queue = JSON.parse(JSON.stringify(DEFAULT_QUEUE));
+  markDirty();
+  renderQueue();
+  showToast("Reset to defaults. Hit Save to persist.");
+}
+
+function clearQueue() {
+  if (!confirm("Remove all entries from the queue?")) return;
+  queue = [];
+  markDirty();
+  renderQueue();
+  showToast("Queue cleared. Hit Save to persist.");
+}
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+function renderExport() {
+  const lines = queue.map(e => {
+    let s = `  { name: ${JSON.stringify(e.name)}, status: ${JSON.stringify(e.status)}`;
+    if (e.img) s += `, img: ${JSON.stringify(e.img)}`;
+    s += " }";
+    return s;
+  }).join(",\n");
+  document.getElementById("export-box").textContent =
+    "const DEFAULT_QUEUE = [\n" + lines + (lines ? "\n" : "") + "];";
+}
+
+function copyExport() {
+  const code = document.getElementById("export-box").textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    showToast("Code copied to clipboard!");
+  }).catch(() => {
+    showToast("Select the code box and copy manually.");
+  });
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove("show"); }, 2600);
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function escHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+</script>
+
+</body>
+</html>
