@@ -1633,7 +1633,6 @@ function copyEmail() {
     <form id="submit-form" class="smodal-body"
           method="POST"
           action="https://formsubmit.co/OfficialMicroPatches@gmail.com"
-          enctype="multipart/form-data"
           target="submit-frame"
           onsubmit="handleSubmitForm(event)">
 
@@ -1759,6 +1758,16 @@ function copyEmail() {
       </div>
     </div>
 
+    <!-- Submissions inbox -->
+    <div style="background:#101010; border:1px solid rgba(201,168,76,0.2); border-radius:6px; overflow:hidden;">
+      <div style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.12em; color:#888;">SUBMISSIONS INBOX</div>
+        <button onclick="admLoadSubmissions()" id="adm-load-subs-btn"
+          style="background:#C9A84C; color:#080808; border:none; border-radius:3px; padding:5px 12px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.06em; cursor:pointer;">LOAD</button>
+      </div>
+      <div id="adm-subs-list" style="display:flex; flex-direction:column; max-height:480px; overflow-y:auto;"></div>
+    </div>
+
     <!-- Change password -->
     <div style="background:#101010; border:1px solid rgba(255,255,255,0.07); border-radius:6px; padding:14px; display:flex; flex-direction:column; gap:8px;">
       <div style="font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.12em; color:#888;">CHANGE PASSWORD</div>
@@ -1867,6 +1876,7 @@ function copyEmail() {
   }
 
   function escA(s) { return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+  function escH(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
   function markDirty() {
     dirty = true;
@@ -1937,6 +1947,40 @@ function copyEmail() {
     setTimeout(function() { msg.style.display = "none"; }, 2500);
   };
 
+  window.admLoadSubmissions = async function() {
+    var btn  = document.getElementById("adm-load-subs-btn");
+    var list = document.getElementById("adm-subs-list");
+    btn.textContent = "Loading...";
+    btn.disabled = true;
+    list.innerHTML = '<div style="padding:14px; font-family:\'Share Tech Mono\',monospace; font-size:11px; color:#666; text-align:center;">Loading…</div>';
+    try {
+      if (!window.fbLoadSubmissions) throw new Error("Firebase not ready yet — try again in a moment.");
+      var subs = await window.fbLoadSubmissions();
+      if (subs.length === 0) {
+        list.innerHTML = '<div style="padding:14px; font-family:\'Share Tech Mono\',monospace; font-size:11px; color:#444; text-align:center;">No submissions yet.</div>';
+      } else {
+        list.innerHTML = subs.map(function(s) {
+          return '<div style="padding:14px; border-bottom:1px solid rgba(255,255,255,0.04);">'
+            + (s.photoURL
+                ? '<img src="' + escA(s.photoURL) + '" style="width:100%; max-height:220px; object-fit:contain; border-radius:4px; margin-bottom:10px; background:#080808;" />'
+                : '')
+            + '<div style="font-family:\'Share Tech Mono\',monospace; font-size:12px; color:#C9A84C; margin-bottom:3px;">' + escH(s.agency || s.name || 'Unknown') + '</div>'
+            + '<div style="font-family:\'Share Tech Mono\',monospace; font-size:10px; color:#888; margin-bottom:6px;">'
+              + escH(s.name || '') + (s.email ? ' &middot; ' + escH(s.email) : '') + (s.phone ? ' &middot; ' + escH(s.phone) : '')
+            + '</div>'
+            + (s.description
+                ? '<div style="font-family:\'Share Tech Mono\',monospace; font-size:10px; color:#666; white-space:pre-wrap; line-height:1.5;">' + escH(s.description) + '</div>'
+                : '')
+            + '</div>';
+        }).join("");
+      }
+    } catch(e) {
+      list.innerHTML = '<div style="padding:14px; font-family:\'Share Tech Mono\',monospace; font-size:11px; color:#e55; text-align:center;">' + escH(e.message) + '</div>';
+    }
+    btn.textContent = "REFRESH";
+    btn.disabled = false;
+  };
+
   /* Close on Escape */
   document.addEventListener("keydown", function(e) {
     if (e.key === "Escape" && document.getElementById("admin-overlay").style.display !== "none") {
@@ -1949,7 +1993,7 @@ function copyEmail() {
 <!-- FIREBASE SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
 
   const firebaseConfig = {
@@ -2019,6 +2063,15 @@ function copyEmail() {
     } catch (e) {
       console.warn("Firebase submission save failed:", e);
     }
+  };
+
+  /* Load all submissions (admin only) */
+  window.fbLoadSubmissions = async function() {
+    const q = query(collection(db, "submissions"), orderBy("submittedAt", "desc"));
+    const snap = await getDocs(q);
+    const subs = [];
+    snap.forEach(d => subs.push({ id: d.id, ...d.data() }));
+    return subs;
   };
 </script>
 
