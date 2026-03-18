@@ -1558,36 +1558,30 @@ function handleFileSelect(e) {
   const file = e.target.files[0];
   document.getElementById("file-name").textContent = file ? file.name : "";
 }
-async function handleSubmitForm(e) {
-  e.preventDefault();
+function handleSubmitForm(e) {
   const btn  = document.getElementById("submit-btn");
   const form = document.getElementById("submit-form");
   btn.disabled    = true;
   btn.textContent = "Sending...";
-  const data      = new FormData(form);
+
   const photoFile = form.querySelector("input[type=file]").files[0] || null;
-  try {
-    const res = await fetch("https://formsubmit.co/ajax/OfficialMicroPatches@gmail.com", {
-      method: "POST",
-      body: data,
-      headers: { "Accept": "application/json" }
-    });
-    if (res.ok) {
-      form.style.display = "none";
-      document.getElementById("submit-success").classList.add("show");
-      if (window.fbAddSubmission) {
-        const sub = {};
-        data.forEach((v, k) => { if (!k.startsWith("_") && k !== "attachment") sub[k] = v; });
-        window.fbAddSubmission(sub, photoFile);
-      }
-    } else {
-      throw new Error("bad response");
-    }
-  } catch {
-    btn.disabled    = false;
-    btn.textContent = "SUBMIT REQUEST";
-    alert("Something went wrong. Please DM us on Instagram or email OfficialMicroPatches@gmail.com directly.");
+  const data      = new FormData(form);
+
+  /* Let the form submit normally to FormSubmit (targets hidden iframe)
+     so the attachment is included in the email. */
+
+  /* Fire Firebase queue update + photo upload in parallel */
+  if (window.fbAddSubmission) {
+    const sub = {};
+    data.forEach((v, k) => { if (!k.startsWith("_") && k !== "attachment") sub[k] = v; });
+    window.fbAddSubmission(sub, photoFile);
   }
+
+  /* Show success UI immediately — FormSubmit processes async */
+  setTimeout(() => {
+    form.style.display = "none";
+    document.getElementById("submit-success").classList.add("show");
+  }, 800);
 }
 
 /* ── Patch photo viewer ───────────────────────────────────── */
@@ -1636,7 +1630,11 @@ function copyEmail() {
     </div>
 
     <!-- Form -->
-    <form id="submit-form" class="smodal-body" onsubmit="handleSubmitForm(event)">
+    <form id="submit-form" class="smodal-body"
+          method="POST"
+          action="https://formsubmit.co/OfficialMicroPatches@gmail.com"
+          target="submit-frame"
+          onsubmit="handleSubmitForm(event)">
 
       <div class="smodal-sub">Contact Info</div>
 
@@ -1696,6 +1694,9 @@ function copyEmail() {
     </form>
   </div>
 </div>
+
+<!-- Hidden iframe receives FormSubmit redirect so the page never navigates away -->
+<iframe name="submit-frame" style="display:none" title="submit-frame"></iframe>
 
 <!-- PATCH PHOTO VIEWER -->
 <div id="thumb-modal" class="thumb-modal-overlay" onclick="closeThumbModal()">
