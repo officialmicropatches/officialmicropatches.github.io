@@ -1981,7 +1981,7 @@ function copyEmail() {
 <!-- FIREBASE SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
 
   const firebaseConfig = {
@@ -2030,21 +2030,22 @@ function copyEmail() {
     return getDownloadURL(storageRef);
   }
 
-  /* Upload photos to Storage, then store submission in Firestore */
+  /* Store submission in Firestore, then upload photos to Storage */
   window.fbAddSubmission = async function(data, generatedFile, patchFile) {
+    /* 1. Save text data immediately so the record is never lost */
+    let docRef;
     try {
-      const [generatedImageURL, patchPhotoURL] = await Promise.all([
-        generatedFile ? uploadFile(generatedFile, "gen") : Promise.resolve(null),
-        patchFile     ? uploadFile(patchFile, "patch")   : Promise.resolve(null),
-      ]);
-      await addDoc(collection(db, "submissions"), {
+      docRef = await addDoc(collection(db, "submissions"), {
         ...data,
-        ...(generatedImageURL ? { generatedImageURL } : {}),
-        ...(patchPhotoURL     ? { patchPhotoURL }     : {}),
         submittedAt: serverTimestamp()
       });
+    } catch (e) {
+      console.warn("Firebase submission save failed:", e);
+      return;
+    }
 
-      /* Also append to the live queue — use current in-memory QUEUE as source of truth */
+    /* 2. Also append to the live queue */
+    try {
       const newEntry     = { name: data.agency || data.name || "Unknown", status: "queued" };
       const updatedItems = [...QUEUE, newEntry];
       await setDoc(doc(db, "config", "queue"), { items: updatedItems });
@@ -2052,7 +2053,23 @@ function copyEmail() {
         window.updateQueueFromFirestore(updatedItems);
       }
     } catch (e) {
-      console.warn("Firebase submission save failed:", e);
+      console.warn("Firebase queue update failed:", e);
+    }
+
+    /* 3. Upload photos and patch the submission record (best-effort) */
+    try {
+      const [generatedImageURL, patchPhotoURL] = await Promise.all([
+        generatedFile ? uploadFile(generatedFile, "gen") : Promise.resolve(null),
+        patchFile     ? uploadFile(patchFile, "patch")   : Promise.resolve(null),
+      ]);
+      const updates = {};
+      if (generatedImageURL) updates.generatedImageURL = generatedImageURL;
+      if (patchPhotoURL)     updates.patchPhotoURL     = patchPhotoURL;
+      if (Object.keys(updates).length > 0) {
+        await updateDoc(docRef, updates);
+      }
+    } catch (e) {
+      console.warn("Firebase photo upload failed (submission text already saved):", e);
     }
   };
 
