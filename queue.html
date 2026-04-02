@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patch Queue — MicroPatches</title>
+  <meta name="description" content="Live patch build queue. See what's being built right now and submit your agency to get in line. Standard queue patches are free to build.">
+  <!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
+       Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://formspree.io; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com; form-action https://formspree.io;
+       X-Frame-Options: DENY
+       X-Content-Type-Options: nosniff
+       Referrer-Policy: strict-origin-when-cross-origin -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+    <ul class="nav-links" role="list">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="queue.html" class="active">Queue</a></li>
+      <li><a href="custom.html">Custom Order</a></li>
+      <li><a href="patch-exchange.html">Patch Exchange</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </nav>
+  <nav class="nav-mobile-menu" aria-label="Mobile navigation">
+    <a href="shop.html">Shop</a>
+    <a href="queue.html">Queue</a>
+    <a href="custom.html">Custom Order</a>
+    <a href="patch-exchange.html">Patch Exchange</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Live Build Queue</p>
+      <h1>PATCH QUEUE</h1>
+      <p>We are on a mission to 3D print a keychain for every law enforcement agency, military unit, fire department, and first responder organization in the world. Every single one. Submit your agency to get in line. Standard queue patches are built for free. You just pay the product cost when done.</p>
+    </div>
+  </section>
+
+  <!-- ===== QUEUE LIST ===== -->
+  <section class="section">
+    <div class="container">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:24px">
+        <div>
+          <h2 style="font-size:1.4rem;color:#fff">Current Queue</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-top:4px">Updated in real time from our build database.</p>
+        </div>
+        <button class="btn btn-gold open-submission-modal">Submit Your Patch</button>
+      </div>
+
+      <!-- Status legend -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+        <span class="status-badge status-queued">Queued</span>
+        <span class="status-badge status-progress">In Progress</span>
+        <span class="status-badge status-complete">Complete</span>
+      </div>
+
+      <!-- Loading state (removed by JS on load) -->
+      <p class="queue-loading" style="text-align:center;padding:40px;color:var(--text-muted)">Loading queue...</p>
+
+      <!-- Queue rows rendered by JS -->
+      <div class="queue-full-list" id="queue-full-list"></div>
+
+      <div style="margin-top:32px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap">
+        <button class="btn btn-gold open-submission-modal">Submit Your Patch</button>
+        <a href="patch-exchange.html" class="btn btn-outline">Patch Exchange Program</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== HOW THE QUEUE WORKS ===== -->
+  <section class="section" style="background:var(--bg-card)">
+    <div class="container">
+      <div class="section-header">
+        <h2>HOW THE QUEUE WORKS</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step anim">
+          <div class="step-num">1</div>
+          <h3>SUBMIT YOUR AGENCY</h3>
+          <p>Fill out the form with your agency name and any reference photos you have. We review every submission.</p>
+        </div>
+        <div class="step-connector">&#8250;</div>
+        <div class="step anim anim-delay-1">
+          <div class="step-num">2</div>
+          <h3>WE ADD YOU TO THE LIST</h3>
+          <p>Once reviewed, your agency gets added to the live queue. You'll see it right here on this page.</p>
+        </div>
+        <div class="step-connector">&#8250;</div>
+        <div class="step anim anim-delay-2">
+          <div class="step-num">3</div>
+          <h3>WE BUILD IT AND CONTACT YOU</h3>
+          <p>When we get to your patch, we produce it and reach out. You pay the product cost at that point. Building is free.</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:40px;padding:20px;background:rgba(201,151,42,0.06);border:1px solid rgba(201,151,42,0.18);border-radius:6px;max-width:680px;margin-left:auto;margin-right:auto">
+        <p style="color:var(--text-muted);font-size:0.95rem;line-height:1.7">"Standard queue patches are built for free. You just pay the product cost when done."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
+          <p>Handcrafted for those who serve. USA Made.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
+            <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
+            <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
+            <li><a href="shop.html#military">Military</a></li>
+            <li><a href="shop.html#fire-ems">Fire &amp; EMS</a></li>
+            <li><a href="shop.html#pink-patch">Pink Patch</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="custom.html">Custom Orders</a></li>
+            <li><a href="patch-exchange.html">Patch Exchange</a></li>
+            <li><a href="queue.html">Queue</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
+            <li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 MicroPatches. All rights reserved.</p>
+        <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SUBMISSION MODAL ===== -->
+  <div class="modal-overlay" id="submission-modal" role="dialog" aria-modal="true" aria-labelledby="submission-modal-title">
+    <div class="modal">
+      <button class="modal-close" id="submission-modal-close" aria-label="Close modal">&times;</button>
+      <h2 id="submission-modal-title">SUBMIT YOUR PATCH</h2>
+      <form id="submission-form" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="sub-name">Full Name <span style="color:#f87171">*</span></label>
+            <input type="text" id="sub-name" name="name" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="sub-email">Email Address <span style="color:#f87171">*</span></label>
+            <input type="email" id="sub-email" name="email" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="sub-phone">Phone Number <span style="color:var(--text-muted)">(optional)</span></label>
+            <input type="tel" id="sub-phone" name="phone" autocomplete="tel">
+          </div>
+          <div class="form-group">
+            <label for="sub-agency">Agency / Department / Unit <span style="color:#f87171">*</span></label>
+            <input type="text" id="sub-agency" name="agency" required>
+          </div>
+          <div class="form-group full">
+            <label for="sub-description">Describe Your Patch <span style="color:#f87171">*</span></label>
+            <textarea id="sub-description" name="description" required rows="3" placeholder="Colors, design elements, any details that help us build it accurately"></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="sub-generated">Vector / Digital Rendering (preferred)</label>
+            <input type="file" id="sub-generated" name="generated" accept="image/*">
+            <span class="form-note">Upload a clean digital version if you have one.</span>
+          </div>
+          <div class="form-group full">
+            <label for="sub-patch-photo">Photo of Physical Patch (optional)</label>
+            <input type="file" id="sub-patch-photo" name="patchPhoto" accept="image/*">
+          </div>
+        </div>
+        <div style="margin-top:24px">
+          <button type="submit" id="submission-submit" class="btn btn-gold" style="width:100%">Submit Request</button>
+        </div>
+      </form>
+      <div class="form-success" id="submission-success">
+        Request Received. Your patch will be added to the queue once we review everything. Thank you for your service.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PHOTO VIEWER MODAL ===== -->
+  <div class="modal-overlay" id="photo-modal" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <div class="modal" style="background:transparent;border:none;padding:0;max-width:800px">
+      <button class="modal-close" id="photo-modal-close" aria-label="Close photo" style="position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.8)">&times;</button>
+      <img class="photo-modal-img" id="photo-modal-img" src="" alt="Patch photo">
+    </div>
+  </div>
+
+  <!-- Admin trigger -->
+  <div id="admin-trigger" class="admin-trigger" title=""></div>
+
+  <!-- ===== ADMIN OVERLAY ===== -->
+  <div class="admin-overlay" id="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
+    <div class="admin-panel">
+      <button class="modal-close" id="admin-overlay-close" aria-label="Close admin">&times;</button>
+      <h2 id="admin-panel-title">ADMIN PANEL</h2>
+      <div id="admin-auth">
+        <form id="admin-login-form" class="admin-auth" novalidate>
+          <label for="admin-pw-input" style="font-family:'Oswald',sans-serif;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)">Password</label>
+          <input type="password" id="admin-pw-input" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;" autocomplete="current-password">
+          <p id="admin-pw-error" style="color:#f87171;font-size:0.85rem;min-height:18px"></p>
+          <button type="submit" class="btn btn-gold btn-small">Log In</button>
+        </form>
+      </div>
+      <div id="admin-content">
+        <div class="admin-tabs" role="tablist">
+          <button class="admin-tab active" data-admin-tab="queue" role="tab">Queue</button>
+          <button class="admin-tab" data-admin-tab="submissions" role="tab">Submissions</button>
+          <button class="admin-tab" data-admin-tab="settings" role="tab">Settings</button>
+        </div>
+        <div id="admin-pane-queue" class="admin-tab-pane">
+          <div id="admin-queue-list"></div>
+          <div class="admin-actions">
+            <button id="admin-add-entry" class="btn btn-outline btn-small">+ Add Entry</button>
+            <button id="admin-save-queue" class="btn btn-gold btn-small">Save to Firestore</button>
+          </div>
+          <p id="admin-queue-status" class="admin-status"></p>
+        </div>
+        <div id="admin-pane-submissions" class="admin-tab-pane" style="display:none">
+          <div id="admin-submissions-list"></div>
+        </div>
+        <div id="admin-pane-settings" class="admin-tab-pane" style="display:none">
+          <form id="admin-change-pw-form" novalidate style="max-width:320px">
+            <div class="form-group">
+              <label for="admin-new-pw">New Password</label>
+              <input type="password" id="admin-new-pw" autocomplete="new-password" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;">
+            </div>
+            <div style="margin-top:12px">
+              <button type="submit" class="btn btn-outline btn-small">Update Password</button>
+            </div>
+            <p id="admin-pw-change-status" class="admin-status" style="margin-top:8px"></p>
+          </form>
+          <div style="margin-top:24px">
+            <button id="admin-logout" class="btn btn-small" style="background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);color:#f87171">Log Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

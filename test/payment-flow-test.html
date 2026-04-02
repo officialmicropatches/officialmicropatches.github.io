@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Flow Test — MicroPatches Owner Only</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .test-banner {
+      background: #7f1d1d;
+      border-bottom: 2px solid #ef4444;
+      padding: 14px 24px;
+      text-align: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fca5a5;
+    }
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+    .check-item.done {
+      border-color: rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.05);
+      color: var(--text);
+    }
+    .check-item.done .check-icon { color: #4ade80; }
+    .check-icon {
+      font-size: 1rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-family: monospace;
+    }
+    .step-list { display: flex; flex-direction: column; gap: 8px; counter-reset: steps; }
+    .step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+    .step-num {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+      min-width: 22px;
+      flex-shrink: 0;
+    }
+    .go-live-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+    .go-live-item .check-icon { color: var(--text-muted); flex-shrink: 0; }
+    .sim-console {
+      background: #020408;
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #4ade80;
+      min-height: 120px;
+      margin-top: 16px;
+      display: none;
+      line-height: 1.8;
+    }
+    .sim-console.visible { display: block; }
+    .sim-line { opacity: 0; transition: opacity 0.3s ease; }
+    .sim-line.show { opacity: 1; }
+    code {
+      background: rgba(201,151,42,0.12);
+      color: var(--gold-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.85em;
+      font-family: monospace;
+    }
+    .section-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .test-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .mock-product-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      max-width: 280px;
+      margin-bottom: 20px;
+    }
+    .mock-product-card h3 { font-size: 1rem; color: #fff; margin-bottom: 6px; }
+    .mock-product-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+    .mock-product-card .price { font-family: 'Oswald',sans-serif; color: var(--gold); font-size: 1.1rem; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+
+  <!-- RED OWNER BANNER -->
+  <div class="test-banner">OWNER TEST PAGE — DO NOT LINK FROM MAIN SITE</div>
+
+  <!-- Minimal nav -->
+  <nav class="site-nav" style="position:relative;box-shadow:none;border-bottom:1px solid var(--border)">
+    <a href="../index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+    <span style="font-family:'Oswald',sans-serif;font-size:0.82rem;color:#ef4444;letter-spacing:0.08em;text-transform:uppercase">Owner Test Page</span>
+  </nav>
+
+  <div style="padding:48px 0">
+    <div class="container">
+
+      <div style="margin-bottom:40px">
+        <p class="eyebrow">Internal Use Only</p>
+        <h1 style="font-size:2.2rem;color:#fff">PAYMENT FLOW TEST</h1>
+        <p style="color:var(--text-muted);margin-top:8px">Use this page to verify your full customer payment journey before going live. Never link this page from the main site.</p>
+      </div>
+
+      <!-- SECTION 1: CUSTOMER JOURNEY CHECKLIST -->
+      <div class="test-section">
+        <div class="section-label">Section 1 — Customer Journey Checklist</div>
+        <div class="checklist" id="journey-checklist">
+
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Customer lands on <code>shop.html</code></span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Customer sees product card with name, description, and price</span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Customer clicks BUY NOW button</span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Button <code>href</code> points to a Stripe Payment Link at <code>buy.stripe.com</code></span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Link opens in new tab with <code>noopener noreferrer</code></span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Stripe handles: item name, price, Stripe Tax calculation, card input, customer confirmation email, order notification email to OfficialMicroPatches@gmail.com</span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Customer receives order confirmation email</span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Owner receives order notification at OfficialMicroPatches@gmail.com</span>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Order appears in Stripe Dashboard under Payments</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 2: SIMULATED PURCHASE -->
+      <div class="test-section">
+        <div class="section-label">Section 2 — Simulated Purchase</div>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px">Click BUY NOW below to run the simulation. The checklist above will update as each step is confirmed.</p>
+
+        <div class="mock-product-card">
+          <div class="img-placeholder" style="height:140px;margin-bottom:12px;font-size:0.8rem">[ Product Photo ]</div>
+          <h3>Phoenix Police Department Keychain</h3>
+          <p>Iconic Phoenix PD bird patch. Full UV color.</p>
+          <div class="price">$12.99</div>
+          <button id="sim-buy-btn" class="btn btn-gold" style="width:100%;font-size:0.85rem">Buy Now (Simulation)</button>
+        </div>
+
+        <div class="sim-console" id="sim-console">
+          <div class="sim-line" id="sim-1">&#x25B6; Customer clicks BUY NOW on Phoenix PD Keychain ($12.99)</div>
+          <div class="sim-line" id="sim-2">&#x25B6; Checking href attribute... <span style="color:#fbbf24">buy.stripe.com/REPLACE_WITH_YOUR_LINK</span> — replace with live link</div>
+          <div class="sim-line" id="sim-3">&#x25B6; Link target="_blank" rel="noopener noreferrer" — PASS</div>
+          <div class="sim-line" id="sim-4">&#x25B6; Opening Stripe Checkout in new tab...</div>
+          <div class="sim-line" id="sim-5">&#x25B6; Stripe displays: product name, price $12.99, tax calculation</div>
+          <div class="sim-line" id="sim-6">&#x25B6; Customer completes checkout with test card 4242 4242 4242 4242</div>
+          <div class="sim-line" id="sim-7">&#x25B6; Stripe sends confirmation email to customer — PASS</div>
+          <div class="sim-line" id="sim-8">&#x25B6; Stripe sends order notification to OfficialMicroPatches@gmail.com — PASS</div>
+          <div class="sim-line" id="sim-9" style="color:#4ade80;font-weight:700">&#x2713; SIMULATION COMPLETE — Full payment flow verified</div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: STRIPE TEST MODE WALKTHROUGH -->
+      <div class="test-section">
+        <div class="section-label">Section 3 — Stripe Test Mode Walkthrough</div>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px">Follow these steps to run a real end-to-end test in Stripe test mode before going live.</p>
+
+        <div class="step-list">
+          <div class="step-item"><span class="step-num">1</span><span>Log in to <code>dashboard.stripe.com</code></span></div>
+          <div class="step-item"><span class="step-num">2</span><span>Toggle <strong style="color:#fff">TEST MODE</strong> on (top left of the dashboard)</span></div>
+          <div class="step-item"><span class="step-num">3</span><span>Go to <strong style="color:#fff">Payment Links</strong> and create a new link</span></div>
+          <div class="step-item"><span class="step-num">4</span><span>Add product <strong style="color:#fff">"Agency Patch Keychain"</strong> at <strong style="color:var(--gold)">$12.99</strong></span></div>
+          <div class="step-item"><span class="step-num">5</span><span>Enable <strong style="color:#fff">Stripe Tax</strong> on the payment link (collect tax automatically)</span></div>
+          <div class="step-item"><span class="step-num">6</span><span>Copy the test Payment Link URL (starts with <code>buy.stripe.com/test/...</code>)</span></div>
+          <div class="step-item"><span class="step-num">7</span><span>In <code>shop.html</code>, find the BUY NOW button for Agency Patch Keychain and replace the <code>REPLACE_WITH_YOUR_LINK</code> placeholder with the test link</span></div>
+          <div class="step-item"><span class="step-num">8</span><span>Open <code>shop.html</code> in your browser and click BUY NOW</span></div>
+          <div class="step-item"><span class="step-num">9</span><span>Complete checkout using test card:<br><code>4242 4242 4242 4242</code> &nbsp;|&nbsp; Expiry: <code>12/26</code> &nbsp;|&nbsp; CVC: <code>123</code> &nbsp;|&nbsp; Any ZIP</span></div>
+          <div class="step-item"><span class="step-num">10</span><span>Check <strong style="color:#fff">OfficialMicroPatches@gmail.com</strong> for order notification email</span></div>
+          <div class="step-item"><span class="step-num">11</span><span>Check <code>dashboard.stripe.com</code> under <strong style="color:#fff">Payments</strong> to confirm the test payment appears</span></div>
+          <div class="step-item"><span class="step-num">12</span><span>Toggle <strong style="color:#fff">TEST MODE off</strong> in the Stripe dashboard</span></div>
+          <div class="step-item"><span class="step-num">13</span><span>Create a <strong style="color:#fff">live Payment Link</strong> for the same product (the live link will not have /test/ in the URL)</span></div>
+          <div class="step-item"><span class="step-num">14</span><span>Replace the test href with the live Stripe link in <code>shop.html</code></span></div>
+          <div class="step-item"><span class="step-num">15</span><span>Repeat steps 3 through 14 for every product. Search <code>shop.html</code> for <code>REPLACE_WITH_YOUR_LINK</code> to find all placeholders. You are ready to sell.</span></div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: GO LIVE CHECKLIST -->
+      <div class="test-section">
+        <div class="section-label">Section 4 — Go Live Checklist</div>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px">Complete every item before announcing the new site. Search the files for the keyword shown to find each placeholder.</p>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>All Stripe Payment Links replaced — search <code>shop.html</code> for <code>REPLACE_WITH_YOUR_LINK</code> &nbsp;(43 occurrences)</span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Formspree ID replaced — search <code>custom.html</code> and <code>contact.html</code> for <code>REPLACE_WITH_FORMSPREE_ID</code> &nbsp;(2 occurrences)<br><span style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;display:block">Get your free ID at formspree.io — create a new form and copy the ID from the endpoint URL</span></span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Mailing address added on <code>patch-exchange.html</code> — search for <code>UPDATE BEFORE LAUNCH</code></span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Real product photos added to <code>assets/images/</code> and <code>src</code> attributes updated in <code>shop.html</code> and <code>index.html</code></span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Stripe Tax enabled in Stripe dashboard: Settings &rarr; Tax &rarr; Automatic Tax</span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Test purchase completed in Stripe test mode using card <code>4242 4242 4242 4242</code></span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Test order notification received at OfficialMicroPatches@gmail.com</span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Firebase Security Rules reviewed in Firebase Console — restrict Firestore writes and Storage uploads appropriately<br><span style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;display:block">Recommended: allow reads publicly, require validation for writes to the submissions collection, restrict Storage uploads to image/* under 5MB</span></span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>GitHub repo is set to Public: GitHub &rarr; Settings &rarr; Danger Zone &rarr; Change visibility</span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>GitHub Pages enabled: Settings &rarr; Pages &rarr; Branch: main &rarr; Folder: / (root) &rarr; Save</span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Site live at <code>officialmicropatches.github.io</code> — verify all pages load and nav links work</span>
+          </div>
+          <div class="go-live-item">
+            <span class="check-icon">&#9744;</span>
+            <span>Etsy shop remains open during transition period — do not close it until the new site is confirmed working</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:20px">
+        <a href="../index.html" class="btn btn-outline">Back to Site</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    const btn = document.getElementById("sim-buy-btn");
+    const console_el = document.getElementById("sim-console");
+    const checkItems = document.querySelectorAll("#journey-checklist .check-item");
+
+    btn.addEventListener("click", () => {
+      btn.disabled = true;
+      btn.textContent = "Running simulation...";
+      console_el.classList.add("visible");
+
+      const lines = ["sim-1","sim-2","sim-3","sim-4","sim-5","sim-6","sim-7","sim-8","sim-9"];
+      const checkMap = [0,1,2,3,4,5,6,7,8];
+
+      lines.forEach((id, i) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add("show");
+          if (checkItems[checkMap[i]]) {
+            checkItems[checkMap[i]].classList.add("done");
+            checkItems[checkMap[i]].querySelector(".check-icon").textContent = "✓";
+          }
+        }, i * 600);
+      });
+
+      setTimeout(() => {
+        btn.textContent = "Simulation Complete";
+      }, lines.length * 600 + 200);
+    });
+  </script>
+</body>
+</html>

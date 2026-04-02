@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Order — MicroPatches</title>
+  <meta name="description" content="Request a custom patch keychain for your agency, unit, or department. Pricing from $25. No minimum orders. Made by an active duty officer.">
+  <!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
+       Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://formspree.io; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com; form-action https://formspree.io;
+       X-Frame-Options: DENY
+       X-Content-Type-Options: nosniff
+       Referrer-Policy: strict-origin-when-cross-origin -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+    <ul class="nav-links" role="list">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="queue.html">Queue</a></li>
+      <li><a href="custom.html" class="active">Custom Order</a></li>
+      <li><a href="patch-exchange.html">Patch Exchange</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </nav>
+  <nav class="nav-mobile-menu" aria-label="Mobile navigation">
+    <a href="shop.html">Shop</a>
+    <a href="queue.html">Queue</a>
+    <a href="custom.html">Custom Order</a>
+    <a href="patch-exchange.html">Patch Exchange</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Made to Order</p>
+      <h1>CUSTOM ORDER REQUEST</h1>
+      <p>Don't see your agency or unit? We can build it. Send a reference photo or your patch and we will make it happen.</p>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="section" style="background:var(--bg-card)">
+    <div class="container">
+      <div class="section-header">
+        <h2>PRICING</h2>
+        <p>One-time design fee based on what you bring us. Product cost is always $12.99 per unit on top of the design fee.</p>
+      </div>
+      <div class="pricing-grid">
+
+        <div class="pricing-card anim">
+          <div class="pricing-price">$25</div>
+          <h3>Digital Logo</h3>
+          <p>You already have a clean generated or digital version ready. Design fee applies because custom orders jump the standard queue.</p>
+        </div>
+
+        <div class="pricing-card anim anim-delay-1" style="border-color:rgba(201,151,42,0.4);box-shadow:0 0 24px rgba(201,151,42,0.08)">
+          <div class="pricing-price">$75–$100</div>
+          <h3>Physical Patch Only</h3>
+          <p>Send us a clear photo. We design a full clean digital version, print it, and you keep the file.</p>
+        </div>
+
+        <div class="pricing-card anim anim-delay-2">
+          <div class="pricing-price">$100–$150</div>
+          <h3>Fully Original</h3>
+          <p>Memorial patches, retirement gifts, commemorative designs built entirely from scratch.</p>
+        </div>
+
+      </div>
+      <div style="background:rgba(201,151,42,0.06);border:1px solid rgba(201,151,42,0.18);border-radius:6px;padding:16px 20px;max-width:700px;margin:0 auto">
+        <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.7">Design fee is one time and separate from the $12.99 per unit product cost. Budget tight? Reach out. We are always willing to work something out.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FORM ===== -->
+  <section class="section">
+    <div class="container" style="max-width:760px">
+      <div class="section-header" style="text-align:left;margin-bottom:32px">
+        <h2>SEND YOUR REQUEST</h2>
+        <p>We typically respond within 1 to 2 business days.</p>
+      </div>
+
+      <!-- REPLACE: Your Formspree form ID goes in the action URL below -->
+      <form id="custom-order-form" action="https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID" method="POST" enctype="multipart/form-data" novalidate>
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="co-name">Name <span style="color:#f87171">*</span></label>
+            <input type="text" id="co-name" name="name" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label for="co-email">Email <span style="color:#f87171">*</span></label>
+            <input type="email" id="co-email" name="email" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="co-phone">Phone <span style="color:var(--text-muted)">(optional)</span></label>
+            <input type="tel" id="co-phone" name="phone" autocomplete="tel">
+          </div>
+
+          <div class="form-group">
+            <label for="co-agency">Agency or Unit Name <span style="color:#f87171">*</span></label>
+            <input type="text" id="co-agency" name="agency" required>
+          </div>
+
+          <div class="form-group">
+            <label for="product-type">Product Type</label>
+            <select id="product-type" name="product_type">
+              <option value="">Select one</option>
+              <option value="Keychain">Keychain</option>
+              <option value="Magnet">Magnet</option>
+              <option value="Croc Charm">Croc Charm</option>
+              <option value="Patch Exchange">Patch Exchange</option>
+              <option value="Not Sure">Not Sure</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="co-qty">Quantity</label>
+            <select id="co-qty" name="quantity">
+              <option value="">Select one</option>
+              <option value="1-4">1 to 4</option>
+              <option value="5-9">5 to 9</option>
+              <option value="10-24">10 to 24</option>
+              <option value="25+">25 or more</option>
+              <option value="Not Sure">Not Sure</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="co-description">Description of Patch or Design <span style="color:#f87171">*</span></label>
+            <textarea id="co-description" name="description" required rows="4" placeholder="Describe the patch, colors, design elements, any details that will help us build it accurately"></textarea>
+          </div>
+
+          <div class="form-group full">
+            <label for="co-reference">Reference Image <span style="color:var(--text-muted)">(optional)</span></label>
+            <input type="file" id="co-reference" name="reference_image" accept="image/*">
+            <span class="form-note">Clear photo of the patch or any digital reference you have.</span>
+          </div>
+
+          <div class="form-group full">
+            <label for="co-referral">How Did You Find Us</label>
+            <select id="co-referral" name="referral">
+              <option value="">Select one</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Instagram">Instagram</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Etsy">Etsy</option>
+              <option value="Word of Mouth">Word of Mouth</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div style="margin-top:28px">
+          <button type="submit" class="btn btn-gold" style="width:100%">Send Request</button>
+        </div>
+
+        <p class="form-note" style="margin-top:16px;text-align:center">We typically respond within 1 to 2 business days. Bulk orders of 10 or more receive a custom quote. All custom orders are final sale.</p>
+
+      </form>
+
+      <div class="form-success" id="custom-form-success">
+        Request received. We will be in touch within 1 to 2 business days. Thank you for your service.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
+          <p>Handcrafted for those who serve. USA Made.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
+            <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
+            <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
+            <li><a href="shop.html#military">Military</a></li>
+            <li><a href="shop.html#fire-ems">Fire &amp; EMS</a></li>
+            <li><a href="shop.html#pink-patch">Pink Patch</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="custom.html">Custom Orders</a></li>
+            <li><a href="patch-exchange.html">Patch Exchange</a></li>
+            <li><a href="queue.html">Queue</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
+            <li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 MicroPatches. All rights reserved.</p>
+        <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/main.js"></script>
+  <script type="module">
+    // Handle Formspree success redirect
+    const form = document.getElementById("custom-order-form");
+    const success = document.getElementById("custom-form-success");
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector("button[type=submit]");
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+        try {
+          const res = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+            headers: { Accept: "application/json" }
+          });
+          if (res.ok) {
+            form.style.display = "none";
+            success.classList.add("visible");
+          } else {
+            btn.disabled = false;
+            btn.textContent = "Send Request";
+            alert("Submission failed. Please email us directly at OfficialMicroPatches@gmail.com.");
+          }
+        } catch (_e) {
+          btn.disabled = false;
+          btn.textContent = "Send Request";
+          alert("Submission failed. Please email us directly at OfficialMicroPatches@gmail.com.");
+        }
+      });
+    }
+  </script>
+</body>
+</html>
