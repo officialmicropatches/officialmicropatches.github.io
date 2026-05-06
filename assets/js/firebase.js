@@ -137,3 +137,28 @@ export async function loadSubmissions() {
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
+
+const PRODUCT_PHOTOS_DOC = doc(db, "config", "productPhotos");
+
+/**
+ * loadProductPhotos — returns map of { productId: photoURL }
+ */
+export async function loadProductPhotos() {
+  const snap = await getDoc(PRODUCT_PHOTOS_DOC);
+  return snap.exists() ? snap.data() : {};
+}
+
+/**
+ * uploadProductPhoto — uploads file to Storage and saves URL to Firestore
+ * @param {string} productId
+ * @param {File} file
+ * @returns {Promise<string>} download URL
+ */
+export async function uploadProductPhoto(productId, file) {
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const storageRef = ref(storage, `product-photos/${productId}_${Date.now()}.${ext}`);
+  await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(storageRef);
+  await setDoc(PRODUCT_PHOTOS_DOC, { [productId]: url }, { merge: true });
+  return url;
+}

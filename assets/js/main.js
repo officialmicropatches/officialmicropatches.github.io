@@ -2,7 +2,7 @@
  * main.js — Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -153,6 +153,36 @@ function escH(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+/* =========================================================
+   PRODUCT PHOTOS
+   ========================================================= */
+const PRODUCTS = [
+  { id: "chandler-pd",   name: "Chandler PD Pink Patch Project" },
+  { id: "tucson-pd",     name: "Tucson Police Department" },
+  { id: "pinal-sheriff", name: "Pinal County Sheriff Office" },
+  { id: "phoenix-pd",    name: "Phoenix Police Department" },
+  { id: "82nd-airborne", name: "82nd Airborne Division" },
+  { id: "mesa-pd",       name: "Mesa Police Department" },
+  { id: "az-dps",        name: "Arizona Dept. of Public Safety" }
+];
+
+function applyProductPhoto(productId, url) {
+  if (!url) return;
+  const cardImg = document.querySelector(`.product-card-img[data-product-id="${productId}"]`);
+  if (!cardImg) return;
+  const placeholder = cardImg.querySelector(".img-placeholder");
+  const img = cardImg.querySelector(".product-card-photo");
+  if (placeholder) placeholder.style.display = "none";
+  if (img) { img.src = url; img.style.display = "block"; }
+}
+
+async function initProductPhotos() {
+  try {
+    const photos = await loadProductPhotos();
+    Object.entries(photos).forEach(([id, url]) => applyProductPhoto(id, url));
+  } catch (_e) { /* silent — photos are non-critical */ }
 }
 
 function statusClass(status) {
@@ -390,6 +420,7 @@ document.querySelectorAll(".admin-tab").forEach(tab => {
     if (pane) pane.style.display = "block";
 
     if (tab.dataset.adminTab === "queue") loadAdminQueueTab();
+    if (tab.dataset.adminTab === "photos") loadAdminPhotosTab();
     if (tab.dataset.adminTab === "submissions") loadAdminSubmissionsTab();
     if (tab.dataset.adminTab === "settings") { /* no async load needed */ }
   });
@@ -531,6 +562,65 @@ async function loadAdminSubmissionsTab() {
   }
 }
 
+/* =========================================================
+   ADMIN — PHOTOS TAB
+   ========================================================= */
+let adminProductPhotos = {};
+
+async function loadAdminPhotosTab() {
+  const statusEl = document.getElementById("admin-photos-status");
+  if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
+  try {
+    adminProductPhotos = await loadProductPhotos();
+    renderAdminPhotos();
+    if (statusEl) statusEl.textContent = "";
+  } catch (_e) {
+    if (statusEl) { statusEl.textContent = "Failed to load photos."; statusEl.className = "admin-status err"; }
+  }
+}
+
+function renderAdminPhotos() {
+  const list = document.getElementById("admin-photos-list");
+  if (!list) return;
+  list.innerHTML = PRODUCTS.map(p => {
+    const url = adminProductPhotos[p.id] || "";
+    const thumbHtml = url
+      ? `<img class="admin-photo-thumb" src="${escA(url)}" alt="${escA(p.name)}">`
+      : `<div class="admin-photo-thumb admin-photo-placeholder">No Photo</div>`;
+    return `
+      <div class="admin-photo-row">
+        ${thumbHtml}
+        <span class="admin-photo-name">${escH(p.name)}</span>
+        <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Change</label>
+        <input type="file" id="photo-input-${p.id}" accept="image/*" capture="environment" style="display:none" data-product-id="${p.id}">
+      </div>
+    `;
+  }).join("");
+
+  list.querySelectorAll("input[type=file]").forEach(input => {
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      const productId = input.dataset.productId;
+      if (!file || !productId) return;
+      const statusEl = document.getElementById("admin-photos-status");
+      const label = list.querySelector(`label[for="photo-input-${productId}"]`);
+      if (label) label.textContent = "Uploading...";
+      if (statusEl) { statusEl.textContent = "Uploading..."; statusEl.className = "admin-status"; }
+      try {
+        const url = await uploadProductPhoto(productId, file);
+        adminProductPhotos[productId] = url;
+        applyProductPhoto(productId, url);
+        renderAdminPhotos();
+        if (statusEl) { statusEl.textContent = "Photo saved!"; statusEl.className = "admin-status ok"; }
+        setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.className = "admin-status err"; }
+        if (label) label.textContent = "Change";
+      }
+    });
+  });
+}
+
 /* admin change password */
 const changePasswordForm = document.getElementById("admin-change-pw-form");
 if (changePasswordForm) {
@@ -650,6 +740,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   initQueuePage();
+  initProductPhotos();
 });
 
 /*
