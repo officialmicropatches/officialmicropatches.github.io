@@ -11,7 +11,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
   const nav = document.querySelector(".site-nav");
   if (!nav) return;
   const onScroll = () => {
-    nav.classList.toggle("scrolled", window.scrollY > 50);h
+    nav.classList.toggle("scrolled", window.scrollY > 50);
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
