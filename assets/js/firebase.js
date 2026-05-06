@@ -139,6 +139,8 @@ export async function loadSubmissions() {
 }
 
 const PRODUCT_PHOTOS_DOC = doc(db, "config", "productPhotos");
+const HIDDEN_PRODUCTS_DOC = doc(db, "config", "hiddenProducts");
+const HERO_IMAGE_DOC = doc(db, "config", "heroImage");
 
 /**
  * loadProductPhotos — returns map of { productId: photoURL }
@@ -146,6 +148,41 @@ const PRODUCT_PHOTOS_DOC = doc(db, "config", "productPhotos");
 export async function loadProductPhotos() {
   const snap = await getDoc(PRODUCT_PHOTOS_DOC);
   return snap.exists() ? snap.data() : {};
+}
+
+/**
+ * loadHiddenProducts — returns array of hidden product IDs
+ */
+export async function loadHiddenProducts() {
+  const snap = await getDoc(HIDDEN_PRODUCTS_DOC);
+  return snap.exists() ? (snap.data().items || []) : [];
+}
+
+/**
+ * saveHiddenProducts — saves array of hidden product IDs
+ */
+export async function saveHiddenProducts(ids) {
+  await setDoc(HIDDEN_PRODUCTS_DOC, { items: ids });
+}
+
+/**
+ * loadHeroImage — returns hero logo URL or empty string
+ */
+export async function loadHeroImage() {
+  const snap = await getDoc(HERO_IMAGE_DOC);
+  return snap.exists() ? (snap.data().url || "") : "";
+}
+
+/**
+ * uploadHeroImage — uploads logo to Storage and saves URL to Firestore
+ */
+export async function uploadHeroImage(file) {
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const storageRef = ref(storage, `hero/logo_${Date.now()}.${ext}`);
+  await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(storageRef);
+  await setDoc(HERO_IMAGE_DOC, { url });
+  return url;
 }
 
 /**

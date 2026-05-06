@@ -2,7 +2,7 @@
  * main.js — Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -217,11 +217,45 @@ function applyProductPhoto(productId, url) {
   if (img) { img.src = url; img.style.display = "block"; }
 }
 
+function applyHeroImage(url) {
+  if (!url) return;
+  const img = document.getElementById("hero-logo-img");
+  const placeholder = document.getElementById("hero-logo-placeholder");
+  if (img) { img.src = url; img.style.display = "block"; }
+  if (placeholder) placeholder.style.display = "none";
+}
+
+async function initHeroImage() {
+  try {
+    const url = await loadHeroImage();
+    applyHeroImage(url);
+  } catch (_e) { /* silent */ }
+}
+
 async function initProductPhotos() {
   try {
     const photos = await loadProductPhotos();
     Object.entries(photos).forEach(([id, url]) => applyProductPhoto(id, url));
   } catch (_e) { /* silent — photos are non-critical */ }
+}
+
+let hiddenProductIds = [];
+
+function applyProductVisibility(hidden) {
+  PRODUCTS.forEach(p => {
+    const isHidden = hidden.includes(p.id);
+    document.querySelectorAll(`.product-card-img[data-product-id="${p.id}"]`).forEach(el => {
+      const card = el.closest(".product-card");
+      if (card) card.style.display = isHidden ? "none" : "";
+    });
+  });
+}
+
+async function initProductVisibility() {
+  try {
+    hiddenProductIds = await loadHiddenProducts();
+    applyProductVisibility(hiddenProductIds);
+  } catch (_e) { /* silent */ }
 }
 
 function statusClass(status) {
@@ -610,33 +644,75 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    adminProductPhotos = await loadProductPhotos();
+    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl] = await Promise.all([
+      loadProductPhotos(), loadHiddenProducts(), loadHeroImage()
+    ]);
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
   } catch (_e) {
-    if (statusEl) { statusEl.textContent = "Failed to load photos."; statusEl.className = "admin-status err"; }
+    if (statusEl) { statusEl.textContent = "Failed to load."; statusEl.className = "admin-status err"; }
   }
 }
+
+let adminHeroImageUrl = "";
 
 function renderAdminPhotos() {
   const list = document.getElementById("admin-photos-list");
   if (!list) return;
-  list.innerHTML = PRODUCTS.map(p => {
+
+  const heroThumb = adminHeroImageUrl
+    ? `<img src="${escA(adminHeroImageUrl)}" style="width:100%;max-height:140px;object-fit:contain;border-radius:8px;margin-bottom:8px">`
+    : `<div style="width:100%;height:80px;background:var(--bg-surface);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;margin-bottom:8px">No logo set</div>`;
+  list.innerHTML = `
+    <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.1)">
+      <p style="font-family:'Oswald',sans-serif;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Hero Logo</p>
+      ${heroThumb}
+      <label for="hero-logo-upload" class="btn btn-outline btn-small" style="cursor:pointer;display:inline-block">Change Logo</label>
+      <input type="file" id="hero-logo-upload" accept="image/*" style="display:none">
+    </div>
+  `;
+  list.innerHTML += PRODUCTS.map(p => {
     const url = adminProductPhotos[p.id] || "";
+    const isHidden = hiddenProductIds.includes(p.id);
     const thumbHtml = url
-      ? `<img class="admin-photo-thumb" src="${escA(url)}" alt="${escA(p.name)}">`
+      ? `<img class="admin-photo-thumb" src="${escA(url)}" alt="${escA(p.name)}"${isHidden ? ' style="opacity:0.35"' : ""}>`
       : `<div class="admin-photo-thumb admin-photo-placeholder">No Photo</div>`;
+    const rowStyle = isHidden ? ' style="opacity:0.55"' : "";
+    const toggleBtn = isHidden
+      ? `<button class="btn btn-small admin-toggle-visibility" data-product-id="${p.id}" data-hidden="true" style="flex-shrink:0;background:rgba(74,200,100,0.12);border:1px solid rgba(74,200,100,0.35);color:#4ac864">Show</button>`
+      : `<button class="btn btn-small admin-toggle-visibility" data-product-id="${p.id}" data-hidden="false" style="flex-shrink:0;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);color:#f87171">Remove</button>`;
     return `
-      <div class="admin-photo-row">
+      <div class="admin-photo-row"${rowStyle}>
         ${thumbHtml}
         <span class="admin-photo-name">${escH(p.name)}</span>
-        <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Change</label>
+        <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Photo</label>
         <input type="file" id="photo-input-${p.id}" accept="image/*" style="display:none" data-product-id="${p.id}">
+        ${toggleBtn}
       </div>
     `;
   }).join("");
 
-  list.querySelectorAll("input[type=file]").forEach(input => {
+  const heroUploadInput = document.getElementById("hero-logo-upload");
+  if (heroUploadInput) {
+    heroUploadInput.addEventListener("change", async () => {
+      const file = heroUploadInput.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById("admin-photos-status");
+      if (statusEl) { statusEl.textContent = "Uploading logo..."; statusEl.className = "admin-status"; }
+      try {
+        const url = await uploadHeroImage(file);
+        adminHeroImageUrl = url;
+        applyHeroImage(url);
+        renderAdminPhotos();
+        if (statusEl) { statusEl.textContent = "Logo updated!"; statusEl.className = "admin-status ok"; }
+        setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.className = "admin-status err"; }
+      }
+    });
+  }
+
+  list.querySelectorAll("input[type=file][data-product-id]").forEach(input => {
     input.addEventListener("change", async () => {
       const file = input.files[0];
       const productId = input.dataset.productId;
@@ -654,7 +730,34 @@ function renderAdminPhotos() {
         setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
       } catch (err) {
         if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.className = "admin-status err"; }
-        if (label) label.textContent = "Change";
+        if (label) label.textContent = "Photo";
+      }
+    });
+  });
+
+  list.querySelectorAll(".admin-toggle-visibility").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const productId = btn.dataset.productId;
+      const currentlyHidden = btn.dataset.hidden === "true";
+      const statusEl = document.getElementById("admin-photos-status");
+      btn.disabled = true;
+      try {
+        if (currentlyHidden) {
+          hiddenProductIds = hiddenProductIds.filter(id => id !== productId);
+        } else {
+          hiddenProductIds = [...hiddenProductIds, productId];
+        }
+        await saveHiddenProducts(hiddenProductIds);
+        applyProductVisibility(hiddenProductIds);
+        renderAdminPhotos();
+        if (statusEl) {
+          statusEl.textContent = currentlyHidden ? "Listing restored." : "Listing removed.";
+          statusEl.className = "admin-status ok";
+          setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+        }
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Failed: " + err.message; statusEl.className = "admin-status err"; }
+        btn.disabled = false;
       }
     });
   });
@@ -779,7 +882,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   initQueuePage();
+  initHeroImage();
   initProductPhotos();
+  initProductVisibility();
 });
 
 /*
