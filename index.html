@@ -474,18 +474,18 @@
           <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px">
             <p style="font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">Upload Completed Product</p>
             <input id="up-name" type="text" placeholder="Agency / Department Name"
-              style="width:100%;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px">
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px">
             <select id="up-status"
-              style="width:100%;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px;cursor:pointer">
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px;cursor:pointer">
               <option value="complete" selected>Complete</option>
               <option value="in-progress">In Progress</option>
               <option value="Queued">Queued</option>
             </select>
-            <div id="up-preview" onclick="document.getElementById('up-file').click()"
-              style="width:100%;height:180px;background:var(--bg-dark);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;margin-bottom:8px;position:relative">
+            <label for="up-file" id="up-preview"
+              style="display:flex;width:100%;height:180px;background:var(--bg-surface);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;margin-bottom:8px;position:relative">
               <span id="up-placeholder" style="color:var(--text-muted);font-size:0.9rem;text-align:center;line-height:2">📷<br>Tap to choose or take photo</span>
               <img id="up-preview-img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
-            </div>
+            </label>
             <input id="up-file" type="file" accept="image/*" style="display:none">
             <button id="up-submit" class="btn btn-gold" style="width:100%">Upload &amp; Add to Queue</button>
             <p id="up-status-msg" style="font-size:0.85rem;margin-top:8px;min-height:18px;text-align:center"></p>
