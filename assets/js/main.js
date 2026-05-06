@@ -73,7 +73,17 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
   const validTabs = ["law-enforcement", "military", "fire-ems", "pink-patch"];
 
   function scrollToShopTop() {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const forceTop = () => {
+      const scroller = document.scrollingElement || document.documentElement;
+      window.scrollTo(0, 0);
+      if (scroller) scroller.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    forceTop();
+    requestAnimationFrame(forceTop);
+    setTimeout(forceTop, 50);
+    setTimeout(forceTop, 250);
   }
 
   function activateTab(cat) {
@@ -123,6 +133,8 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
     if (!samePage || !validTabs.includes(hash)) return;
 
     e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     setShopCategory(hash, true);
   }, true);
 
