@@ -679,7 +679,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 MicroPatches. All rights reserved.</p>
+        <p>&copy; 2025 MicroPatches. All rights reserved. <span id="admin-trigger" style="cursor:default;user-select:none;">USA</span> Made.</p>
         <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
       </div>
     </div>
@@ -690,6 +690,93 @@
     <div class="modal" style="background:transparent;border:none;padding:0;max-width:800px">
       <button class="modal-close" id="photo-modal-close" aria-label="Close photo" style="position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.8)">&times;</button>
       <img class="photo-modal-img" id="photo-modal-img" src="" alt="Patch photo">
+    </div>
+  </div>
+
+  <!-- ===== ADMIN OVERLAY ===== -->
+  <div class="admin-overlay" id="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
+    <div class="admin-panel">
+      <button class="modal-close" id="admin-overlay-close" aria-label="Close admin">&times;</button>
+      <h2 id="admin-panel-title">ADMIN PANEL</h2>
+
+      <!-- Auth -->
+      <div id="admin-auth">
+        <form id="admin-login-form" class="admin-auth" novalidate>
+          <label for="admin-pw-input" style="font-family:'Oswald',sans-serif;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)">Password</label>
+          <input type="password" id="admin-pw-input" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;" autocomplete="current-password">
+          <p id="admin-pw-error" style="color:#f87171;font-size:0.85rem;min-height:18px"></p>
+          <button type="submit" class="btn btn-gold btn-small">Log In</button>
+        </form>
+      </div>
+
+      <!-- Content (shown after login) -->
+      <div id="admin-content">
+        <div class="admin-tabs" role="tablist">
+          <button class="admin-tab active" data-admin-tab="queue" role="tab">Queue</button>
+          <button class="admin-tab" data-admin-tab="photos" role="tab">Photos</button>
+          <button class="admin-tab" data-admin-tab="submissions" role="tab">Submissions</button>
+          <button class="admin-tab" data-admin-tab="settings" role="tab">Settings</button>
+        </div>
+
+        <!-- Queue Tab -->
+        <div id="admin-pane-queue" class="admin-tab-pane">
+          <div id="admin-queue-list"></div>
+          <div class="admin-actions">
+            <button id="admin-add-entry" class="btn btn-outline btn-small">+ Add Entry</button>
+            <button id="admin-save-queue" class="btn btn-gold btn-small">Save to Firestore</button>
+          </div>
+          <p id="admin-queue-status" class="admin-status"></p>
+          <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px">
+            <p style="font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">Upload Completed Product</p>
+            <input id="up-name" type="text" placeholder="Agency / Department Name"
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px">
+            <select id="up-status"
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px;cursor:pointer">
+              <option value="complete" selected>Complete</option>
+              <option value="in-progress">In Progress</option>
+              <option value="Queued">Queued</option>
+            </select>
+            <label for="up-file" id="up-preview"
+              style="display:flex;width:100%;height:180px;background:var(--bg-surface);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;margin-bottom:8px;position:relative">
+              <span id="up-placeholder" style="color:var(--text-muted);font-size:0.9rem;text-align:center;line-height:2">📷<br>Tap to choose or take photo</span>
+              <img id="up-preview-img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+            </label>
+            <input id="up-file" type="file" accept="image/*" style="display:none">
+            <button id="up-submit" class="btn btn-gold" style="width:100%">Upload &amp; Add to Queue</button>
+            <p id="up-status-msg" style="font-size:0.85rem;margin-top:8px;min-height:18px;text-align:center"></p>
+          </div>
+        </div>
+
+        <!-- Photos Tab -->
+        <div id="admin-pane-photos" class="admin-tab-pane" style="display:none">
+          <p style="font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">Product Photos — tap to change</p>
+          <div id="admin-photos-list"></div>
+          <p id="admin-photos-status" class="admin-status"></p>
+        </div>
+
+        <!-- Submissions Tab -->
+        <div id="admin-pane-submissions" class="admin-tab-pane" style="display:none">
+          <div id="admin-submissions-list"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="admin-pane-settings" class="admin-tab-pane" style="display:none">
+          <form id="admin-change-pw-form" novalidate style="max-width:320px">
+            <div class="form-group">
+              <label for="admin-new-pw">New Password</label>
+              <input type="password" id="admin-new-pw" autocomplete="new-password" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;">
+            </div>
+            <div style="margin-top:12px">
+              <button type="submit" class="btn btn-outline btn-small">Update Password</button>
+            </div>
+            <p id="admin-pw-change-status" class="admin-status" style="margin-top:8px"></p>
+          </form>
+          <div style="margin-top:24px">
+            <button id="admin-logout" class="btn btn-small" style="background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);color:#f87171">Log Out</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 
