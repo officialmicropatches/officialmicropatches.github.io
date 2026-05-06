@@ -139,6 +139,7 @@ export async function loadSubmissions() {
 }
 
 const PRODUCT_PHOTOS_DOC = doc(db, "config", "productPhotos");
+const HIDDEN_PRODUCTS_DOC = doc(db, "config", "hiddenProducts");
 
 /**
  * loadProductPhotos — returns map of { productId: photoURL }
@@ -146,6 +147,21 @@ const PRODUCT_PHOTOS_DOC = doc(db, "config", "productPhotos");
 export async function loadProductPhotos() {
   const snap = await getDoc(PRODUCT_PHOTOS_DOC);
   return snap.exists() ? snap.data() : {};
+}
+
+/**
+ * loadHiddenProducts — returns array of hidden product IDs
+ */
+export async function loadHiddenProducts() {
+  const snap = await getDoc(HIDDEN_PRODUCTS_DOC);
+  return snap.exists() ? (snap.data().items || []) : [];
+}
+
+/**
+ * saveHiddenProducts — saves array of hidden product IDs
+ */
+export async function saveHiddenProducts(ids) {
+  await setDoc(HIDDEN_PRODUCTS_DOC, { items: ids });
 }
 
 /**

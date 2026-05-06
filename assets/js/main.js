@@ -2,7 +2,7 @@
  * main.js — Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -222,6 +222,25 @@ async function initProductPhotos() {
     const photos = await loadProductPhotos();
     Object.entries(photos).forEach(([id, url]) => applyProductPhoto(id, url));
   } catch (_e) { /* silent — photos are non-critical */ }
+}
+
+let hiddenProductIds = [];
+
+function applyProductVisibility(hidden) {
+  PRODUCTS.forEach(p => {
+    const isHidden = hidden.includes(p.id);
+    document.querySelectorAll(`.product-card-img[data-product-id="${p.id}"]`).forEach(el => {
+      const card = el.closest(".product-card");
+      if (card) card.style.display = isHidden ? "none" : "";
+    });
+  });
+}
+
+async function initProductVisibility() {
+  try {
+    hiddenProductIds = await loadHiddenProducts();
+    applyProductVisibility(hiddenProductIds);
+  } catch (_e) { /* silent */ }
 }
 
 function statusClass(status) {
@@ -610,11 +629,11 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    adminProductPhotos = await loadProductPhotos();
+    [adminProductPhotos, hiddenProductIds] = await Promise.all([loadProductPhotos(), loadHiddenProducts()]);
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
   } catch (_e) {
-    if (statusEl) { statusEl.textContent = "Failed to load photos."; statusEl.className = "admin-status err"; }
+    if (statusEl) { statusEl.textContent = "Failed to load."; statusEl.className = "admin-status err"; }
   }
 }
 
@@ -623,15 +642,21 @@ function renderAdminPhotos() {
   if (!list) return;
   list.innerHTML = PRODUCTS.map(p => {
     const url = adminProductPhotos[p.id] || "";
+    const isHidden = hiddenProductIds.includes(p.id);
     const thumbHtml = url
-      ? `<img class="admin-photo-thumb" src="${escA(url)}" alt="${escA(p.name)}">`
+      ? `<img class="admin-photo-thumb" src="${escA(url)}" alt="${escA(p.name)}"${isHidden ? ' style="opacity:0.35"' : ""}>`
       : `<div class="admin-photo-thumb admin-photo-placeholder">No Photo</div>`;
+    const rowStyle = isHidden ? ' style="opacity:0.55"' : "";
+    const toggleBtn = isHidden
+      ? `<button class="btn btn-small admin-toggle-visibility" data-product-id="${p.id}" data-hidden="true" style="flex-shrink:0;background:rgba(74,200,100,0.12);border:1px solid rgba(74,200,100,0.35);color:#4ac864">Show</button>`
+      : `<button class="btn btn-small admin-toggle-visibility" data-product-id="${p.id}" data-hidden="false" style="flex-shrink:0;background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);color:#f87171">Remove</button>`;
     return `
-      <div class="admin-photo-row">
+      <div class="admin-photo-row"${rowStyle}>
         ${thumbHtml}
         <span class="admin-photo-name">${escH(p.name)}</span>
-        <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Change</label>
+        <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Photo</label>
         <input type="file" id="photo-input-${p.id}" accept="image/*" style="display:none" data-product-id="${p.id}">
+        ${toggleBtn}
       </div>
     `;
   }).join("");
@@ -654,7 +679,34 @@ function renderAdminPhotos() {
         setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
       } catch (err) {
         if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.className = "admin-status err"; }
-        if (label) label.textContent = "Change";
+        if (label) label.textContent = "Photo";
+      }
+    });
+  });
+
+  list.querySelectorAll(".admin-toggle-visibility").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const productId = btn.dataset.productId;
+      const currentlyHidden = btn.dataset.hidden === "true";
+      const statusEl = document.getElementById("admin-photos-status");
+      btn.disabled = true;
+      try {
+        if (currentlyHidden) {
+          hiddenProductIds = hiddenProductIds.filter(id => id !== productId);
+        } else {
+          hiddenProductIds = [...hiddenProductIds, productId];
+        }
+        await saveHiddenProducts(hiddenProductIds);
+        applyProductVisibility(hiddenProductIds);
+        renderAdminPhotos();
+        if (statusEl) {
+          statusEl.textContent = currentlyHidden ? "Listing restored." : "Listing removed.";
+          statusEl.className = "admin-status ok";
+          setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+        }
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Failed: " + err.message; statusEl.className = "admin-status err"; }
+        btn.disabled = false;
       }
     });
   });
@@ -780,6 +832,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 document.addEventListener("DOMContentLoaded", () => {
   initQueuePage();
   initProductPhotos();
+  initProductVisibility();
 });
 
 /*
