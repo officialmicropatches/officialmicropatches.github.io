@@ -1,5 +1,5 @@
 /**
- * main.js Ã¢ÂÂ Shared JS for MicroPatches site
+ * main.js ÃÂ¢ÃÂÃÂ Shared JS for MicroPatches site
  */
 
 import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadStripeLinks, saveStripeLinks } from "./firebase.js";
@@ -41,7 +41,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   INTERSECTION OBSERVER Ã¢ÂÂ FADE-IN ANIMATIONS
+   INTERSECTION OBSERVER ÃÂ¢ÃÂÃÂ FADE-IN ANIMATIONS
    ========================================================= */
 (function initAnimations() {
   const targets = document.querySelectorAll(".anim, .fade-in");
@@ -61,7 +61,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   SHOP PAGE Ã¢ÂÂ TAB FILTER
+   SHOP PAGE ÃÂ¢ÃÂÃÂ TAB FILTER
    ========================================================= */
 (function initShopTabs() {
   const tabsWrap = document.querySelector(".shop-tabs");
@@ -85,6 +85,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
           isAdminHidden = productId ? hiddenProductIds.includes(productId) : false;
         } catch(e) {}
         card.style.display = isAdminHidden ? "none" : "";
+        if (!isAdminHidden) card.classList.add("visible");
       }
     });
     if (grid) grid.style.opacity = "0.4";
@@ -118,7 +119,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   CUSTOM ORDER PAGE Ã¢ÂÂ URL PARAM ?type=exchange
+   CUSTOM ORDER PAGE ÃÂ¢ÃÂÃÂ URL PARAM ?type=exchange
    ========================================================= */
 (function initCustomPage() {
   const sel = document.getElementById("product-type");
@@ -130,7 +131,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   QUEUE PAGE Ã¢ÂÂ LOAD & RENDER QUEUE
+   QUEUE PAGE ÃÂ¢ÃÂÃÂ LOAD & RENDER QUEUE
    ========================================================= */
 const queueFullList = document.querySelector(".queue-full-list");
 const queuePreviewList = document.querySelector(".queue-preview-list");
@@ -251,7 +252,7 @@ async function initProductPhotos() {
   try {
     const photos = await loadProductPhotos();
     Object.entries(photos).forEach(([id, url]) => applyProductPhoto(id, url));
-  } catch (_e) { /* silent Ã¢ÂÂ photos are non-critical */ }
+  } catch (_e) { /* silent ÃÂ¢ÃÂÃÂ photos are non-critical */ }
 }
 
 let hiddenProductIds = [];
@@ -676,7 +677,7 @@ async function loadAdminSubmissionsTab() {
           <h4>${escH(s.agency || "")}</h4>
           <p><strong>Name:</strong> ${escH(s.name || "")}</p>
           <p><strong>Email:</strong> ${escH(s.email || "")}</p>
-          <p><strong>Phone:</strong> ${escH(s.phone || "Ã¢ÂÂ")}</p>
+          <p><strong>Phone:</strong> ${escH(s.phone || "ÃÂ¢ÃÂÃÂ")}</p>
           <p><strong>Description:</strong> ${escH(s.description || "")}</p>
           <p><strong>Submitted:</strong> ${escH(s.submittedAt ? new Date(s.submittedAt).toLocaleString() : "")}</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">${genImg}${patchImg}</div>
@@ -693,7 +694,7 @@ async function loadAdminSubmissionsTab() {
 }
 
 /* =========================================================
-   ADMIN Ã¢ÂÂ PHOTOS TAB
+   ADMIN ÃÂ¢ÃÂÃÂ PHOTOS TAB
    ========================================================= */
 let adminProductPhotos = {};
 
@@ -869,7 +870,7 @@ if (changePasswordForm) {
 }
 
 /* =========================================================
-   ADMIN Ã¢ÂÂ UPLOAD PRODUCT PHOTO
+   ADMIN ÃÂ¢ÃÂÃÂ UPLOAD PRODUCT PHOTO
    ========================================================= */
 (function initUploadProduct() {
   const upFileEl   = document.getElementById("up-file");
@@ -920,7 +921,7 @@ if (changePasswordForm) {
       const ph  = document.getElementById("up-placeholder");
       if (img) img.style.display = "none";
       if (ph)  ph.style.display = "block";
-      if (msgEl) { msgEl.textContent = "Ã¢ÂÂ Added to queue!"; msgEl.style.color = "#4caf7a"; }
+      if (msgEl) { msgEl.textContent = "ÃÂ¢ÃÂÃÂ Added to queue!"; msgEl.style.color = "#4caf7a"; }
       setTimeout(() => { if (msgEl) msgEl.textContent = ""; }, 3000);
     } catch (err) {
       if (msgEl) { msgEl.textContent = "Upload failed: " + err.message; msgEl.style.color = "#f87171"; }
@@ -932,7 +933,7 @@ if (changePasswordForm) {
 })();
 
 /* =========================================================
-   CONTACT PAGE Ã¢ÂÂ COPY EMAIL TO CLIPBOARD
+   CONTACT PAGE ÃÂ¢ÃÂÃÂ COPY EMAIL TO CLIPBOARD
    ========================================================= */
 const copyEmailBtn = document.getElementById("copy-email-btn");
 if (copyEmailBtn) {
@@ -977,25 +978,25 @@ document.addEventListener("DOMContentLoaded", () => {
 /*
  * SECURITY AUDIT REPORT
  * =====================
- * 1. XSS PREVENTION      Ã¢ÂÂ PASS. All user-supplied content rendered via escH()/escA() before
+ * 1. XSS PREVENTION      ÃÂ¢ÃÂÃÂ PASS. All user-supplied content rendered via escH()/escA() before
  *                          innerHTML insertion. No raw user data injected.
- * 2. NO EVAL             Ã¢ÂÂ PASS. eval() is not used anywhere in this codebase.
- * 3. NO INLINE HANDLERS  Ã¢ÂÂ PASS. All event handlers bound programmatically in main.js.
- * 4. NO CONSOLE.LOG      Ã¢ÂÂ PASS. No debug logging statements present.
- * 5. FILE UPLOAD SAFETY  Ã¢ÂÂ PASS. File inputs use accept="image/*". Firebase Storage rules
+ * 2. NO EVAL             ÃÂ¢ÃÂÃÂ PASS. eval() is not used anywhere in this codebase.
+ * 3. NO INLINE HANDLERS  ÃÂ¢ÃÂÃÂ PASS. All event handlers bound programmatically in main.js.
+ * 4. NO CONSOLE.LOG      ÃÂ¢ÃÂÃÂ PASS. No debug logging statements present.
+ * 5. FILE UPLOAD SAFETY  ÃÂ¢ÃÂÃÂ PASS. File inputs use accept="image/*". Firebase Storage rules
  *                          should enforce max file size (recommended 5MB) and MIME type.
- * 6. EXTERNAL LINKS      Ã¢ÂÂ PASS. All external links use rel="noopener noreferrer" target="_blank".
- * 7. FORM TARGETS        Ã¢ÂÂ PASS. Contact/custom forms POST only to Formspree. Submission form
+ * 6. EXTERNAL LINKS      ÃÂ¢ÃÂÃÂ PASS. All external links use rel="noopener noreferrer" target="_blank".
+ * 7. FORM TARGETS        ÃÂ¢ÃÂÃÂ PASS. Contact/custom forms POST only to Formspree. Submission form
  *                          uses Firebase SDK, no raw POST endpoint.
- * 8. FIREBASE CONFIG     Ã¢ÂÂ INFO. API key is public-facing by design (standard Firebase web pattern).
+ * 8. FIREBASE CONFIG     ÃÂ¢ÃÂÃÂ INFO. API key is public-facing by design (standard Firebase web pattern).
  *                          Security is enforced via Firestore and Storage Security Rules.
  *                          Recommended: restrict Firestore writes to authenticated users or
  *                          rate-limited rules. Storage rules should enforce image/* and max size.
- * 9. ADMIN PASSWORD      Ã¢ÂÂ INFO. Stored in localStorage (same as existing site). Acceptable for
+ * 9. ADMIN PASSWORD      ÃÂ¢ÃÂÃÂ INFO. Stored in localStorage (same as existing site). Acceptable for
  *                          low-stakes admin use. Not suitable for sensitive data access.
- * 10. CSP HEADERS        Ã¢ÂÂ PENDING. See HTML file comments for recommended _headers configuration
+ * 10. CSP HEADERS        ÃÂ¢ÃÂÃÂ PENDING. See HTML file comments for recommended _headers configuration
  *                          to apply via GitHub Pages + Cloudflare or a custom _headers file.
- * 11. SOURCE MAPS        Ã¢ÂÂ PASS. No source map references.
- * 12. LINK INTEGRITY     Ã¢ÂÂ PASS. All internal links use relative paths. Stripe and Formspree
+ * 11. SOURCE MAPS        ÃÂ¢ÃÂÃÂ PASS. No source map references.
+ * 12. LINK INTEGRITY     ÃÂ¢ÃÂÃÂ PASS. All internal links use relative paths. Stripe and Formspree
  *                          placeholders marked with HTML comments for owner replacement.
  */
