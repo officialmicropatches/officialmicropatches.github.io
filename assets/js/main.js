@@ -73,8 +73,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
   const validTabs = ["law-enforcement", "military", "fire-ems", "pink-patch"];
 
   function scrollToShopTop() {
-    const target = document.querySelector(".shop-tabs-wrap") || tabsWrap;
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function activateTab(cat) {
