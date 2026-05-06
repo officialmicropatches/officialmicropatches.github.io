@@ -199,3 +199,20 @@ export async function uploadProductPhoto(productId, file) {
   await setDoc(PRODUCT_PHOTOS_DOC, { [productId]: url }, { merge: true });
   return url;
 }
+
+const STRIPE_LINKS_DOC = doc(db, "config", "stripeLinks");
+
+/**
+ * loadStripeLinks — returns map of { productId: stripePaymentLinkUrl }
+ */
+export async function loadStripeLinks() {
+    const snap = await getDoc(STRIPE_LINKS_DOC);
+    return snap.exists() ? snap.data() : {};
+}
+
+/**
+ * saveStripeLinks — saves map of { productId: stripePaymentLinkUrl }
+ */
+export async function saveStripeLinks(links) {
+    await setDoc(STRIPE_LINKS_DOC, links);
+}
