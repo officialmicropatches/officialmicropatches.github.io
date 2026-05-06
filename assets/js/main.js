@@ -1,8 +1,8 @@
 /**
- * main.js — Shared JS for MicroPatches site
+ * main.js â Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadStripeLinks, saveStripeLinks } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -41,7 +41,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   INTERSECTION OBSERVER — FADE-IN ANIMATIONS
+   INTERSECTION OBSERVER â FADE-IN ANIMATIONS
    ========================================================= */
 (function initAnimations() {
   const targets = document.querySelectorAll(".anim, .fade-in");
@@ -61,7 +61,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   SHOP PAGE — TAB FILTER
+   SHOP PAGE â TAB FILTER
    ========================================================= */
 (function initShopTabs() {
   const tabsWrap = document.querySelector(".shop-tabs");
@@ -108,7 +108,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   CUSTOM ORDER PAGE — URL PARAM ?type=exchange
+   CUSTOM ORDER PAGE â URL PARAM ?type=exchange
    ========================================================= */
 (function initCustomPage() {
   const sel = document.getElementById("product-type");
@@ -120,7 +120,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   QUEUE PAGE — LOAD & RENDER QUEUE
+   QUEUE PAGE â LOAD & RENDER QUEUE
    ========================================================= */
 const queueFullList = document.querySelector(".queue-full-list");
 const queuePreviewList = document.querySelector(".queue-preview-list");
@@ -241,10 +241,12 @@ async function initProductPhotos() {
   try {
     const photos = await loadProductPhotos();
     Object.entries(photos).forEach(([id, url]) => applyProductPhoto(id, url));
-  } catch (_e) { /* silent — photos are non-critical */ }
+  } catch (_e) { /* silent â photos are non-critical */ }
 }
 
 let hiddenProductIds = [];
+let stripeLinks = {};
+let adminStripeLinks = {};
 
 function applyProductVisibility(hidden) {
   document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
@@ -252,6 +254,48 @@ function applyProductVisibility(hidden) {
     if (!card) return;
     card.style.display = hidden.includes(el.dataset.productId) ? "none" : "";
   });
+}
+
+function applyStripeLinks(links) {
+  document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
+    const productId = el.dataset.productId;
+    const card = el.closest(".product-card");
+    if (!card) return;
+    const btn = card.querySelector(".btn-gold[href]");
+    if (!btn) return;
+    if (links[productId]) btn.dataset.stripeBase = links[productId];
+  });
+}
+
+function applyQuantitySelectors() {
+  document.querySelectorAll(".product-card").forEach(card => {
+    const footer = card.querySelector(".product-card-footer");
+    const btn = footer && footer.querySelector(".btn-gold[href]");
+    if (!footer || !btn || footer.querySelector(".qty-wrap")) return;
+    const href = btn.getAttribute("href") || "";
+    if (!href.includes("stripe") && !btn.dataset.stripeBase) return;
+    const wrap = document.createElement("div");
+    wrap.className = "qty-wrap";
+    wrap.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:8px";
+    wrap.innerHTML = "<label style=\"font-family:'Oswald',sans-serif;font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap\">Qty:</label><div style=\"display:flex;align-items:center;border:1px solid var(--border);border-radius:6px;overflow:hidden\"><button class=\"qty-btn qty-minus\" style=\"width:32px;height:32px;background:var(--bg-surface);color:var(--text);border:none;cursor:pointer;font-size:1.1rem;line-height:1\">&#8722;</button><input type=\"number\" class=\"qty-input\" value=\"1\" min=\"1\" max=\"10\" style=\"width:40px;height:32px;text-align:center;background:var(--bg-surface);color:var(--text);border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);font-size:0.9rem\"><button class=\"qty-btn qty-plus\" style=\"width:32px;height:32px;background:var(--bg-surface);color:var(--text);border:none;cursor:pointer;font-size:1.1rem;line-height:1\">&#43;</button></div>";
+    footer.insertBefore(wrap, btn);
+    wrap.querySelector(".qty-minus").addEventListener("click", e => { e.preventDefault(); const i = wrap.querySelector(".qty-input"); i.value = Math.max(1, parseInt(i.value,10)-1); });
+    wrap.querySelector(".qty-plus").addEventListener("click", e => { e.preventDefault(); const i = wrap.querySelector(".qty-input"); i.value = Math.min(10, parseInt(i.value,10)+1); });
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      const qty = parseInt(wrap.querySelector(".qty-input").value,10) || 1;
+      const base = btn.dataset.stripeBase || btn.getAttribute("href");
+      window.open(base + "?prefilled_quantity=" + qty, "_blank", "noopener,noreferrer");
+    });
+  });
+}
+
+async function initStripeLinks() {
+  try {
+    stripeLinks = await loadStripeLinks();
+    applyStripeLinks(stripeLinks);
+  } catch (_e) { /* silent */ }
+  applyQuantitySelectors();
 }
 
 async function initProductVisibility() {
@@ -622,7 +666,7 @@ async function loadAdminSubmissionsTab() {
           <h4>${escH(s.agency || "")}</h4>
           <p><strong>Name:</strong> ${escH(s.name || "")}</p>
           <p><strong>Email:</strong> ${escH(s.email || "")}</p>
-          <p><strong>Phone:</strong> ${escH(s.phone || "—")}</p>
+          <p><strong>Phone:</strong> ${escH(s.phone || "â")}</p>
           <p><strong>Description:</strong> ${escH(s.description || "")}</p>
           <p><strong>Submitted:</strong> ${escH(s.submittedAt ? new Date(s.submittedAt).toLocaleString() : "")}</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">${genImg}${patchImg}</div>
@@ -639,7 +683,7 @@ async function loadAdminSubmissionsTab() {
 }
 
 /* =========================================================
-   ADMIN — PHOTOS TAB
+   ADMIN â PHOTOS TAB
    ========================================================= */
 let adminProductPhotos = {};
 
@@ -647,8 +691,11 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl] = await Promise.all([
-      loadProductPhotos(), loadHiddenProducts(), loadHeroImage()
+    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl, adminStripeLinks] = await Promise.all([
+      loadProductPhotos(),
+      loadHiddenProducts(),
+      loadHeroImage(),
+      loadStripeLinks()
     ]);
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
@@ -691,6 +738,7 @@ function renderAdminPhotos() {
         <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Photo</label>
         <input type="file" id="photo-input-${p.id}" accept="image/*" style="display:none" data-product-id="${p.id}">
         ${toggleBtn}
+        <input type="text" class="admin-stripe-input" data-product-id="${p.id}" placeholder="Stripe link (https://buy.stripe.com/...)" value="${escA(adminStripeLinks[p.id] || '')}" style="flex:1;min-width:120px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:0.8rem">
       </div>
     `;
   }).join("");
@@ -737,6 +785,31 @@ function renderAdminPhotos() {
       }
     });
   });
+
+
+  list.querySelectorAll(".admin-stripe-input").forEach(input => {
+    input.addEventListener("input", () => {
+      adminStripeLinks[input.dataset.productId] = input.value.trim();
+    });
+  });
+
+  const saveStripeBtn = document.getElementById("admin-save-stripe");
+  if (saveStripeBtn) {
+    saveStripeBtn.onclick = async () => {
+      const statusEl = document.getElementById("admin-photos-status");
+      saveStripeBtn.disabled = true;
+      if (statusEl) { statusEl.textContent = "Saving..."; statusEl.className = "admin-status"; }
+      try {
+        await saveStripeLinks(adminStripeLinks);
+        stripeLinks = { ...adminStripeLinks };
+        applyStripeLinks(stripeLinks);
+        if (statusEl) { statusEl.textContent = "Stripe links saved!"; statusEl.className = "admin-status ok"; }
+        setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Save failed: " + err.message; statusEl.className = "admin-status err"; }
+      } finally { saveStripeBtn.disabled = false; }
+    };
+  }
 
   list.querySelectorAll(".admin-toggle-visibility").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -786,7 +859,7 @@ if (changePasswordForm) {
 }
 
 /* =========================================================
-   ADMIN — UPLOAD PRODUCT PHOTO
+   ADMIN â UPLOAD PRODUCT PHOTO
    ========================================================= */
 (function initUploadProduct() {
   const upFileEl   = document.getElementById("up-file");
@@ -837,7 +910,7 @@ if (changePasswordForm) {
       const ph  = document.getElementById("up-placeholder");
       if (img) img.style.display = "none";
       if (ph)  ph.style.display = "block";
-      if (msgEl) { msgEl.textContent = "✓ Added to queue!"; msgEl.style.color = "#4caf7a"; }
+      if (msgEl) { msgEl.textContent = "â Added to queue!"; msgEl.style.color = "#4caf7a"; }
       setTimeout(() => { if (msgEl) msgEl.textContent = ""; }, 3000);
     } catch (err) {
       if (msgEl) { msgEl.textContent = "Upload failed: " + err.message; msgEl.style.color = "#f87171"; }
@@ -849,7 +922,7 @@ if (changePasswordForm) {
 })();
 
 /* =========================================================
-   CONTACT PAGE — COPY EMAIL TO CLIPBOARD
+   CONTACT PAGE â COPY EMAIL TO CLIPBOARD
    ========================================================= */
 const copyEmailBtn = document.getElementById("copy-email-btn");
 if (copyEmailBtn) {
@@ -888,30 +961,31 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeroImage();
   initProductPhotos();
   initProductVisibility();
+  initStripeLinks();
 });
 
 /*
  * SECURITY AUDIT REPORT
  * =====================
- * 1. XSS PREVENTION      — PASS. All user-supplied content rendered via escH()/escA() before
+ * 1. XSS PREVENTION      â PASS. All user-supplied content rendered via escH()/escA() before
  *                          innerHTML insertion. No raw user data injected.
- * 2. NO EVAL             — PASS. eval() is not used anywhere in this codebase.
- * 3. NO INLINE HANDLERS  — PASS. All event handlers bound programmatically in main.js.
- * 4. NO CONSOLE.LOG      — PASS. No debug logging statements present.
- * 5. FILE UPLOAD SAFETY  — PASS. File inputs use accept="image/*". Firebase Storage rules
+ * 2. NO EVAL             â PASS. eval() is not used anywhere in this codebase.
+ * 3. NO INLINE HANDLERS  â PASS. All event handlers bound programmatically in main.js.
+ * 4. NO CONSOLE.LOG      â PASS. No debug logging statements present.
+ * 5. FILE UPLOAD SAFETY  â PASS. File inputs use accept="image/*". Firebase Storage rules
  *                          should enforce max file size (recommended 5MB) and MIME type.
- * 6. EXTERNAL LINKS      — PASS. All external links use rel="noopener noreferrer" target="_blank".
- * 7. FORM TARGETS        — PASS. Contact/custom forms POST only to Formspree. Submission form
+ * 6. EXTERNAL LINKS      â PASS. All external links use rel="noopener noreferrer" target="_blank".
+ * 7. FORM TARGETS        â PASS. Contact/custom forms POST only to Formspree. Submission form
  *                          uses Firebase SDK, no raw POST endpoint.
- * 8. FIREBASE CONFIG     — INFO. API key is public-facing by design (standard Firebase web pattern).
+ * 8. FIREBASE CONFIG     â INFO. API key is public-facing by design (standard Firebase web pattern).
  *                          Security is enforced via Firestore and Storage Security Rules.
  *                          Recommended: restrict Firestore writes to authenticated users or
  *                          rate-limited rules. Storage rules should enforce image/* and max size.
- * 9. ADMIN PASSWORD      — INFO. Stored in localStorage (same as existing site). Acceptable for
+ * 9. ADMIN PASSWORD      â INFO. Stored in localStorage (same as existing site). Acceptable for
  *                          low-stakes admin use. Not suitable for sensitive data access.
- * 10. CSP HEADERS        — PENDING. See HTML file comments for recommended _headers configuration
+ * 10. CSP HEADERS        â PENDING. See HTML file comments for recommended _headers configuration
  *                          to apply via GitHub Pages + Cloudflare or a custom _headers file.
- * 11. SOURCE MAPS        — PASS. No source map references.
- * 12. LINK INTEGRITY     — PASS. All internal links use relative paths. Stripe and Formspree
+ * 11. SOURCE MAPS        â PASS. No source map references.
+ * 12. LINK INTEGRITY     â PASS. All internal links use relative paths. Stripe and Formspree
  *                          placeholders marked with HTML comments for owner replacement.
  */
