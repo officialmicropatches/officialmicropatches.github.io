@@ -2,7 +2,7 @@
  * main.js — Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -215,6 +215,21 @@ function applyProductPhoto(productId, url) {
   const img = cardImg.querySelector(".product-card-photo");
   if (placeholder) placeholder.style.display = "none";
   if (img) { img.src = url; img.style.display = "block"; }
+}
+
+function applyHeroImage(url) {
+  if (!url) return;
+  const img = document.getElementById("hero-logo-img");
+  const placeholder = document.getElementById("hero-logo-placeholder");
+  if (img) { img.src = url; img.style.display = "block"; }
+  if (placeholder) placeholder.style.display = "none";
+}
+
+async function initHeroImage() {
+  try {
+    const url = await loadHeroImage();
+    applyHeroImage(url);
+  } catch (_e) { /* silent */ }
 }
 
 async function initProductPhotos() {
@@ -629,7 +644,9 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    [adminProductPhotos, hiddenProductIds] = await Promise.all([loadProductPhotos(), loadHiddenProducts()]);
+    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl] = await Promise.all([
+      loadProductPhotos(), loadHiddenProducts(), loadHeroImage()
+    ]);
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
   } catch (_e) {
@@ -637,10 +654,24 @@ async function loadAdminPhotosTab() {
   }
 }
 
+let adminHeroImageUrl = "";
+
 function renderAdminPhotos() {
   const list = document.getElementById("admin-photos-list");
   if (!list) return;
-  list.innerHTML = PRODUCTS.map(p => {
+
+  const heroThumb = adminHeroImageUrl
+    ? `<img src="${escA(adminHeroImageUrl)}" style="width:100%;max-height:140px;object-fit:contain;border-radius:8px;margin-bottom:8px">`
+    : `<div style="width:100%;height:80px;background:var(--bg-surface);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;margin-bottom:8px">No logo set</div>`;
+  list.innerHTML = `
+    <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.1)">
+      <p style="font-family:'Oswald',sans-serif;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Hero Logo</p>
+      ${heroThumb}
+      <label for="hero-logo-upload" class="btn btn-outline btn-small" style="cursor:pointer;display:inline-block">Change Logo</label>
+      <input type="file" id="hero-logo-upload" accept="image/*" style="display:none">
+    </div>
+  `;
+  list.innerHTML += PRODUCTS.map(p => {
     const url = adminProductPhotos[p.id] || "";
     const isHidden = hiddenProductIds.includes(p.id);
     const thumbHtml = url
@@ -661,7 +692,27 @@ function renderAdminPhotos() {
     `;
   }).join("");
 
-  list.querySelectorAll("input[type=file]").forEach(input => {
+  const heroUploadInput = document.getElementById("hero-logo-upload");
+  if (heroUploadInput) {
+    heroUploadInput.addEventListener("change", async () => {
+      const file = heroUploadInput.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById("admin-photos-status");
+      if (statusEl) { statusEl.textContent = "Uploading logo..."; statusEl.className = "admin-status"; }
+      try {
+        const url = await uploadHeroImage(file);
+        adminHeroImageUrl = url;
+        applyHeroImage(url);
+        renderAdminPhotos();
+        if (statusEl) { statusEl.textContent = "Logo updated!"; statusEl.className = "admin-status ok"; }
+        setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.className = "admin-status err"; }
+      }
+    });
+  }
+
+  list.querySelectorAll("input[type=file][data-product-id]").forEach(input => {
     input.addEventListener("change", async () => {
       const file = input.files[0];
       const productId = input.dataset.productId;
@@ -831,6 +882,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   initQueuePage();
+  initHeroImage();
   initProductPhotos();
   initProductVisibility();
 });
