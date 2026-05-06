@@ -11,7 +11,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
   const nav = document.querySelector(".site-nav");
   if (!nav) return;
   const onScroll = () => {
-    nav.classList.toggle("scrolled", window.scrollY > 50);
+    nav.classList.toggle("scrolled", window.scrollY > 50);h
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
@@ -77,6 +77,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
       const match = cat === "all" || card.dataset.category === cat;
       card.style.display = match ? "" : "none";
     });
+         applyProductVisibility(hiddenProductIds);
     if (grid) grid.style.opacity = "0.4";
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
