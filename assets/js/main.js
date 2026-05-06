@@ -159,13 +159,52 @@ function escH(str) {
    PRODUCT PHOTOS
    ========================================================= */
 const PRODUCTS = [
-  { id: "chandler-pd",   name: "Chandler PD Pink Patch Project" },
-  { id: "tucson-pd",     name: "Tucson Police Department" },
-  { id: "pinal-sheriff", name: "Pinal County Sheriff Office" },
-  { id: "phoenix-pd",    name: "Phoenix Police Department" },
-  { id: "82nd-airborne", name: "82nd Airborne Division" },
-  { id: "mesa-pd",       name: "Mesa Police Department" },
-  { id: "az-dps",        name: "Arizona Dept. of Public Safety" }
+  // Law Enforcement
+  { id: "az-dps",              name: "Arizona Department of Public Safety" },
+  { id: "auburn-pd-retired",   name: "Auburn Police Department Retired" },
+  { id: "chandler-pd",         name: "Chandler Police Department" },
+  { id: "chandler-pd-retired", name: "Chandler Police Department Retired" },
+  { id: "chicago-pd",          name: "Chicago Police Department" },
+  { id: "surprise-pd",         name: "City of Surprise Police Department" },
+  { id: "el-mirage-pd",        name: "El Mirage Police Department" },
+  { id: "florida-hp",          name: "Florida Highway Patrol" },
+  { id: "gila-river-pd",       name: "Gila River Indian Police Department" },
+  { id: "gilbert-pd",          name: "Gilbert Police Department" },
+  { id: "goodyear-pd-retired", name: "Goodyear Police Department Retired" },
+  { id: "honolulu-pd",         name: "Honolulu Police Department" },
+  { id: "houston-tx",          name: "Houston Texas Keychain" },
+  { id: "kent-pd",             name: "Kent Police Department" },
+  { id: "maricopa-pd",         name: "Maricopa Police Department" },
+  { id: "maricopa-sheriff",    name: "Maricopa County Sheriff Office" },
+  { id: "maui-pd",             name: "Maui Police Department" },
+  { id: "mesa-pd",             name: "Mesa Police Department" },
+  { id: "nypd",                name: "New York City Police Department" },
+  { id: "phoenix-pd",          name: "Phoenix Police Department" },
+  { id: "pinal-sheriff",       name: "Pinal County Sheriff Office" },
+  { id: "prescott-pd",         name: "Prescott Police Department" },
+  { id: "queen-creek-pd",      name: "Queen Creek Police Department" },
+  { id: "san-jose-pd",         name: "San Jose Police Department" },
+  { id: "scottsdale-pd",       name: "Scottsdale Police Department" },
+  { id: "seattle-pd",          name: "Seattle Police Department" },
+  { id: "simi-valley-pd",      name: "Simi Valley Police Department" },
+  { id: "tempe-pd",            name: "Tempe Police Department" },
+  { id: "tucson-pd",           name: "Tucson Police Department" },
+  { id: "us-border-patrol",    name: "U.S. Border Patrol" },
+  // Military
+  { id: "101st-airborne",      name: "101st Airborne Division Screaming Eagles" },
+  { id: "10th-mountain",       name: "10th Mountain Division" },
+  { id: "173rd-airborne",      name: "173rd Airborne Brigade Sky Soldiers" },
+  { id: "504th-pir-ww2",       name: "504th Parachute Infantry Regiment WW2" },
+  { id: "82nd-airborne",       name: "82nd Airborne Division" },
+  { id: "seabees",             name: "U.S. Naval Construction Battalions Seabees" },
+  // Fire & EMS
+  { id: "chandler-fire",       name: "Chandler Fire Department" },
+  { id: "amr-emt",             name: "American Medical Response AMR EMT" },
+  { id: "amr-paramedic",       name: "American Medical Response AMR Paramedic" },
+  { id: "amr-cct-rn",          name: "American Medical Response CCT-RN" },
+  // Pink Patch
+  { id: "pink-patch",          name: "Pink Patch Project" },
+  { id: "chandler-pd-pink",    name: "Chandler PD Pink Patch Project" }
 ];
 
 function applyProductPhoto(productId, url) {
