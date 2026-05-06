@@ -2,7 +2,7 @@
  * main.js — Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -490,6 +490,54 @@ if (saveQueueBtn) {
     } finally {
       saveQueueBtn.disabled = false;
     }
+  });
+}
+
+/* Upload product photo */
+const upFile    = document.getElementById("up-file");
+const upSubmit  = document.getElementById("up-submit");
+if (upFile) {
+  upFile.addEventListener("change", () => {
+    if (!upFile.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("up-preview-img").src = e.target.result;
+      document.getElementById("up-preview-img").style.display = "block";
+      document.getElementById("up-placeholder").style.display = "none";
+    };
+    reader.readAsDataURL(upFile.files[0]);
+  });
+}
+if (upSubmit) {
+  upSubmit.addEventListener("click", async () => {
+    const name     = document.getElementById("up-name").value.trim();
+    const status   = document.getElementById("up-status").value;
+    const file     = upFile && upFile.files[0];
+    const statusEl = document.getElementById("up-status-msg") || document.getElementById("up-status");
+    if (!name) { document.getElementById("up-name").focus(); return; }
+    if (!file) { if (statusEl) { statusEl.textContent = "Please select a photo."; statusEl.style.color = "#f87171"; } return; }
+    upSubmit.disabled = true;
+    upSubmit.textContent = "Uploading...";
+    if (statusEl) { statusEl.textContent = ""; }
+    try {
+      const item = await uploadProduct(name, status, file);
+      allQueueItems.unshift(item);
+      adminQueueItems.unshift({ ...item });
+      renderAdminQueue();
+      renderQueueFull(allQueueItems);
+      renderQueuePreview(allQueueItems.slice(0, 4));
+      document.getElementById("up-name").value = "";
+      document.getElementById("up-status").value = "complete";
+      upFile.value = "";
+      document.getElementById("up-preview-img").style.display = "none";
+      document.getElementById("up-placeholder").style.display = "block";
+      if (statusEl) { statusEl.textContent = "✓ Added to queue!"; statusEl.style.color = "#4caf7a"; }
+      setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+    } catch (err) {
+      if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.style.color = "#f87171"; }
+    }
+    upSubmit.disabled = false;
+    upSubmit.textContent = "Upload & Add to Queue";
   });
 }
 

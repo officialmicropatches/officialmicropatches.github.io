@@ -114,6 +114,24 @@ export async function addSubmission(data, generatedFile, patchFile) {
 }
 
 /**
+ * uploadProduct — uploads a completed product photo and prepends it to the queue
+ * @param {string} name
+ * @param {string} status
+ * @param {File} file
+ */
+export async function uploadProduct(name, status, file) {
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const safeName = name.replace(/[^a-zA-Z0-9_-]/g, "_");
+  const storageRef = ref(storage, `products/${safeName}_${Date.now()}.${ext}`);
+  await uploadBytes(storageRef, file);
+  const img = await getDownloadURL(storageRef);
+  const currentItems = await loadQueue();
+  const newItem = { name, status, img };
+  await saveQueue([newItem, ...currentItems]);
+  return newItem;
+}
+
+/**
  * loadSubmissions — returns all submissions ordered by submittedAt desc
  * @returns {Promise<Array>}
  */
