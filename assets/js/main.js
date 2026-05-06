@@ -221,8 +221,10 @@ function applyHeroImage(url) {
   if (!url) return;
   const img = document.getElementById("hero-logo-img");
   const placeholder = document.getElementById("hero-logo-placeholder");
+  const card = img && img.closest(".hero-product-card");
   if (img) { img.src = url; img.style.display = "block"; }
   if (placeholder) placeholder.style.display = "none";
+  if (card) card.classList.add("hero-logo-loaded");
 }
 
 async function initHeroImage() {

@@ -354,6 +354,16 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   z-index: 2;
 }
+.hero-product-card.hero-logo-loaded {
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.hero-product-card.hero-logo-loaded #hero-logo-img {
+  border-radius: 12px;
+  max-height: 340px;
+}
 .hero-product-card .badge-star {
   width: 80px;
   height: 80px;
