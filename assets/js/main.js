@@ -77,7 +77,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
       const match = cat === "all" || card.dataset.category === cat;
       card.style.display = match ? "" : "none";
     });
-         applyProductVisibility(hiddenProductIds);
+         try { applyProductVisibility(hiddenProductIds); } catch(e) {}
     if (grid) grid.style.opacity = "0.4";
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -257,7 +257,7 @@ function applyProductVisibility(hidden) {
 async function initProductVisibility() {
   try {
     hiddenProductIds = await loadHiddenProducts();
-    applyProductVisibility(hiddenProductIds);
+    try { applyProductVisibility(hiddenProductIds); } catch(e) {}
   } catch (_e) { /* silent */ }
 }
 
@@ -751,7 +751,7 @@ function renderAdminPhotos() {
           hiddenProductIds = [...hiddenProductIds, productId];
         }
         await saveHiddenProducts(hiddenProductIds);
-        applyProductVisibility(hiddenProductIds);
+        try { applyProductVisibility(hiddenProductIds); } catch(e) {}
         renderAdminPhotos();
         if (statusEl) {
           statusEl.textContent = currentlyHidden ? "Listing restored." : "Listing removed.";
