@@ -631,7 +631,7 @@ function renderAdminPhotos() {
         ${thumbHtml}
         <span class="admin-photo-name">${escH(p.name)}</span>
         <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Change</label>
-        <input type="file" id="photo-input-${p.id}" accept="image/*" capture="environment" style="display:none" data-product-id="${p.id}">
+        <input type="file" id="photo-input-${p.id}" accept="image/*" style="display:none" data-product-id="${p.id}">
       </div>
     `;
   }).join("");
