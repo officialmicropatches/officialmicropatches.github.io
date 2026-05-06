@@ -114,10 +114,7 @@ export async function addSubmission(data, generatedFile, patchFile) {
 }
 
 /**
- * uploadProduct — uploads a completed product photo and prepends it to the queue
- * @param {string} name
- * @param {string} status
- * @param {File} file
+ * uploadProduct — uploads a completed keychain photo and prepends it to the queue
  */
 export async function uploadProduct(name, status, file) {
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase();

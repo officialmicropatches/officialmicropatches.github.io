@@ -493,54 +493,6 @@ if (saveQueueBtn) {
   });
 }
 
-/* Upload product photo */
-const upFile    = document.getElementById("up-file");
-const upSubmit  = document.getElementById("up-submit");
-if (upFile) {
-  upFile.addEventListener("change", () => {
-    if (!upFile.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      document.getElementById("up-preview-img").src = e.target.result;
-      document.getElementById("up-preview-img").style.display = "block";
-      document.getElementById("up-placeholder").style.display = "none";
-    };
-    reader.readAsDataURL(upFile.files[0]);
-  });
-}
-if (upSubmit) {
-  upSubmit.addEventListener("click", async () => {
-    const name     = document.getElementById("up-name").value.trim();
-    const status   = document.getElementById("up-status").value;
-    const file     = upFile && upFile.files[0];
-    const statusEl = document.getElementById("up-status-msg") || document.getElementById("up-status");
-    if (!name) { document.getElementById("up-name").focus(); return; }
-    if (!file) { if (statusEl) { statusEl.textContent = "Please select a photo."; statusEl.style.color = "#f87171"; } return; }
-    upSubmit.disabled = true;
-    upSubmit.textContent = "Uploading...";
-    if (statusEl) { statusEl.textContent = ""; }
-    try {
-      const item = await uploadProduct(name, status, file);
-      allQueueItems.unshift(item);
-      adminQueueItems.unshift({ ...item });
-      renderAdminQueue();
-      renderQueueFull(allQueueItems);
-      renderQueuePreview(allQueueItems.slice(0, 4));
-      document.getElementById("up-name").value = "";
-      document.getElementById("up-status").value = "complete";
-      upFile.value = "";
-      document.getElementById("up-preview-img").style.display = "none";
-      document.getElementById("up-placeholder").style.display = "block";
-      if (statusEl) { statusEl.textContent = "✓ Added to queue!"; statusEl.style.color = "#4caf7a"; }
-      setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
-    } catch (err) {
-      if (statusEl) { statusEl.textContent = "Upload failed: " + err.message; statusEl.style.color = "#f87171"; }
-    }
-    upSubmit.disabled = false;
-    upSubmit.textContent = "Upload & Add to Queue";
-  });
-}
-
 async function loadAdminSubmissionsTab() {
   const list = document.getElementById("admin-submissions-list");
   if (!list) return;
@@ -597,6 +549,69 @@ if (changePasswordForm) {
     document.getElementById("admin-new-pw").value = "";
   });
 }
+
+/* =========================================================
+   ADMIN — UPLOAD PRODUCT PHOTO
+   ========================================================= */
+(function initUploadProduct() {
+  const upFileEl   = document.getElementById("up-file");
+  const upSubmitEl = document.getElementById("up-submit");
+  if (!upFileEl || !upSubmitEl) return;
+
+  upFileEl.addEventListener("change", () => {
+    if (!upFileEl.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.getElementById("up-preview-img");
+      const ph  = document.getElementById("up-placeholder");
+      if (img) { img.src = e.target.result; img.style.display = "block"; }
+      if (ph)  { ph.style.display = "none"; }
+    };
+    reader.readAsDataURL(upFileEl.files[0]);
+  });
+
+  upSubmitEl.addEventListener("click", async () => {
+    const nameEl   = document.getElementById("up-name");
+    const statusEl = document.getElementById("up-status");
+    const msgEl    = document.getElementById("up-status-msg");
+    const name   = nameEl ? nameEl.value.trim() : "";
+    const status = statusEl ? statusEl.value : "complete";
+    const file   = upFileEl.files[0];
+
+    if (!name) { if (nameEl) nameEl.focus(); return; }
+    if (!file) {
+      if (msgEl) { msgEl.textContent = "Please select a photo."; msgEl.style.color = "#f87171"; }
+      return;
+    }
+
+    upSubmitEl.disabled = true;
+    upSubmitEl.textContent = "Uploading...";
+    if (msgEl) msgEl.textContent = "";
+
+    try {
+      const item = await uploadProduct(name, status, file);
+      allQueueItems.unshift(item);
+      adminQueueItems.unshift({ ...item });
+      renderAdminQueue();
+      renderQueueFull(allQueueItems);
+      renderQueuePreview(allQueueItems.slice(0, 4));
+      if (nameEl)   nameEl.value = "";
+      if (statusEl) statusEl.value = "complete";
+      upFileEl.value = "";
+      const img = document.getElementById("up-preview-img");
+      const ph  = document.getElementById("up-placeholder");
+      if (img) img.style.display = "none";
+      if (ph)  ph.style.display = "block";
+      if (msgEl) { msgEl.textContent = "✓ Added to queue!"; msgEl.style.color = "#4caf7a"; }
+      setTimeout(() => { if (msgEl) msgEl.textContent = ""; }, 3000);
+    } catch (err) {
+      if (msgEl) { msgEl.textContent = "Upload failed: " + err.message; msgEl.style.color = "#f87171"; }
+    }
+
+    upSubmitEl.disabled = false;
+    upSubmitEl.textContent = "Upload & Add to Queue";
+  });
+})();
 
 /* =========================================================
    CONTACT PAGE — COPY EMAIL TO CLIPBOARD
