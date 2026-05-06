@@ -204,7 +204,9 @@ const PRODUCTS = [
   { id: "amr-cct-rn",          name: "American Medical Response CCT-RN" },
   // Pink Patch
   { id: "pink-patch",          name: "Pink Patch Project" },
-  { id: "chandler-pd-pink",    name: "Chandler PD Pink Patch Project" }
+  { id: "chandler-pd-pink",    name: "Chandler PD Pink Patch Project" },
+  // Accessories
+  { id: "bulk-orders",         name: "Bulk and Wholesale Orders" }
 ];
 
 function applyProductPhoto(productId, url) {
@@ -244,12 +246,10 @@ async function initProductPhotos() {
 let hiddenProductIds = [];
 
 function applyProductVisibility(hidden) {
-  PRODUCTS.forEach(p => {
-    const isHidden = hidden.includes(p.id);
-    document.querySelectorAll(`.product-card-img[data-product-id="${p.id}"]`).forEach(el => {
-      const card = el.closest(".product-card");
-      if (card) card.style.display = isHidden ? "none" : "";
-    });
+  document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
+    const card = el.closest(".product-card");
+    if (!card) return;
+    card.style.display = hidden.includes(el.dataset.productId) ? "none" : "";
   });
 }
 
