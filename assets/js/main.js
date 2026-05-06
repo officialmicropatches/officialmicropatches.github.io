@@ -70,6 +70,12 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
   const tabs    = tabsWrap.querySelectorAll(".shop-tab");
   const cards   = document.querySelectorAll(".product-card[data-category]");
   const grid    = document.querySelector(".product-grid");
+  const validTabs = ["law-enforcement", "military", "fire-ems", "pink-patch"];
+
+  function scrollToShopTop() {
+    const target = document.querySelector(".shop-tabs-wrap") || tabsWrap;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   function activateTab(cat) {
     tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === cat));
@@ -103,14 +109,23 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
     });
   });
 
+  document.querySelectorAll('a[href^="shop.html#"]').forEach(link => {
+    link.addEventListener("click", (e) => {
+      const hash = new URL(link.href, location.href).hash.replace("#", "");
+      if (!validTabs.includes(hash)) return;
+      e.preventDefault();
+      activateTab(hash);
+      history.replaceState(null, "", "#" + hash);
+      scrollToShopTop();
+    });
+  });
+
   // Hash detection on load
   const hash = location.hash.replace("#", "");
   if (hash) {
-    const validTabs = ["law-enforcement", "military", "fire-ems", "pink-patch"];
     if (validTabs.includes(hash)) {
       activateTab(hash);
-      const target = document.getElementById(hash);
-      if (target) setTimeout(() => target.scrollIntoView({ behavior: "smooth" }), 200);
+      setTimeout(scrollToShopTop, 200);
       return;
     }
   }
