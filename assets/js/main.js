@@ -102,22 +102,34 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
     });
   }
 
+  function setShopCategory(cat, shouldScroll = false) {
+    activateTab(cat);
+    history.replaceState(null, "", "#" + cat);
+    if (shouldScroll) scrollToShopTop();
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      activateTab(tab.dataset.tab);
-      history.replaceState(null, "", "#" + tab.dataset.tab);
+      setShopCategory(tab.dataset.tab, false);
     });
   });
 
-  document.querySelectorAll('a[href^="shop.html#"]').forEach(link => {
-    link.addEventListener("click", (e) => {
-      const hash = new URL(link.href, location.href).hash.replace("#", "");
-      if (!validTabs.includes(hash)) return;
-      e.preventDefault();
-      activateTab(hash);
-      history.replaceState(null, "", "#" + hash);
-      scrollToShopTop();
-    });
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href*="#"]');
+    if (!link) return;
+
+    const url = new URL(link.getAttribute("href"), location.href);
+    const samePage = url.pathname.split("/").pop() === "shop.html" && location.pathname.split("/").pop() === "shop.html";
+    const hash = url.hash.replace("#", "");
+    if (!samePage || !validTabs.includes(hash)) return;
+
+    e.preventDefault();
+    setShopCategory(hash, true);
+  }, true);
+
+  window.addEventListener("hashchange", () => {
+    const hash = location.hash.replace("#", "");
+    if (validTabs.includes(hash)) setShopCategory(hash, true);
   });
 
   // Hash detection on load
