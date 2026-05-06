@@ -94,7 +94,6 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
         if (grid) grid.style.opacity = "1";
       });
     });
-  });
   }
 
   tabs.forEach(tab => {
@@ -260,10 +259,16 @@ let stripeLinks = {};
 let adminStripeLinks = {};
 
 function applyProductVisibility(hidden) {
+  const activeTab = document.querySelector(".shop-tab.active");
+  const activeCategory = activeTab ? activeTab.dataset.tab : "all";
+
   document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
     const card = el.closest(".product-card");
     if (!card) return;
-    card.style.display = hidden.includes(el.dataset.productId) ? "none" : "";
+    const matchesCategory = activeCategory === "all" || card.dataset.category === activeCategory;
+    const isHidden = hidden.includes(el.dataset.productId);
+    card.style.display = matchesCategory && !isHidden ? "" : "none";
+    if (matchesCategory && !isHidden) card.classList.add("visible");
   });
 }
 
