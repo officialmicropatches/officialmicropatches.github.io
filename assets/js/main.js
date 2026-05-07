@@ -43,7 +43,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 /* =========================================================
    INTERSECTION OBSERVER ÃÂ¢ÃÂÃÂ FADE-IN ANIMATIONS
    ========================================================= */
-(function initAnimations() {
+function initAnimations() {
   const targets = document.querySelectorAll(".anim, .fade-in");
   if (!targets.length) return;
   const observer = new IntersectionObserver(
@@ -58,7 +58,8 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
     { threshold: 0.12 }
   );
   targets.forEach(el => observer.observe(el));
-})();
+}
+initAnimations();
 
 /* =========================================================
    SHOP PAGE ÃÂ¢ÃÂÃÂ TAB FILTER
