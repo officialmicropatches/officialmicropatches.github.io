@@ -297,6 +297,51 @@ let hiddenProductIds = [];
 let shopifyLinks = {};
 let adminShopifyLinks = {};
 
+const DEFAULT_SHOPIFY_LINKS = Object.freeze({
+  "az-dps": "https://micropatches.myshopify.com/products/arizona-department-of-public-safety-az-state-trooper-collector-patch-keychain-ma",
+  "auburn-pd-retired": "https://micropatches.myshopify.com/products/auburn-police-department-retired-patch-collector-patch-keychain-magnet-police-wi",
+  "chandler-pd": "https://micropatches.myshopify.com/products/chandler-police-department-chandler-pd-collector-patch-keychain-magnet-croc-char",
+  "chandler-pd-retired": "https://micropatches.myshopify.com/products/chandler-police-department-retired-chandler-pd-collector-patch-keychain-magnet-p",
+  "chicago-pd": "https://micropatches.myshopify.com/products/chicago-police-department-collector-patch-keychain-magnet-croc-charm-police-wife",
+  "surprise-pd": "https://micropatches.myshopify.com/products/city-of-surprise-police-patch-keychain-magnet-3d-printed-arizona-pd-pride",
+  "el-mirage-pd": "https://micropatches.myshopify.com/products/el-mirage-pd-patch-keychain-magnet-3d-printed-arizona-police-pride-accessory",
+  "florida-hp": "https://micropatches.myshopify.com/products/florida-highway-patrol-keychain-3d-printed-trooper-collector-patch",
+  "gila-river-pd": "https://micropatches.myshopify.com/products/gila-river-indian-police-department-collector-patch-keychain-magnet-police-wife",
+  "gilbert-pd": "https://micropatches.myshopify.com/products/gilbert-police-department-gilbert-pd-collector-patch-keychain-magnet-arizona-pol",
+  "goodyear-pd-retired": "https://micropatches.myshopify.com/products/goodyear-police-department-retired-goodyear-pd-collector-patch-keychain-magnet-p",
+  "honolulu-pd": "https://micropatches.myshopify.com/products/honolulu-police-department-honolulu-pd-collector-patch-keychain-magnet-hawaii-po",
+  "houston-tx": "https://micropatches.myshopify.com/products/houston-police-keychain-police-gift",
+  "kent-pd": "https://micropatches.myshopify.com/products/kent-police-department-kent-pd-collector-patch-keychain-magnet-washington-police",
+  "maricopa-pd": "https://micropatches.myshopify.com/products/maricopa-police-department-maricopa-pd-collector-patch-keychain-magnet-arizona-p",
+  "maricopa-sheriff": "https://micropatches.myshopify.com/products/maricopa-county-sheriff39s-office-collector-patch-keychain-magnet-police-wife-gi",
+  "maui-pd": "https://micropatches.myshopify.com/products/maui-police-department-collector-patch-keychain-magnet-police-wife-gift-thin-blu",
+  "mesa-pd": "https://micropatches.myshopify.com/products/mesa-police-department-collector-patch-keychain-magnet-police-wife-gift-thin-blu",
+  "nypd": "https://micropatches.myshopify.com/products/new-york-city-police-department-collector-patch-keychain-magnet-croc-charm-polic",
+  "phoenix-pd": "https://micropatches.myshopify.com/products/phoenix-police-department-keychain-3d-printed-replica",
+  "pinal-sheriff": "https://micropatches.myshopify.com/products/pinal-county-sheriff-replica-patch-keychain-thin-blue-line-accessory",
+  "prescott-pd": "https://micropatches.myshopify.com/products/prescott-police-department-prescott-pd-collector-patch-keychain-magnet-croc-char",
+  "queen-creek-pd": "https://micropatches.myshopify.com/products/queen-creek-police-department-queen-creek-pd-collector-patch-keychain-magnet-ari",
+  "san-jose-pd": "https://micropatches.myshopify.com/products/san-jose-police-department-san-jose-pd-collector-patch-keychain-magnet-californi",
+  "scottsdale-pd": "https://micropatches.myshopify.com/products/scottsdale-police-department-scottsdale-pd-collector-patch-keychain-magnet-arizo",
+  "seattle-pd": "https://micropatches.myshopify.com/products/seattle-police-department-collector-patch-keychain-magnet-police-wife-gift-thin",
+  "simi-valley-pd": "https://micropatches.myshopify.com/products/simi-valley-police-patch-keychain-3d-printed-collector-pride",
+  "tempe-pd": "https://micropatches.myshopify.com/products/tempe-police-department-tempe-pd-collector-patch-keychain-magnet-arizona-police",
+  "tucson-pd": "https://micropatches.myshopify.com/products/tucson-police-department-keychain-tucson-pd-collector-patch-keychain",
+  "us-border-patrol": "https://micropatches.myshopify.com/products/us-border-patrol-collector-patch-keychain-federal-law-enforcement-wife-gift-thin",
+  "101st-airborne": "https://micropatches.myshopify.com/products/101st-airborne-division-patch-keychain-magnet-military-collectible",
+  "10th-mountain": "https://micropatches.myshopify.com/products/10th-mountain-division-collector-patch-keychain-magnet-military-family-gift-supp",
+  "173rd-airborne": "https://micropatches.myshopify.com/products/173rd-airborne-brigade-quotsky-soldiersquot-patch-keychain-3d-printed-military-r",
+  "504th-pir-ww2": "https://micropatches.myshopify.com/products/504th-pir-ww2-devil-in-baggy-pants-keychain-magnet-3d-printed-patch",
+  "82nd-airborne": "https://micropatches.myshopify.com/products/82nd-airborne-division-collector-patch-keychain-magnet-military-family-gift-supp",
+  "seabees": "https://micropatches.myshopify.com/products/us-naval-construction-battalions-quotseabeesquot-collector-patch-keychain-vetera",
+  "chandler-fire": "https://micropatches.myshopify.com/products/chandler-fire-department-collector-patch-keychain-magnet-firefighter-family-gift",
+  "amr-emt": "https://micropatches.myshopify.com/products/american-medical-response-amr-emt-collector-patch-keychain-magnet-croc-charm-ems",
+  "amr-paramedic": "https://micropatches.myshopify.com/products/american-medical-response-amr-paramedic-collector-patch-keychain-magnet-croc-cha",
+  "amr-cct-rn": "https://micropatches.myshopify.com/products/american-medical-response-cct-rn-collector-patch-keychain-magnet-croc-charm-ems",
+  "pink-patch": "https://micropatches.myshopify.com/products/pink-patch-project-police-patches-gone-pink-for-breast-cancer-research-10-donate",
+  "chandler-pd-pink": "https://micropatches.myshopify.com/products/chandler-pd-pink-patch-project-chandler-pd-goes-pink-for-breast-cancer-10-donate"
+});
+
 function applyProductVisibility(hidden) {
   const activeTab = document.querySelector(".shop-tab.active");
   const activeCategory = activeTab ? activeTab.dataset.tab : "all";
@@ -341,10 +386,10 @@ function applyShopifyLinks(links) {
 
 async function initShopifyLinks() {
   try {
-    shopifyLinks = await loadShopifyLinks();
+    shopifyLinks = { ...DEFAULT_SHOPIFY_LINKS, ...(await loadShopifyLinks()) };
     applyShopifyLinks(shopifyLinks);
   } catch (_e) {
-    applyShopifyLinks({});
+    applyShopifyLinks(DEFAULT_SHOPIFY_LINKS);
   }
 }
 
@@ -751,12 +796,13 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl, adminShopifyLinks] = await Promise.all([
+    const savedShopifyLinks = await loadShopifyLinks();
+    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl] = await Promise.all([
       loadProductPhotos(),
       loadHiddenProducts(),
-      loadHeroImage(),
-      loadShopifyLinks()
+      loadHeroImage()
     ]);
+    adminShopifyLinks = { ...DEFAULT_SHOPIFY_LINKS, ...savedShopifyLinks };
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
   } catch (_e) {
