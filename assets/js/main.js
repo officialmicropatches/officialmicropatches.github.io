@@ -2,7 +2,7 @@
  * main.js ÃÂ¢ÃÂÃÂ Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadStripeLinks, saveStripeLinks } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadShopifyLinks, saveShopifyLinks } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -294,8 +294,8 @@ async function initProductPhotos() {
 }
 
 let hiddenProductIds = [];
-let stripeLinks = {};
-let adminStripeLinks = {};
+let shopifyLinks = {};
+let adminShopifyLinks = {};
 
 function applyProductVisibility(hidden) {
   const activeTab = document.querySelector(".shop-tab.active");
@@ -311,46 +311,51 @@ function applyProductVisibility(hidden) {
   });
 }
 
-function applyStripeLinks(links) {
+function applyShopifyLinks(links) {
   document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
     const productId = el.dataset.productId;
     const card = el.closest(".product-card");
     if (!card) return;
     const btn = card.querySelector(".btn-gold[href]");
     if (!btn) return;
-    if (links[productId]) btn.dataset.stripeBase = links[productId];
+    const url = links[productId] || "";
+    btn.dataset.shopifyHandled = "true";
+    btn.dataset.shopifyUrl = url;
+    btn.textContent = url ? "Buy on Shopify" : "Coming Soon";
+    btn.setAttribute("href", url || "#");
+    btn.setAttribute("aria-disabled", url ? "false" : "true");
+    btn.classList.toggle("shopify-coming-soon", !url);
+    if (!btn.dataset.shopifyClickBound) {
+      btn.dataset.shopifyClickBound = "true";
+      btn.addEventListener("click", e => {
+        const shopifyUrl = btn.dataset.shopifyUrl || "";
+        if (!shopifyUrl) {
+          e.preventDefault();
+          return;
+        }
+        btn.setAttribute("href", shopifyUrl);
+      });
+    }
   });
 }
 
-function applyQuantitySelectors() {
-  document.querySelectorAll(".product-card").forEach(card => {
-    const footer = card.querySelector(".product-card-footer");
-    const btn = footer && footer.querySelector(".btn-gold[href]");
-    if (!footer || !btn || footer.querySelector(".qty-wrap")) return;
-    const href = btn.getAttribute("href") || "";
-    if (!href.includes("stripe") && !btn.dataset.stripeBase) return;
-    const wrap = document.createElement("div");
-    wrap.className = "qty-wrap";
-    wrap.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:8px";
-    wrap.innerHTML = "<label style=\"font-family:'Oswald',sans-serif;font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap\">Qty:</label><div style=\"display:flex;align-items:center;border:1px solid var(--border);border-radius:6px;overflow:hidden\"><button class=\"qty-btn qty-minus\" style=\"width:32px;height:32px;background:var(--bg-surface);color:var(--text);border:none;cursor:pointer;font-size:1.1rem;line-height:1\">&#8722;</button><input type=\"number\" class=\"qty-input\" value=\"1\" min=\"1\" max=\"10\" style=\"width:40px;height:32px;text-align:center;background:var(--bg-surface);color:var(--text);border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);font-size:0.9rem\"><button class=\"qty-btn qty-plus\" style=\"width:32px;height:32px;background:var(--bg-surface);color:var(--text);border:none;cursor:pointer;font-size:1.1rem;line-height:1\">&#43;</button></div>";
-    footer.insertBefore(wrap, btn);
-    wrap.querySelector(".qty-minus").addEventListener("click", e => { e.preventDefault(); const i = wrap.querySelector(".qty-input"); i.value = Math.max(1, parseInt(i.value,10)-1); });
-    wrap.querySelector(".qty-plus").addEventListener("click", e => { e.preventDefault(); const i = wrap.querySelector(".qty-input"); i.value = Math.min(10, parseInt(i.value,10)+1); });
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-      const qty = parseInt(wrap.querySelector(".qty-input").value,10) || 1;
-      const base = btn.dataset.stripeBase || btn.getAttribute("href");
-      window.open(base + "?prefilled_quantity=" + qty, "_blank", "noopener,noreferrer");
-    });
-  });
-}
-
-async function initStripeLinks() {
+async function initShopifyLinks() {
   try {
-    stripeLinks = await loadStripeLinks();
-    applyStripeLinks(stripeLinks);
-  } catch (_e) { /* silent */ }
-  applyQuantitySelectors();
+    shopifyLinks = await loadShopifyLinks();
+    applyShopifyLinks(shopifyLinks);
+  } catch (_e) {
+    applyShopifyLinks({});
+  }
+}
+
+/* Legacy quantity controls are intentionally disabled for Shopify checkout. */
+function removeLegacyQuantitySelectors() {
+  document.querySelectorAll(".qty-wrap").forEach(wrap => wrap.remove());
+}
+
+async function initCommerceLinks() {
+  removeLegacyQuantitySelectors();
+  await initShopifyLinks();
 }
 
 async function initProductVisibility() {
@@ -746,11 +751,11 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl, adminStripeLinks] = await Promise.all([
+    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl, adminShopifyLinks] = await Promise.all([
       loadProductPhotos(),
       loadHiddenProducts(),
       loadHeroImage(),
-      loadStripeLinks()
+      loadShopifyLinks()
     ]);
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
@@ -793,7 +798,7 @@ function renderAdminPhotos() {
         <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Photo</label>
         <input type="file" id="photo-input-${p.id}" accept="image/*" style="display:none" data-product-id="${p.id}">
         ${toggleBtn}
-        <input type="text" class="admin-stripe-input" data-product-id="${p.id}" placeholder="Stripe link (https://buy.stripe.com/...)" value="${escA(adminStripeLinks[p.id] || '')}" style="flex:1;min-width:120px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:0.8rem">
+        <input type="url" class="admin-shopify-input" data-product-id="${p.id}" placeholder="Shopify product link (https://your-store.myshopify.com/products/...)" value="${escA(adminShopifyLinks[p.id] || '')}" style="flex:1;min-width:160px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:0.8rem">
       </div>
     `;
   }).join("");
@@ -842,27 +847,27 @@ function renderAdminPhotos() {
   });
 
 
-  list.querySelectorAll(".admin-stripe-input").forEach(input => {
+  list.querySelectorAll(".admin-shopify-input").forEach(input => {
     input.addEventListener("input", () => {
-      adminStripeLinks[input.dataset.productId] = input.value.trim();
+      adminShopifyLinks[input.dataset.productId] = input.value.trim();
     });
   });
 
-  const saveStripeBtn = document.getElementById("admin-save-stripe");
-  if (saveStripeBtn) {
-    saveStripeBtn.onclick = async () => {
+  const saveShopifyBtn = document.getElementById("admin-save-shopify");
+  if (saveShopifyBtn) {
+    saveShopifyBtn.onclick = async () => {
       const statusEl = document.getElementById("admin-photos-status");
-      saveStripeBtn.disabled = true;
+      saveShopifyBtn.disabled = true;
       if (statusEl) { statusEl.textContent = "Saving..."; statusEl.className = "admin-status"; }
       try {
-        await saveStripeLinks(adminStripeLinks);
-        stripeLinks = { ...adminStripeLinks };
-        applyStripeLinks(stripeLinks);
-        if (statusEl) { statusEl.textContent = "Stripe links saved!"; statusEl.className = "admin-status ok"; }
+        await saveShopifyLinks(adminShopifyLinks);
+        shopifyLinks = { ...adminShopifyLinks };
+        applyShopifyLinks(shopifyLinks);
+        if (statusEl) { statusEl.textContent = "Shopify links saved!"; statusEl.className = "admin-status ok"; }
         setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
       } catch (err) {
         if (statusEl) { statusEl.textContent = "Save failed: " + err.message; statusEl.className = "admin-status err"; }
-      } finally { saveStripeBtn.disabled = false; }
+      } finally { saveShopifyBtn.disabled = false; }
     };
   }
 
@@ -1016,7 +1021,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeroImage();
   initProductPhotos();
   initProductVisibility();
-  initStripeLinks();
+  initCommerceLinks();
 });
 
 /*
@@ -1041,6 +1046,6 @@ document.addEventListener("DOMContentLoaded", () => {
  * 10. CSP HEADERS        ÃÂ¢ÃÂÃÂ PENDING. See HTML file comments for recommended _headers configuration
  *                          to apply via GitHub Pages + Cloudflare or a custom _headers file.
  * 11. SOURCE MAPS        ÃÂ¢ÃÂÃÂ PASS. No source map references.
- * 12. LINK INTEGRITY     ÃÂ¢ÃÂÃÂ PASS. All internal links use relative paths. Stripe and Formspree
- *                          placeholders marked with HTML comments for owner replacement.
+ * 12. LINK INTEGRITY     ÃÂ¢ÃÂÃÂ PASS. All internal links use relative paths. Shopify and Formspree
+ *                          destinations are managed by the site owner.
  */

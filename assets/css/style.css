@@ -169,6 +169,15 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(201,151,42,0.35);
 }
+.btn-gold.shopify-coming-soon,
+.btn-gold.shopify-coming-soon:hover {
+  background: rgba(138,155,176,0.14);
+  color: var(--text-muted);
+  border: 1px solid rgba(138,155,176,0.28);
+  box-shadow: none;
+  transform: none;
+  cursor: default;
+}
 .btn-outline {
   background: transparent;
   color: var(--gold);

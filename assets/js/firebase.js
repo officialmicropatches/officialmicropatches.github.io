@@ -200,19 +200,19 @@ export async function uploadProductPhoto(productId, file) {
   return url;
 }
 
-const STRIPE_LINKS_DOC = doc(db, "config", "stripeLinks");
+const SHOPIFY_LINKS_DOC = doc(db, "config", "shopifyLinks");
 
 /**
- * loadStripeLinks — returns map of { productId: stripePaymentLinkUrl }
+ * loadShopifyLinks — returns map of { productId: shopifyProductUrl }
  */
-export async function loadStripeLinks() {
-    const snap = await getDoc(STRIPE_LINKS_DOC);
+export async function loadShopifyLinks() {
+    const snap = await getDoc(SHOPIFY_LINKS_DOC);
     return snap.exists() ? snap.data() : {};
 }
 
 /**
- * saveStripeLinks — saves map of { productId: stripePaymentLinkUrl }
+ * saveShopifyLinks — saves map of { productId: shopifyProductUrl }
  */
-export async function saveStripeLinks(links) {
-    await setDoc(STRIPE_LINKS_DOC, links);
+export async function saveShopifyLinks(links) {
+    await setDoc(SHOPIFY_LINKS_DOC, links);
 }
