@@ -111,6 +111,39 @@ initAnimations();
     "amr-cct-rn": { category: "ems", state: "AZ", type: "cct-rn" },
     "pink-patch": { category: "pink-patch", state: "all", type: "awareness" },
     "chandler-pd-pink": { category: "pink-patch", state: "AZ", type: "awareness" },
+    "harris-constable-pct4": { category: "law-enforcement", state: "TX", type: "sheriff" },
+    "ice": { category: "law-enforcement", state: "all", type: "federal" },
+    "flagstaff-pd-retired": { category: "law-enforcement", state: "AZ", type: "police" },
+    "austin-pd": { category: "law-enforcement", state: "TX", type: "police" },
+    "oakland-pd": { category: "law-enforcement", state: "CA", type: "police" },
+    "birmingham-pd": { category: "law-enforcement", state: "AL", type: "police" },
+    "pima-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "flagstaff-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "madison-pd": { category: "law-enforcement", state: "WI", type: "police" },
+    "texarkana-pd": { category: "law-enforcement", state: "TX", type: "police" },
+    "ohio-deputy-sheriff": { category: "law-enforcement", state: "OH", type: "sheriff" },
+    "avondale-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "arizona-rangers": { category: "law-enforcement", state: "AZ", type: "state" },
+    "harris-county-sheriff": { category: "law-enforcement", state: "TX", type: "sheriff" },
+    "glendale-pd-az": { category: "law-enforcement", state: "AZ", type: "police" },
+    "cochise-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "buckeye-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "asu-pd": { category: "law-enforcement", state: "AZ", type: "university" },
+    "detroit-pd": { category: "law-enforcement", state: "MI", type: "police" },
+    "santa-fe-pd": { category: "law-enforcement", state: "NM", type: "police" },
+    "apache-junction-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "peoria-pd-az": { category: "law-enforcement", state: "AZ", type: "police" },
+    "auburn-pd": { category: "law-enforcement", state: "WA", type: "police" },
+    "maricopa-detention-deputy": { category: "corrections", state: "AZ", type: "detention" },
+    "az-doc": { category: "corrections", state: "AZ", type: "corrections" },
+    "az-doc-logo": { category: "corrections", state: "AZ", type: "corrections" },
+    "75th-ranger-regiment": { category: "military", state: "all", branch: "army" },
+    "us-air-force": { category: "military", state: "all", branch: "air-force" },
+    "3rd-battalion-7th-marines": { category: "military", state: "all", branch: "marines" },
+    "army-ranger-medic": { category: "military", state: "all", branch: "army" },
+    "phoenix-fire": { category: "fire", state: "AZ", type: "department" },
+    "mammoth-fire": { category: "fire", state: "AZ", type: "department" },
+    "pomona-pink-patch": { category: "pink-patch", state: "CA", type: "awareness" },
     "bulk-orders": { category: "all", state: "all", type: "quote" }
   };
 
@@ -364,6 +397,40 @@ const PRODUCTS = [
   { id: "tempe-pd",            name: "Tempe Police Department" },
   { id: "tucson-pd",           name: "Tucson Police Department" },
   { id: "us-border-patrol",    name: "U.S. Border Patrol" },
+  // Additional active law enforcement / corrections
+  { id: "harris-constable-pct4", name: "Harris County Constable Precinct 4" },
+  { id: "ice", name: "Immigration and Customs Enforcement" },
+  { id: "flagstaff-pd-retired", name: "Flagstaff Police Department Retired" },
+  { id: "austin-pd", name: "Austin Texas Police Department" },
+  { id: "oakland-pd", name: "Oakland Police Department" },
+  { id: "birmingham-pd", name: "Birmingham Police Department" },
+  { id: "pima-sheriff", name: "Pima County Sheriff's Office" },
+  { id: "flagstaff-pd", name: "Flagstaff Police Department" },
+  { id: "madison-pd", name: "Madison Police Department" },
+  { id: "texarkana-pd", name: "Texarkana Police Department" },
+  { id: "ohio-deputy-sheriff", name: "Ohio Deputy Sheriff" },
+  { id: "avondale-pd", name: "Avondale Police Department" },
+  { id: "arizona-rangers", name: "Arizona Rangers" },
+  { id: "harris-county-sheriff", name: "Harris County Sheriff's Office" },
+  { id: "glendale-pd-az", name: "Glendale Police Department Arizona" },
+  { id: "cochise-sheriff", name: "Cochise County Sheriff" },
+  { id: "buckeye-pd", name: "Buckeye Police Department" },
+  { id: "asu-pd", name: "Arizona State University Police Department" },
+  { id: "detroit-pd", name: "Detroit Police Department" },
+  { id: "santa-fe-pd", name: "Santa Fe Police Department" },
+  { id: "apache-junction-pd", name: "Apache Junction Police Department" },
+  { id: "peoria-pd-az", name: "Peoria Arizona Police Department" },
+  { id: "auburn-pd", name: "Auburn Police Department" },
+  { id: "maricopa-detention-deputy", name: "Maricopa County Sheriff's Office Detention Deputy" },
+  { id: "az-doc", name: "Arizona Department of Corrections" },
+  { id: "az-doc-logo", name: "Arizona Department of Corrections Logo" },
+  { id: "75th-ranger-regiment", name: "75th Ranger Regiment" },
+  { id: "us-air-force", name: "U.S. Air Force" },
+  { id: "3rd-battalion-7th-marines", name: "3rd Battalion 7th Marines" },
+  { id: "army-ranger-medic", name: "Army Ranger Medic" },
+  { id: "phoenix-fire", name: "Phoenix Fire Department" },
+  { id: "mammoth-fire", name: "Mammoth Fire Department" },
+  { id: "pomona-pink-patch", name: "Pomona Police Pink Patch" },
   // Military
   { id: "101st-airborne",      name: "101st Airborne Division Screaming Eagles" },
   { id: "10th-mountain",       name: "10th Mountain Division" },
@@ -385,12 +452,14 @@ const PRODUCTS = [
 
 function applyProductPhoto(productId, url) {
   if (!url) return;
-  const cardImg = document.querySelector(`.product-card-img[data-product-id="${productId}"]`);
-  if (!cardImg) return;
-  const placeholder = cardImg.querySelector(".img-placeholder");
-  const img = cardImg.querySelector(".product-card-photo");
-  if (placeholder) placeholder.style.display = "none";
-  if (img) { img.src = url; img.style.display = "block"; }
+  const cardImgs = document.querySelectorAll(`.product-card-img[data-product-id="${productId}"]`);
+  if (!cardImgs.length) return;
+  cardImgs.forEach(cardImg => {
+    const placeholder = cardImg.querySelector(".img-placeholder");
+    const img = cardImg.querySelector(".product-card-photo");
+    if (placeholder) placeholder.style.display = "none";
+    if (img) { img.src = url; img.style.display = "block"; }
+  });
 }
 
 function applyHeroImage(url) {
@@ -463,7 +532,40 @@ const DEFAULT_SHOPIFY_LINKS = Object.freeze({
   "amr-paramedic": "https://micropatches.myshopify.com/products/american-medical-response-amr-paramedic-collector-patch-keychain-magnet-croc-cha",
   "amr-cct-rn": "https://micropatches.myshopify.com/products/american-medical-response-cct-rn-collector-patch-keychain-magnet-croc-charm-ems",
   "pink-patch": "https://micropatches.myshopify.com/products/pink-patch-project-police-patches-gone-pink-for-breast-cancer-research-10-donate",
-  "chandler-pd-pink": "https://micropatches.myshopify.com/products/chandler-pd-pink-patch-project-chandler-pd-goes-pink-for-breast-cancer-10-donate"
+  "chandler-pd-pink": "https://micropatches.myshopify.com/products/chandler-pd-pink-patch-project-chandler-pd-goes-pink-for-breast-cancer-10-donate",
+  "harris-constable-pct4": "https://micropatches.myshopify.com/products/harris-county-constable-precinct-4-keychain",
+  "ice": "https://micropatches.myshopify.com/products/ice-keychain-immigration-and-customs-enforcement-keychain-federal-law-enforcemen",
+  "flagstaff-pd-retired": "https://micropatches.myshopify.com/products/flagstaff-retired-patch-police-department-keychain-flagstaff-pd-keychain-police",
+  "austin-pd": "https://micropatches.myshopify.com/products/austin-texas-police-department-collector-patch-keychain-police-gift-thin-blue-li",
+  "oakland-pd": "https://micropatches.myshopify.com/products/oakland-california-police-department-collector-patch-keychain-police-gift-thin-b",
+  "birmingham-pd": "https://micropatches.myshopify.com/products/birmingham-alabama-police-department-collector-patch-keychain-police-gift-thin-b",
+  "pima-sheriff": "https://micropatches.myshopify.com/products/pima-county-sheriff39s-office-collector-patch-keychain-magnet-deputy-wife-gift-t",
+  "flagstaff-pd": "https://micropatches.myshopify.com/products/flagstaff-police-department-collector-patch-keychain-police-gift-thin-blue-line",
+  "madison-pd": "https://micropatches.myshopify.com/products/madison-police-department-collector-patch-keychain-police-gift-thin-blue-line",
+  "texarkana-pd": "https://micropatches.myshopify.com/products/texarkana-police-department-keychain-tpd-keychain-police-keychain",
+  "ohio-deputy-sheriff": "https://micropatches.myshopify.com/products/ohio-deputy-sheriff-keychain-sheriff-keychain-45mm",
+  "avondale-pd": "https://micropatches.myshopify.com/products/avondale-police-department-keychain-avondale-arizona-pd-keychain-police-keychain",
+  "arizona-rangers": "https://micropatches.myshopify.com/products/arizona-rangers-keychain-law-enforcement-keychain",
+  "harris-county-sheriff": "https://micropatches.myshopify.com/products/harris-county-sheriffs-office-keychain-texas-pride-gift-constable-gift",
+  "glendale-pd-az": "https://micropatches.myshopify.com/products/glendale-police-department-arizona-collector-patch-keychain-magnet-police-wife-g",
+  "cochise-sheriff": "https://micropatches.myshopify.com/products/cochise-county-sheriff-keychain-sheriff-keychain-sheriff-deputy-keychain",
+  "buckeye-pd": "https://micropatches.myshopify.com/products/buckeye-police-department-arizona-collector-patch-keychain-magnet-police-wife-gi",
+  "asu-pd": "https://micropatches.myshopify.com/products/arizona-state-university-police-department-keychain-asu-police-keychain-45mm",
+  "detroit-pd": "https://micropatches.myshopify.com/products/detroit-michigan-police-department-keychain-police-keychain-45mm",
+  "santa-fe-pd": "https://micropatches.myshopify.com/products/santa-fe-new-mexico-police-department-keychain-police-keychain-45mm",
+  "apache-junction-pd": "https://micropatches.myshopify.com/products/apache-junction-police-department-arizona-collector-patch-keychain-magnet-police",
+  "peoria-pd-az": "https://micropatches.myshopify.com/products/peoria-arizona-police-patch-keychain-magnet-3d-printed-collector-item",
+  "auburn-pd": "https://micropatches.myshopify.com/products/auburn-police-department-patch-keychain-3d-printed-replica-thin-blue-line-access",
+  "maricopa-detention-deputy": "https://micropatches.myshopify.com/products/maricopa-county-sheriffs-office-detention-deputy-keychain-corrections-officer-ke",
+  "az-doc": "https://micropatches.myshopify.com/products/arizona-department-of-corrections-keychain-doc-keychain-corrections-keychain",
+  "az-doc-logo": "https://micropatches.myshopify.com/products/arizona-department-of-corrections-logo-keychain-corrections-keychain",
+  "75th-ranger-regiment": "https://micropatches.myshopify.com/products/75th-ranger-regiment-collector-patch-keychain-military-family-gift-support-our-t",
+  "us-air-force": "https://micropatches.myshopify.com/products/us-airforce-keychain-military-collectible",
+  "3rd-battalion-7th-marines": "https://micropatches.myshopify.com/products/3rd-batallion-7th-marines-patch-keychain-military-collectible",
+  "army-ranger-medic": "https://micropatches.myshopify.com/products/army-ranger-medic-collector-patch-keychain-military-family-gift-support-our-troo",
+  "phoenix-fire": "https://micropatches.myshopify.com/products/phoenix-fire-department-keychain-collector-patch-keychain-magnet-firefighter-fam",
+  "mammoth-fire": "https://micropatches.myshopify.com/products/mammoth-fire-department-keychain-collector-patch-keychain-magnet-firefighter-fam",
+  "pomona-pink-patch": "https://micropatches.myshopify.com/products/pomona-police-pink-patch-keychain-breast-cancer-awareness-support-3d-replica"
 });
 
 function applyProductVisibility(hidden) {
