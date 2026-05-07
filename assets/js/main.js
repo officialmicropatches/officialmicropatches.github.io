@@ -68,10 +68,70 @@ initAnimations();
   const tabsWrap = document.querySelector(".shop-tabs");
   if (!tabsWrap) return;
 
+  const PRODUCT_FILTER_META = {
+    "az-dps": { category: "law-enforcement", state: "AZ", type: "state" },
+    "auburn-pd-retired": { category: "law-enforcement", state: "WA", type: "police" },
+    "chandler-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "chandler-pd-retired": { category: "law-enforcement", state: "AZ", type: "police" },
+    "chicago-pd": { category: "law-enforcement", state: "IL", type: "police" },
+    "surprise-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "el-mirage-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "florida-hp": { category: "law-enforcement", state: "FL", type: "state" },
+    "gila-river-pd": { category: "law-enforcement", state: "AZ", type: "tribal" },
+    "gilbert-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "goodyear-pd-retired": { category: "law-enforcement", state: "AZ", type: "police" },
+    "honolulu-pd": { category: "law-enforcement", state: "HI", type: "police" },
+    "houston-tx": { category: "law-enforcement", state: "TX", type: "police" },
+    "kent-pd": { category: "law-enforcement", state: "WA", type: "police" },
+    "maricopa-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "maricopa-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "maui-pd": { category: "law-enforcement", state: "HI", type: "police" },
+    "mesa-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "nypd": { category: "law-enforcement", state: "NY", type: "police" },
+    "phoenix-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "pinal-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "prescott-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "queen-creek-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "san-jose-pd": { category: "law-enforcement", state: "CA", type: "police" },
+    "scottsdale-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "seattle-pd": { category: "law-enforcement", state: "WA", type: "police" },
+    "simi-valley-pd": { category: "law-enforcement", state: "CA", type: "police" },
+    "tempe-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "tucson-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "us-border-patrol": { category: "law-enforcement", state: "all", type: "federal" },
+    "101st-airborne": { category: "military", branch: "army" },
+    "10th-mountain": { category: "military", branch: "army" },
+    "173rd-airborne": { category: "military", branch: "army" },
+    "504th-pir-ww2": { category: "military", branch: "army" },
+    "82nd-airborne": { category: "military", branch: "army" },
+    "seabees": { category: "military", branch: "navy" },
+    "chandler-fire": { category: "fire", state: "AZ", type: "department" },
+    "amr-emt": { category: "ems", state: "AZ", type: "emt" },
+    "amr-paramedic": { category: "ems", state: "AZ", type: "paramedic" },
+    "amr-cct-rn": { category: "ems", state: "AZ", type: "cct-rn" },
+    "pink-patch": { category: "pink-patch", state: "all", type: "awareness" },
+    "chandler-pd-pink": { category: "pink-patch", state: "AZ", type: "awareness" },
+    "bulk-orders": { category: "all", state: "all", type: "quote" }
+  };
+
   const tabs    = tabsWrap.querySelectorAll(".shop-tab");
   const cards   = document.querySelectorAll(".product-card[data-category]");
   const grid    = document.querySelector(".product-grid");
-  const validTabs = ["law-enforcement", "military", "fire-ems", "pink-patch"];
+  const filterPanel = document.querySelector(".shop-filter-panel");
+  const filterGroups = filterPanel ? filterPanel.querySelectorAll(".shop-filter-group") : [];
+  const emptyState = document.querySelector(".shop-empty-state");
+  const validTabs = ["law-enforcement", "corrections", "military", "fire", "ems", "pink-patch"];
+  const filterState = { category: "all", state: "all", type: "all", branch: "all" };
+
+  cards.forEach(card => {
+    const imgEl = card.querySelector(".product-card-img[data-product-id]");
+    const productId = imgEl && imgEl.dataset.productId;
+    const meta = productId ? PRODUCT_FILTER_META[productId] : null;
+    if (!meta) return;
+    Object.entries(meta).forEach(([key, value]) => {
+      if (value) card.dataset[key] = value;
+    });
+  });
 
   function scrollToShopTop() {
     const forceTop = () => {
@@ -87,10 +147,45 @@ initAnimations();
     setTimeout(forceTop, 250);
   }
 
-  function activateTab(cat) {
+  function resetSubfilters() {
+    filterState.state = "all";
+    filterState.type = "all";
+    filterState.branch = "all";
+    if (!filterPanel) return;
+    filterPanel.querySelectorAll("select[data-shop-filter]").forEach(select => {
+      select.value = "all";
+    });
+    filterPanel.querySelectorAll(".shop-subfilter").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.filterValue === "all");
+    });
+  }
+
+  function updateFilterPanel(cat) {
+    if (!filterPanel) return;
+    const hasFilters = cat !== "all" && cat !== "pink-patch";
+    filterPanel.classList.toggle("is-visible", hasFilters);
+    filterGroups.forEach(group => {
+      group.classList.toggle("active", group.dataset.filterFor === cat);
+    });
+  }
+
+  function cardMatchesFilters(card, cat) {
+    if (cat === "all") return true;
+    if (card.dataset.category !== cat) return false;
+    if (filterState.state !== "all" && card.dataset.state !== "all" && card.dataset.state !== filterState.state) return false;
+    if (cat === "military" && filterState.branch !== "all" && card.dataset.branch !== filterState.branch) return false;
+    if (cat !== "military" && filterState.type !== "all" && card.dataset.type !== filterState.type) return false;
+    return true;
+  }
+
+  function activateTab(cat, shouldResetFilters = true) {
+    filterState.category = cat;
+    if (shouldResetFilters) resetSubfilters();
+    updateFilterPanel(cat);
     tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === cat));
+    let visibleCount = 0;
     cards.forEach(card => {
-      const match = cat === "all" || card.dataset.category === cat;
+      const match = cardMatchesFilters(card, cat);
       if (!match) {
         card.style.display = "none";
       } else {
@@ -101,9 +196,13 @@ initAnimations();
           isAdminHidden = productId ? hiddenProductIds.includes(productId) : false;
         } catch(e) {}
         card.style.display = isAdminHidden ? "none" : "";
-        if (!isAdminHidden) card.classList.add("visible");
+        if (!isAdminHidden) {
+          card.classList.add("visible");
+          visibleCount += 1;
+        }
       }
     });
+    if (emptyState) emptyState.hidden = visibleCount > 0;
     if (grid) grid.style.opacity = "0.4";
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -123,6 +222,31 @@ initAnimations();
       setShopCategory(tab.dataset.tab, false);
     });
   });
+
+  if (filterPanel) {
+    filterPanel.addEventListener("change", e => {
+      const select = e.target.closest("select[data-shop-filter]");
+      if (!select) return;
+      filterState[select.dataset.shopFilter] = select.value;
+      activateTab(filterState.category, false);
+    });
+
+    filterPanel.addEventListener("click", e => {
+      const btn = e.target.closest(".shop-subfilter");
+      if (!btn) return;
+      const key = btn.dataset.shopFilter;
+      filterState[key] = btn.dataset.filterValue || "all";
+      const group = btn.closest(".shop-filter-group");
+      if (group) {
+        group.querySelectorAll(`.shop-subfilter[data-shop-filter="${key}"]`).forEach(item => {
+          item.classList.toggle("active", item === btn);
+        });
+      }
+      activateTab(filterState.category, false);
+    });
+  }
+
+  window.applyActiveShopFilters = () => activateTab(filterState.category, false);
 
   document.addEventListener("click", (e) => {
     const link = e.target.closest('a[href*="#"]');
@@ -343,6 +467,10 @@ const DEFAULT_SHOPIFY_LINKS = Object.freeze({
 });
 
 function applyProductVisibility(hidden) {
+  if (typeof window.applyActiveShopFilters === "function") {
+    window.applyActiveShopFilters();
+    return;
+  }
   const activeTab = document.querySelector(".shop-tab.active");
   const activeCategory = activeTab ? activeTab.dataset.tab : "all";
 
