@@ -1262,6 +1262,27 @@ h1, h2, h3, h4, h5, h6 {
 .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
 
 /* ---------- PATCH EXCHANGE ---------- */
+.exchange-hero-offer {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 10px 14px;
+  background: rgba(201,151,42,0.12);
+  border: 1px solid rgba(201,151,42,0.42);
+  border-radius: var(--radius);
+  color: #f3cf74;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.exchange-hero-offer span {
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+}
 .exchange-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
@@ -1481,6 +1502,11 @@ h1, h2, h3, h4, h5, h6 {
   .hero-ctas .btn { width: 100%; }
   .section { padding: 56px 0; }
   .page-hero h1 { font-size: 2rem; }
+  .exchange-hero-offer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
   .exchange-section-title { font-size: 1.55rem; margin-bottom: 28px; }
   .exchange-step { gap: 14px; padding-bottom: 28px; }
   .exchange-step-icon { width: 42px; height: 42px; font-size: 1rem; }
