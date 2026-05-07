@@ -490,6 +490,30 @@ let hiddenProductIds = [];
 let shopifyLinks = {};
 let adminShopifyLinks = {};
 
+const DEFAULT_HIDDEN_PRODUCT_IDS = Object.freeze([
+  "maricopa-pd",
+  "prescott-pd",
+  "honolulu-pd",
+  "seattle-pd",
+  "us-air-force",
+  "101st-airborne",
+  "el-mirage-pd",
+  "nypd",
+  "kent-pd",
+  "florida-hp",
+  "10th-mountain",
+  "seabees",
+  "queen-creek-pd",
+  "504th-pir-ww2",
+  "simi-valley-pd",
+  "maui-pd",
+  "chandler-pd-pink"
+]);
+
+function mergeHiddenProductIds(savedHidden = []) {
+  return [...new Set([...DEFAULT_HIDDEN_PRODUCT_IDS, ...(Array.isArray(savedHidden) ? savedHidden : [])])];
+}
+
 const DEFAULT_SHOPIFY_LINKS = Object.freeze({
   "az-dps": "https://micropatches.myshopify.com/products/arizona-department-of-public-safety-az-state-trooper-collector-patch-keychain-ma",
   "auburn-pd-retired": "https://micropatches.myshopify.com/products/auburn-police-department-retired-patch-collector-patch-keychain-magnet-police-wi",
@@ -635,7 +659,7 @@ async function initCommerceLinks() {
 
 async function initProductVisibility() {
   try {
-    hiddenProductIds = await loadHiddenProducts();
+    hiddenProductIds = mergeHiddenProductIds(await loadHiddenProducts());
     try { applyProductVisibility(hiddenProductIds); } catch(e) {}
   } catch (_e) { /* silent */ }
 }
@@ -1027,11 +1051,14 @@ async function loadAdminPhotosTab() {
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
     const savedShopifyLinks = await loadShopifyLinks();
-    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl] = await Promise.all([
+    const [loadedProductPhotos, loadedHiddenProductIds, loadedHeroImageUrl] = await Promise.all([
       loadProductPhotos(),
       loadHiddenProducts(),
       loadHeroImage()
     ]);
+    adminProductPhotos = loadedProductPhotos;
+    hiddenProductIds = mergeHiddenProductIds(loadedHiddenProductIds);
+    adminHeroImageUrl = loadedHeroImageUrl;
     adminShopifyLinks = { ...DEFAULT_SHOPIFY_LINKS, ...savedShopifyLinks };
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
