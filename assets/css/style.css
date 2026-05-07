@@ -1262,6 +1262,17 @@ h1, h2, h3, h4, h5, h6 {
 .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
 
 /* ---------- PATCH EXCHANGE ---------- */
+.exchange-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+  gap: 72px;
+  align-items: start;
+}
+.exchange-section-title {
+  font-size: 1.85rem;
+  color: #fff;
+  margin-bottom: 36px;
+}
 .exchange-steps {
   display: flex;
   flex-direction: column;
@@ -1307,7 +1318,70 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 6px;
   margin-top: 8px;
 }
-.exchange-step-body p { font-size: 0.9rem; color: var(--text-muted); }
+.exchange-step-body p { font-size: 0.94rem; color: var(--text-muted); line-height: 1.65; }
+.exchange-address {
+  display: inline-block;
+  margin: 8px 0 10px;
+  padding: 12px 16px;
+  background: rgba(201,151,42,0.08);
+  border: 1px solid rgba(201,151,42,0.28);
+  border-radius: var(--radius);
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-style: normal;
+  letter-spacing: 0.05em;
+  line-height: 1.55;
+}
+.exchange-accept-card {
+  background: linear-gradient(180deg, rgba(17,24,39,0.98), rgba(13,20,36,0.98));
+  border: 1px solid rgba(201,151,42,0.38);
+  border-radius: var(--radius);
+  padding: 30px 32px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.03);
+  margin-bottom: 18px;
+}
+.exchange-accept-card h2 {
+  color: #fff;
+  font-size: 1.75rem;
+  margin-bottom: 14px;
+}
+.exchange-accept-card p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.exchange-accept-card strong {
+  color: var(--gold-light);
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.exchange-accept-note {
+  margin-top: 18px;
+  font-size: 0.9rem !important;
+}
+.exchange-accept-note a {
+  color: var(--gold);
+  font-weight: 600;
+}
+.exchange-accept-note a:hover { text-decoration: underline; }
+.exchange-notice {
+  background: rgba(26,107,189,0.08);
+  border: 1px solid rgba(138,155,176,0.24);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.exchange-notice h3 {
+  color: var(--gold);
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.exchange-notice p { font-size: 0.92rem; }
 
 .exchange-pricing-cards {
   display: grid;
@@ -1319,7 +1393,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 28px 24px;
   text-align: center;
 }
 .exchange-pricing-card .price {
@@ -1334,7 +1408,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff;
   margin-bottom: 8px;
 }
-.exchange-pricing-card p { font-size: 0.85rem; color: var(--text-muted); }
+.exchange-pricing-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
 
 /* ---------- INFO CARDS (what we accept) ---------- */
 .info-card {
@@ -1387,6 +1461,10 @@ h1, h2, h3, h4, h5, h6 {
   .step-connector { display: none; }
 
   .pricing-grid { grid-template-columns: 1fr; }
+  .exchange-layout {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
   .exchange-pricing-cards { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -1403,5 +1481,12 @@ h1, h2, h3, h4, h5, h6 {
   .hero-ctas .btn { width: 100%; }
   .section { padding: 56px 0; }
   .page-hero h1 { font-size: 2rem; }
+  .exchange-section-title { font-size: 1.55rem; margin-bottom: 28px; }
+  .exchange-step { gap: 14px; padding-bottom: 28px; }
+  .exchange-step-icon { width: 42px; height: 42px; font-size: 1rem; }
+  .exchange-step-line { left: 20px; top: 42px; }
+  .exchange-accept-card { padding: 24px 20px; }
+  .exchange-accept-card h2 { font-size: 1.45rem; }
+  .exchange-notice { padding: 20px; }
   .queue-preview-ctas { flex-direction: column; align-items: center; }
 }
