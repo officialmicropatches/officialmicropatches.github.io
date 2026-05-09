@@ -1657,7 +1657,7 @@ async function initProductPage() {
   const name = data.name || productId.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   const category = data.category || "Patch Keychain";
   const location = data.location || "USA";
-  const description = `UV-printed 3D replica of the ${name} patch. Handcrafted in Phoenix, AZ — a collector piece for officers, veterans, families, and supporters who carry the badge with pride.`;
+  const description = `UV-printed 3D replica of the ${name} patch. Handcrafted in Phoenix, AZ — a collector piece for officers, veterans, families, and supporters.`;
 
   // Update page metadata
   document.title = `${name} — MicroPatches`;
