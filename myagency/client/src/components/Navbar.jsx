@@ -2,14 +2,12 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import { supabase } from '../lib/supabase';
-import { api } from '../lib/api';
 
 export default function Navbar() {
   const { user, username, setUser, setUsername } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await api.logout().catch(() => {});
     await supabase.auth.signOut();
     setUser(null);
     setUsername(null);

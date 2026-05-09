@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../App';
 import { api } from '../lib/api';
-import GradeBadge from './GradeBadge';
 
 const CATEGORIES = [
   { key: 'grade_communication', label: 'Communication', desc: 'How well does leadership communicate with officers?' },
@@ -25,7 +24,7 @@ const GRADE_COLORS = {
   F: 'bg-red-100 text-grade-f border-grade-f',
 };
 
-export default function RateAgencyModal({ agencyId, agencyName, onClose }) {
+export default function RateAgencyModal({ agencyId, agencyName, onClose, onSuccess }) {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [grades, setGrades] = useState({});
@@ -67,6 +66,7 @@ export default function RateAgencyModal({ agencyId, agencyName, onClose }) {
         review_text: reviewText.trim() || undefined,
       });
       setSuccess(true);
+      onSuccess?.();
     } catch (e) {
       setError(e.message);
     } finally {

@@ -137,12 +137,9 @@ router.post('/login', async (req, res) => {
 });
 
 // POST /api/auth/logout
-router.post('/logout', async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader?.startsWith('Bearer ')) {
-    const token = authHeader.split(' ')[1];
-    await supabaseAnon.auth.admin?.signOut(token).catch(() => {});
-  }
+// Session invalidation is handled client-side via supabase.auth.signOut().
+// This endpoint exists so the client can call it before clearing the local session.
+router.post('/logout', (_req, res) => {
   res.json({ message: 'Logged out' });
 });
 

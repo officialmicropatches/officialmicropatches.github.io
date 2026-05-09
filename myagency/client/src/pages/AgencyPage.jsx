@@ -16,6 +16,12 @@ export default function AgencyPage() {
   const [staffExpanded, setStaffExpanded] = useState(false);
   const [showRateAgency, setShowRateAgency] = useState(false);
   const [showRateSupervisor, setShowRateSupervisor] = useState(false);
+  const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
+
+  function handleReviewSuccess() {
+    setReviewRefreshKey((k) => k + 1);
+    api.getAgency(slug).then(setAgency).catch(() => {});
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -120,7 +126,7 @@ export default function AgencyPage() {
           {/* Main content: reviews + Q&A */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
-              <TabbedReviewWindow slug={slug} />
+              <TabbedReviewWindow slug={slug} refreshKey={reviewRefreshKey} />
             </div>
             <div>
               <QAPanel agencyId={agency.id} slug={slug} />
@@ -134,6 +140,7 @@ export default function AgencyPage() {
           agencyId={agency.id}
           agencyName={agency.name}
           onClose={() => setShowRateAgency(false)}
+          onSuccess={handleReviewSuccess}
         />
       )}
 
@@ -142,6 +149,7 @@ export default function AgencyPage() {
           agencyId={agency.id}
           agencyName={agency.name}
           onClose={() => setShowRateSupervisor(false)}
+          onSuccess={handleReviewSuccess}
         />
       )}
     </>

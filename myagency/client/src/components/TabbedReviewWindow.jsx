@@ -5,7 +5,7 @@ import SupervisorReviewCard from './SupervisorReviewCard';
 
 const PAGE_SIZE = 10;
 
-export default function TabbedReviewWindow({ slug }) {
+export default function TabbedReviewWindow({ slug, refreshKey = 0 }) {
   const [activeTab, setActiveTab] = useState('agency');
 
   const [agencyReviews, setAgencyReviews] = useState([]);
@@ -21,6 +21,7 @@ export default function TabbedReviewWindow({ slug }) {
 
   useEffect(() => {
     setAgencyLoading(true);
+    setSupervisorLoaded(false);
     api.getAgencyReviews(slug, 1)
       .then((data) => {
         setAgencyReviews(data.reviews);
@@ -29,7 +30,7 @@ export default function TabbedReviewWindow({ slug }) {
       })
       .catch(() => {})
       .finally(() => setAgencyLoading(false));
-  }, [slug]);
+  }, [slug, refreshKey]);
 
   function handleTabSwitch(tab) {
     setActiveTab(tab);

@@ -26,7 +26,7 @@ const GRADE_COLORS = {
   F: 'bg-red-100 text-grade-f border-grade-f',
 };
 
-export default function RateSupervisorModal({ agencyId, agencyName, onClose }) {
+export default function RateSupervisorModal({ agencyId, agencyName, onClose, onSuccess }) {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [selectedRank, setSelectedRank] = useState('');
@@ -70,6 +70,7 @@ export default function RateSupervisorModal({ agencyId, agencyName, onClose }) {
         review_text: reviewText.trim() || undefined,
       });
       setSuccess(true);
+      onSuccess?.();
     } catch (e) {
       setError(e.message);
     } finally {
