@@ -199,3 +199,20 @@ export async function uploadProductPhoto(productId, file) {
   await setDoc(PRODUCT_PHOTOS_DOC, { [productId]: url }, { merge: true });
   return url;
 }
+
+const SHOPIFY_LINKS_DOC = doc(db, "config", "shopifyLinks");
+
+/**
+ * loadShopifyLinks — returns map of { productId: shopifyProductUrl }
+ */
+export async function loadShopifyLinks() {
+    const snap = await getDoc(SHOPIFY_LINKS_DOC);
+    return snap.exists() ? snap.data() : {};
+}
+
+/**
+ * saveShopifyLinks — saves map of { productId: shopifyProductUrl }
+ */
+export async function saveShopifyLinks(links) {
+    await setDoc(SHOPIFY_LINKS_DOC, links);
+}

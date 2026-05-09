@@ -1,8 +1,8 @@
 /**
- * main.js — Shared JS for MicroPatches site
+ * main.js ÃÂ¢ÃÂÃÂ Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadShopifyLinks, saveShopifyLinks } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -41,9 +41,9 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   INTERSECTION OBSERVER — FADE-IN ANIMATIONS
+   INTERSECTION OBSERVER ÃÂ¢ÃÂÃÂ FADE-IN ANIMATIONS
    ========================================================= */
-(function initAnimations() {
+function initAnimations() {
   const targets = document.querySelectorAll(".anim, .fade-in");
   if (!targets.length) return;
   const observer = new IntersectionObserver(
@@ -58,25 +58,184 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
     { threshold: 0.12 }
   );
   targets.forEach(el => observer.observe(el));
-})();
+}
+initAnimations();
 
 /* =========================================================
-   SHOP PAGE — TAB FILTER
+   SHOP PAGE ÃÂ¢ÃÂÃÂ TAB FILTER
    ========================================================= */
 (function initShopTabs() {
   const tabsWrap = document.querySelector(".shop-tabs");
   if (!tabsWrap) return;
 
+  const PRODUCT_FILTER_META = {
+    "az-dps": { category: "law-enforcement", state: "AZ", type: "state" },
+    "auburn-pd-retired": { category: "law-enforcement", state: "WA", type: "police" },
+    "chandler-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "chandler-pd-retired": { category: "law-enforcement", state: "AZ", type: "police" },
+    "chicago-pd": { category: "law-enforcement", state: "IL", type: "police" },
+    "surprise-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "el-mirage-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "florida-hp": { category: "law-enforcement", state: "FL", type: "state" },
+    "gila-river-pd": { category: "law-enforcement", state: "AZ", type: "tribal" },
+    "gilbert-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "goodyear-pd-retired": { category: "law-enforcement", state: "AZ", type: "police" },
+    "honolulu-pd": { category: "law-enforcement", state: "HI", type: "police" },
+    "houston-tx": { category: "law-enforcement", state: "TX", type: "police" },
+    "kent-pd": { category: "law-enforcement", state: "WA", type: "police" },
+    "maricopa-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "maricopa-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "maui-pd": { category: "law-enforcement", state: "HI", type: "police" },
+    "mesa-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "nypd": { category: "law-enforcement", state: "NY", type: "police" },
+    "phoenix-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "pinal-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "prescott-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "queen-creek-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "san-jose-pd": { category: "law-enforcement", state: "CA", type: "police" },
+    "scottsdale-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "seattle-pd": { category: "law-enforcement", state: "WA", type: "police" },
+    "simi-valley-pd": { category: "law-enforcement", state: "CA", type: "police" },
+    "tempe-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "tucson-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "us-border-patrol": { category: "law-enforcement", state: "all", type: "federal" },
+    "101st-airborne": { category: "military", branch: "army" },
+    "10th-mountain": { category: "military", branch: "army" },
+    "173rd-airborne": { category: "military", branch: "army" },
+    "504th-pir-ww2": { category: "military", branch: "army" },
+    "82nd-airborne": { category: "military", branch: "army" },
+    "seabees": { category: "military", branch: "navy" },
+    "chandler-fire": { category: "fire", state: "AZ", type: "department" },
+    "amr-emt": { category: "ems", state: "AZ", type: "emt" },
+    "amr-paramedic": { category: "ems", state: "AZ", type: "paramedic" },
+    "amr-cct-rn": { category: "ems", state: "AZ", type: "cct-rn" },
+    "pink-patch": { category: "pink-patch", state: "all", type: "awareness" },
+    "chandler-pd-pink": { category: "pink-patch", state: "AZ", type: "awareness" },
+    "harris-constable-pct4": { category: "law-enforcement", state: "TX", type: "sheriff" },
+    "ice": { category: "law-enforcement", state: "all", type: "federal" },
+    "flagstaff-pd-retired": { category: "law-enforcement", state: "AZ", type: "police" },
+    "austin-pd": { category: "law-enforcement", state: "TX", type: "police" },
+    "oakland-pd": { category: "law-enforcement", state: "CA", type: "police" },
+    "birmingham-pd": { category: "law-enforcement", state: "AL", type: "police" },
+    "pima-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "flagstaff-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "madison-pd": { category: "law-enforcement", state: "WI", type: "police" },
+    "texarkana-pd": { category: "law-enforcement", state: "TX", type: "police" },
+    "ohio-deputy-sheriff": { category: "law-enforcement", state: "OH", type: "sheriff" },
+    "avondale-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "arizona-rangers": { category: "law-enforcement", state: "AZ", type: "state" },
+    "harris-county-sheriff": { category: "law-enforcement", state: "TX", type: "sheriff" },
+    "glendale-pd-az": { category: "law-enforcement", state: "AZ", type: "police" },
+    "cochise-sheriff": { category: "law-enforcement", state: "AZ", type: "sheriff" },
+    "buckeye-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "asu-pd": { category: "law-enforcement", state: "AZ", type: "university" },
+    "detroit-pd": { category: "law-enforcement", state: "MI", type: "police" },
+    "santa-fe-pd": { category: "law-enforcement", state: "NM", type: "police" },
+    "apache-junction-pd": { category: "law-enforcement", state: "AZ", type: "police" },
+    "peoria-pd-az": { category: "law-enforcement", state: "AZ", type: "police" },
+    "auburn-pd": { category: "law-enforcement", state: "WA", type: "police" },
+    "maricopa-detention-deputy": { category: "corrections", state: "AZ", type: "detention" },
+    "az-doc": { category: "corrections", state: "AZ", type: "corrections" },
+    "az-doc-logo": { category: "corrections", state: "AZ", type: "corrections" },
+    "75th-ranger-regiment": { category: "military", state: "all", branch: "army" },
+    "us-air-force": { category: "military", state: "all", branch: "air-force" },
+    "3rd-battalion-7th-marines": { category: "military", state: "all", branch: "marines" },
+    "army-ranger-medic": { category: "military", state: "all", branch: "army" },
+    "phoenix-fire": { category: "fire", state: "AZ", type: "department" },
+    "mammoth-fire": { category: "fire", state: "AZ", type: "department" },
+    "pomona-pink-patch": { category: "pink-patch", state: "CA", type: "awareness" },
+    "bulk-orders": { category: "all", state: "all", type: "quote" }
+  };
+
   const tabs    = tabsWrap.querySelectorAll(".shop-tab");
   const cards   = document.querySelectorAll(".product-card[data-category]");
   const grid    = document.querySelector(".product-grid");
+  const filterPanel = document.querySelector(".shop-filter-panel");
+  const filterGroups = filterPanel ? filterPanel.querySelectorAll(".shop-filter-group") : [];
+  const emptyState = document.querySelector(".shop-empty-state");
+  const validTabs = ["law-enforcement", "corrections", "military", "fire", "ems", "pink-patch"];
+  const filterState = { category: "all", state: "all", type: "all", branch: "all" };
 
-  function activateTab(cat) {
-    tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === cat));
-    cards.forEach(card => {
-      const match = cat === "all" || card.dataset.category === cat;
-      card.style.display = match ? "" : "none";
+  cards.forEach(card => {
+    const imgEl = card.querySelector(".product-card-img[data-product-id]");
+    const productId = imgEl && imgEl.dataset.productId;
+    const meta = productId ? PRODUCT_FILTER_META[productId] : null;
+    if (!meta) return;
+    Object.entries(meta).forEach(([key, value]) => {
+      if (value) card.dataset[key] = value;
     });
+  });
+
+  function scrollToShopTop() {
+    const forceTop = () => {
+      const scroller = document.scrollingElement || document.documentElement;
+      window.scrollTo(0, 0);
+      if (scroller) scroller.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    forceTop();
+    requestAnimationFrame(forceTop);
+    setTimeout(forceTop, 50);
+    setTimeout(forceTop, 250);
+  }
+
+  function resetSubfilters() {
+    filterState.state = "all";
+    filterState.type = "all";
+    filterState.branch = "all";
+    if (!filterPanel) return;
+    filterPanel.querySelectorAll("select[data-shop-filter]").forEach(select => {
+      select.value = "all";
+    });
+    filterPanel.querySelectorAll(".shop-subfilter").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.filterValue === "all");
+    });
+  }
+
+  function updateFilterPanel(cat) {
+    if (!filterPanel) return;
+    const hasFilters = cat !== "all" && cat !== "pink-patch";
+    filterPanel.classList.toggle("is-visible", hasFilters);
+    filterGroups.forEach(group => {
+      group.classList.toggle("active", group.dataset.filterFor === cat);
+    });
+  }
+
+  function cardMatchesFilters(card, cat) {
+    if (cat === "all") return true;
+    if (card.dataset.category !== cat) return false;
+    if (filterState.state !== "all" && card.dataset.state !== "all" && card.dataset.state !== filterState.state) return false;
+    if (cat === "military" && filterState.branch !== "all" && card.dataset.branch !== filterState.branch) return false;
+    if (cat !== "military" && filterState.type !== "all" && card.dataset.type !== filterState.type) return false;
+    return true;
+  }
+
+  function activateTab(cat, shouldResetFilters = true) {
+    filterState.category = cat;
+    if (shouldResetFilters) resetSubfilters();
+    updateFilterPanel(cat);
+    tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === cat));
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const match = cardMatchesFilters(card, cat);
+      if (!match) {
+        card.style.display = "none";
+      } else {
+        let isAdminHidden = false;
+        try {
+          const imgEl = card.querySelector(".product-card-img[data-product-id]");
+          const productId = imgEl && imgEl.dataset.productId;
+          isAdminHidden = productId ? hiddenProductIds.includes(productId) : false;
+        } catch(e) {}
+        card.style.display = isAdminHidden ? "none" : "";
+        if (!isAdminHidden) {
+          card.classList.add("visible");
+          visibleCount += 1;
+        }
+      }
+    });
+    if (emptyState) emptyState.hidden = visibleCount > 0;
     if (grid) grid.style.opacity = "0.4";
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -85,21 +244,69 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
     });
   }
 
+  function setShopCategory(cat, shouldScroll = false) {
+    activateTab(cat);
+    history.replaceState(null, "", "#" + cat);
+    if (shouldScroll) scrollToShopTop();
+  }
+
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      activateTab(tab.dataset.tab);
-      history.replaceState(null, "", "#" + tab.dataset.tab);
+      setShopCategory(tab.dataset.tab, false);
     });
+  });
+
+  if (filterPanel) {
+    filterPanel.addEventListener("change", e => {
+      const select = e.target.closest("select[data-shop-filter]");
+      if (!select) return;
+      filterState[select.dataset.shopFilter] = select.value;
+      activateTab(filterState.category, false);
+    });
+
+    filterPanel.addEventListener("click", e => {
+      const btn = e.target.closest(".shop-subfilter");
+      if (!btn) return;
+      const key = btn.dataset.shopFilter;
+      filterState[key] = btn.dataset.filterValue || "all";
+      const group = btn.closest(".shop-filter-group");
+      if (group) {
+        group.querySelectorAll(`.shop-subfilter[data-shop-filter="${key}"]`).forEach(item => {
+          item.classList.toggle("active", item === btn);
+        });
+      }
+      activateTab(filterState.category, false);
+    });
+  }
+
+  window.applyActiveShopFilters = () => activateTab(filterState.category, false);
+
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href*="#"]');
+    if (!link) return;
+
+    const url = new URL(link.getAttribute("href"), location.href);
+    const samePage = url.pathname.split("/").pop() === "shop.html" && location.pathname.split("/").pop() === "shop.html";
+    const hash = url.hash.replace("#", "");
+    if (!samePage || !validTabs.includes(hash)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    setShopCategory(hash, true);
+  }, true);
+
+  window.addEventListener("hashchange", () => {
+    const hash = location.hash.replace("#", "");
+    if (validTabs.includes(hash)) setShopCategory(hash, true);
   });
 
   // Hash detection on load
   const hash = location.hash.replace("#", "");
   if (hash) {
-    const validTabs = ["law-enforcement", "military", "fire-ems", "pink-patch"];
     if (validTabs.includes(hash)) {
       activateTab(hash);
-      const target = document.getElementById(hash);
-      if (target) setTimeout(() => target.scrollIntoView({ behavior: "smooth" }), 200);
+      setTimeout(scrollToShopTop, 200);
       return;
     }
   }
@@ -107,7 +314,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   CUSTOM ORDER PAGE — URL PARAM ?type=exchange
+   CUSTOM ORDER PAGE ÃÂ¢ÃÂÃÂ URL PARAM ?type=exchange
    ========================================================= */
 (function initCustomPage() {
   const sel = document.getElementById("product-type");
@@ -119,7 +326,7 @@ import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, lo
 })();
 
 /* =========================================================
-   QUEUE PAGE — LOAD & RENDER QUEUE
+   QUEUE PAGE ÃÂ¢ÃÂÃÂ LOAD & RENDER QUEUE
    ========================================================= */
 const queueFullList = document.querySelector(".queue-full-list");
 const queuePreviewList = document.querySelector(".queue-preview-list");
@@ -190,6 +397,40 @@ const PRODUCTS = [
   { id: "tempe-pd",            name: "Tempe Police Department" },
   { id: "tucson-pd",           name: "Tucson Police Department" },
   { id: "us-border-patrol",    name: "U.S. Border Patrol" },
+  // Additional active law enforcement / corrections
+  { id: "harris-constable-pct4", name: "Harris County Constable Precinct 4" },
+  { id: "ice", name: "Immigration and Customs Enforcement" },
+  { id: "flagstaff-pd-retired", name: "Flagstaff Police Department Retired" },
+  { id: "austin-pd", name: "Austin Texas Police Department" },
+  { id: "oakland-pd", name: "Oakland Police Department" },
+  { id: "birmingham-pd", name: "Birmingham Police Department" },
+  { id: "pima-sheriff", name: "Pima County Sheriff's Office" },
+  { id: "flagstaff-pd", name: "Flagstaff Police Department" },
+  { id: "madison-pd", name: "Madison Police Department" },
+  { id: "texarkana-pd", name: "Texarkana Police Department" },
+  { id: "ohio-deputy-sheriff", name: "Ohio Deputy Sheriff" },
+  { id: "avondale-pd", name: "Avondale Police Department" },
+  { id: "arizona-rangers", name: "Arizona Rangers" },
+  { id: "harris-county-sheriff", name: "Harris County Sheriff's Office" },
+  { id: "glendale-pd-az", name: "Glendale Police Department Arizona" },
+  { id: "cochise-sheriff", name: "Cochise County Sheriff" },
+  { id: "buckeye-pd", name: "Buckeye Police Department" },
+  { id: "asu-pd", name: "Arizona State University Police Department" },
+  { id: "detroit-pd", name: "Detroit Police Department" },
+  { id: "santa-fe-pd", name: "Santa Fe Police Department" },
+  { id: "apache-junction-pd", name: "Apache Junction Police Department" },
+  { id: "peoria-pd-az", name: "Peoria Arizona Police Department" },
+  { id: "auburn-pd", name: "Auburn Police Department" },
+  { id: "maricopa-detention-deputy", name: "Maricopa County Sheriff's Office Detention Deputy" },
+  { id: "az-doc", name: "Arizona Department of Corrections" },
+  { id: "az-doc-logo", name: "Arizona Department of Corrections Logo" },
+  { id: "75th-ranger-regiment", name: "75th Ranger Regiment" },
+  { id: "us-air-force", name: "U.S. Air Force" },
+  { id: "3rd-battalion-7th-marines", name: "3rd Battalion 7th Marines" },
+  { id: "army-ranger-medic", name: "Army Ranger Medic" },
+  { id: "phoenix-fire", name: "Phoenix Fire Department" },
+  { id: "mammoth-fire", name: "Mammoth Fire Department" },
+  { id: "pomona-pink-patch", name: "Pomona Police Pink Patch" },
   // Military
   { id: "101st-airborne",      name: "101st Airborne Division Screaming Eagles" },
   { id: "10th-mountain",       name: "10th Mountain Division" },
@@ -211,12 +452,14 @@ const PRODUCTS = [
 
 function applyProductPhoto(productId, url) {
   if (!url) return;
-  const cardImg = document.querySelector(`.product-card-img[data-product-id="${productId}"]`);
-  if (!cardImg) return;
-  const placeholder = cardImg.querySelector(".img-placeholder");
-  const img = cardImg.querySelector(".product-card-photo");
-  if (placeholder) placeholder.style.display = "none";
-  if (img) { img.src = url; img.style.display = "block"; }
+  const cardImgs = document.querySelectorAll(`.product-card-img[data-product-id="${productId}"]`);
+  if (!cardImgs.length) return;
+  cardImgs.forEach(cardImg => {
+    const placeholder = cardImg.querySelector(".img-placeholder");
+    const img = cardImg.querySelector(".product-card-photo");
+    if (placeholder) placeholder.style.display = "none";
+    if (img) { img.src = url; img.style.display = "block"; }
+  });
 }
 
 function applyHeroImage(url) {
@@ -240,23 +483,184 @@ async function initProductPhotos() {
   try {
     const photos = await loadProductPhotos();
     Object.entries(photos).forEach(([id, url]) => applyProductPhoto(id, url));
-  } catch (_e) { /* silent — photos are non-critical */ }
+  } catch (_e) { /* silent ÃÂ¢ÃÂÃÂ photos are non-critical */ }
 }
 
 let hiddenProductIds = [];
+let shopifyLinks = {};
+let adminShopifyLinks = {};
+
+const DEFAULT_HIDDEN_PRODUCT_IDS = Object.freeze([
+  "maricopa-pd",
+  "prescott-pd",
+  "honolulu-pd",
+  "seattle-pd",
+  "us-air-force",
+  "101st-airborne",
+  "el-mirage-pd",
+  "nypd",
+  "kent-pd",
+  "florida-hp",
+  "10th-mountain",
+  "seabees",
+  "queen-creek-pd",
+  "504th-pir-ww2",
+  "simi-valley-pd",
+  "maui-pd",
+  "chandler-pd-pink"
+]);
+
+function mergeHiddenProductIds(savedHidden = []) {
+  return [...new Set([...DEFAULT_HIDDEN_PRODUCT_IDS, ...(Array.isArray(savedHidden) ? savedHidden : [])])];
+}
+
+const DEFAULT_SHOPIFY_LINKS = Object.freeze({
+  "az-dps": "https://micropatches.myshopify.com/products/arizona-department-of-public-safety-az-state-trooper-collector-patch-keychain-ma",
+  "auburn-pd-retired": "https://micropatches.myshopify.com/products/auburn-police-department-retired-patch-collector-patch-keychain-magnet-police-wi",
+  "chandler-pd": "https://micropatches.myshopify.com/products/chandler-police-department-chandler-pd-collector-patch-keychain-magnet-croc-char",
+  "chandler-pd-retired": "https://micropatches.myshopify.com/products/chandler-police-department-retired-chandler-pd-collector-patch-keychain-magnet-p",
+  "chicago-pd": "https://micropatches.myshopify.com/products/chicago-police-department-collector-patch-keychain-magnet-croc-charm-police-wife",
+  "surprise-pd": "https://micropatches.myshopify.com/products/city-of-surprise-police-patch-keychain-magnet-3d-printed-arizona-pd-pride",
+  "el-mirage-pd": "https://micropatches.myshopify.com/products/el-mirage-pd-patch-keychain-magnet-3d-printed-arizona-police-pride-accessory",
+  "florida-hp": "https://micropatches.myshopify.com/products/florida-highway-patrol-keychain-3d-printed-trooper-collector-patch",
+  "gila-river-pd": "https://micropatches.myshopify.com/products/gila-river-indian-police-department-collector-patch-keychain-magnet-police-wife",
+  "gilbert-pd": "https://micropatches.myshopify.com/products/gilbert-police-department-gilbert-pd-collector-patch-keychain-magnet-arizona-pol",
+  "goodyear-pd-retired": "https://micropatches.myshopify.com/products/goodyear-police-department-retired-goodyear-pd-collector-patch-keychain-magnet-p",
+  "honolulu-pd": "https://micropatches.myshopify.com/products/honolulu-police-department-honolulu-pd-collector-patch-keychain-magnet-hawaii-po",
+  "houston-tx": "https://micropatches.myshopify.com/products/houston-police-keychain-police-gift",
+  "kent-pd": "https://micropatches.myshopify.com/products/kent-police-department-kent-pd-collector-patch-keychain-magnet-washington-police",
+  "maricopa-pd": "https://micropatches.myshopify.com/products/maricopa-police-department-maricopa-pd-collector-patch-keychain-magnet-arizona-p",
+  "maricopa-sheriff": "https://micropatches.myshopify.com/products/maricopa-county-sheriff39s-office-collector-patch-keychain-magnet-police-wife-gi",
+  "maui-pd": "https://micropatches.myshopify.com/products/maui-police-department-collector-patch-keychain-magnet-police-wife-gift-thin-blu",
+  "mesa-pd": "https://micropatches.myshopify.com/products/mesa-police-department-collector-patch-keychain-magnet-police-wife-gift-thin-blu",
+  "nypd": "https://micropatches.myshopify.com/products/new-york-city-police-department-collector-patch-keychain-magnet-croc-charm-polic",
+  "phoenix-pd": "https://micropatches.myshopify.com/products/phoenix-police-department-keychain-3d-printed-replica",
+  "pinal-sheriff": "https://micropatches.myshopify.com/products/pinal-county-sheriff-replica-patch-keychain-thin-blue-line-accessory",
+  "prescott-pd": "https://micropatches.myshopify.com/products/prescott-police-department-prescott-pd-collector-patch-keychain-magnet-croc-char",
+  "queen-creek-pd": "https://micropatches.myshopify.com/products/queen-creek-police-department-queen-creek-pd-collector-patch-keychain-magnet-ari",
+  "san-jose-pd": "https://micropatches.myshopify.com/products/san-jose-police-department-san-jose-pd-collector-patch-keychain-magnet-californi",
+  "scottsdale-pd": "https://micropatches.myshopify.com/products/scottsdale-police-department-scottsdale-pd-collector-patch-keychain-magnet-arizo",
+  "seattle-pd": "https://micropatches.myshopify.com/products/seattle-police-department-collector-patch-keychain-magnet-police-wife-gift-thin",
+  "simi-valley-pd": "https://micropatches.myshopify.com/products/simi-valley-police-patch-keychain-3d-printed-collector-pride",
+  "tempe-pd": "https://micropatches.myshopify.com/products/tempe-police-department-tempe-pd-collector-patch-keychain-magnet-arizona-police",
+  "tucson-pd": "https://micropatches.myshopify.com/products/tucson-police-department-keychain-tucson-pd-collector-patch-keychain",
+  "us-border-patrol": "https://micropatches.myshopify.com/products/us-border-patrol-collector-patch-keychain-federal-law-enforcement-wife-gift-thin",
+  "101st-airborne": "https://micropatches.myshopify.com/products/101st-airborne-division-patch-keychain-magnet-military-collectible",
+  "10th-mountain": "https://micropatches.myshopify.com/products/10th-mountain-division-collector-patch-keychain-magnet-military-family-gift-supp",
+  "173rd-airborne": "https://micropatches.myshopify.com/products/173rd-airborne-brigade-quotsky-soldiersquot-patch-keychain-3d-printed-military-r",
+  "504th-pir-ww2": "https://micropatches.myshopify.com/products/504th-pir-ww2-devil-in-baggy-pants-keychain-magnet-3d-printed-patch",
+  "82nd-airborne": "https://micropatches.myshopify.com/products/82nd-airborne-division-collector-patch-keychain-magnet-military-family-gift-supp",
+  "seabees": "https://micropatches.myshopify.com/products/us-naval-construction-battalions-quotseabeesquot-collector-patch-keychain-vetera",
+  "chandler-fire": "https://micropatches.myshopify.com/products/chandler-fire-department-collector-patch-keychain-magnet-firefighter-family-gift",
+  "amr-emt": "https://micropatches.myshopify.com/products/american-medical-response-amr-emt-collector-patch-keychain-magnet-croc-charm-ems",
+  "amr-paramedic": "https://micropatches.myshopify.com/products/american-medical-response-amr-paramedic-collector-patch-keychain-magnet-croc-cha",
+  "amr-cct-rn": "https://micropatches.myshopify.com/products/american-medical-response-cct-rn-collector-patch-keychain-magnet-croc-charm-ems",
+  "pink-patch": "https://micropatches.myshopify.com/products/pink-patch-project-police-patches-gone-pink-for-breast-cancer-research-10-donate",
+  "chandler-pd-pink": "https://micropatches.myshopify.com/products/chandler-pd-pink-patch-project-chandler-pd-goes-pink-for-breast-cancer-10-donate",
+  "harris-constable-pct4": "https://micropatches.myshopify.com/products/harris-county-constable-precinct-4-keychain",
+  "ice": "https://micropatches.myshopify.com/products/ice-keychain-immigration-and-customs-enforcement-keychain-federal-law-enforcemen",
+  "flagstaff-pd-retired": "https://micropatches.myshopify.com/products/flagstaff-retired-patch-police-department-keychain-flagstaff-pd-keychain-police",
+  "austin-pd": "https://micropatches.myshopify.com/products/austin-texas-police-department-collector-patch-keychain-police-gift-thin-blue-li",
+  "oakland-pd": "https://micropatches.myshopify.com/products/oakland-california-police-department-collector-patch-keychain-police-gift-thin-b",
+  "birmingham-pd": "https://micropatches.myshopify.com/products/birmingham-alabama-police-department-collector-patch-keychain-police-gift-thin-b",
+  "pima-sheriff": "https://micropatches.myshopify.com/products/pima-county-sheriff39s-office-collector-patch-keychain-magnet-deputy-wife-gift-t",
+  "flagstaff-pd": "https://micropatches.myshopify.com/products/flagstaff-police-department-collector-patch-keychain-police-gift-thin-blue-line",
+  "madison-pd": "https://micropatches.myshopify.com/products/madison-police-department-collector-patch-keychain-police-gift-thin-blue-line",
+  "texarkana-pd": "https://micropatches.myshopify.com/products/texarkana-police-department-keychain-tpd-keychain-police-keychain",
+  "ohio-deputy-sheriff": "https://micropatches.myshopify.com/products/ohio-deputy-sheriff-keychain-sheriff-keychain-45mm",
+  "avondale-pd": "https://micropatches.myshopify.com/products/avondale-police-department-keychain-avondale-arizona-pd-keychain-police-keychain",
+  "arizona-rangers": "https://micropatches.myshopify.com/products/arizona-rangers-keychain-law-enforcement-keychain",
+  "harris-county-sheriff": "https://micropatches.myshopify.com/products/harris-county-sheriffs-office-keychain-texas-pride-gift-constable-gift",
+  "glendale-pd-az": "https://micropatches.myshopify.com/products/glendale-police-department-arizona-collector-patch-keychain-magnet-police-wife-g",
+  "cochise-sheriff": "https://micropatches.myshopify.com/products/cochise-county-sheriff-keychain-sheriff-keychain-sheriff-deputy-keychain",
+  "buckeye-pd": "https://micropatches.myshopify.com/products/buckeye-police-department-arizona-collector-patch-keychain-magnet-police-wife-gi",
+  "asu-pd": "https://micropatches.myshopify.com/products/arizona-state-university-police-department-keychain-asu-police-keychain-45mm",
+  "detroit-pd": "https://micropatches.myshopify.com/products/detroit-michigan-police-department-keychain-police-keychain-45mm",
+  "santa-fe-pd": "https://micropatches.myshopify.com/products/santa-fe-new-mexico-police-department-keychain-police-keychain-45mm",
+  "apache-junction-pd": "https://micropatches.myshopify.com/products/apache-junction-police-department-arizona-collector-patch-keychain-magnet-police",
+  "peoria-pd-az": "https://micropatches.myshopify.com/products/peoria-arizona-police-patch-keychain-magnet-3d-printed-collector-item",
+  "auburn-pd": "https://micropatches.myshopify.com/products/auburn-police-department-patch-keychain-3d-printed-replica-thin-blue-line-access",
+  "maricopa-detention-deputy": "https://micropatches.myshopify.com/products/maricopa-county-sheriffs-office-detention-deputy-keychain-corrections-officer-ke",
+  "az-doc": "https://micropatches.myshopify.com/products/arizona-department-of-corrections-keychain-doc-keychain-corrections-keychain",
+  "az-doc-logo": "https://micropatches.myshopify.com/products/arizona-department-of-corrections-logo-keychain-corrections-keychain",
+  "75th-ranger-regiment": "https://micropatches.myshopify.com/products/75th-ranger-regiment-collector-patch-keychain-military-family-gift-support-our-t",
+  "us-air-force": "https://micropatches.myshopify.com/products/us-airforce-keychain-military-collectible",
+  "3rd-battalion-7th-marines": "https://micropatches.myshopify.com/products/3rd-batallion-7th-marines-patch-keychain-military-collectible",
+  "army-ranger-medic": "https://micropatches.myshopify.com/products/army-ranger-medic-collector-patch-keychain-military-family-gift-support-our-troo",
+  "phoenix-fire": "https://micropatches.myshopify.com/products/phoenix-fire-department-keychain-collector-patch-keychain-magnet-firefighter-fam",
+  "mammoth-fire": "https://micropatches.myshopify.com/products/mammoth-fire-department-keychain-collector-patch-keychain-magnet-firefighter-fam",
+  "pomona-pink-patch": "https://micropatches.myshopify.com/products/pomona-police-pink-patch-keychain-breast-cancer-awareness-support-3d-replica"
+});
 
 function applyProductVisibility(hidden) {
+  if (typeof window.applyActiveShopFilters === "function") {
+    window.applyActiveShopFilters();
+    return;
+  }
+  const activeTab = document.querySelector(".shop-tab.active");
+  const activeCategory = activeTab ? activeTab.dataset.tab : "all";
+
   document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
     const card = el.closest(".product-card");
     if (!card) return;
-    card.style.display = hidden.includes(el.dataset.productId) ? "none" : "";
+    const matchesCategory = activeCategory === "all" || card.dataset.category === activeCategory;
+    const isHidden = hidden.includes(el.dataset.productId);
+    card.style.display = matchesCategory && !isHidden ? "" : "none";
+    if (matchesCategory && !isHidden) card.classList.add("visible");
   });
+}
+
+function applyShopifyLinks(links) {
+  document.querySelectorAll(".product-card-img[data-product-id]").forEach(el => {
+    const productId = el.dataset.productId;
+    const card = el.closest(".product-card");
+    if (!card) return;
+    const btn = card.querySelector(".btn-gold[href]");
+    if (!btn) return;
+    const url = links[productId] || "";
+    btn.dataset.shopifyHandled = "true";
+    btn.dataset.shopifyUrl = url;
+    btn.textContent = url ? "Buy on Shopify" : "Coming Soon";
+    btn.setAttribute("href", url || "#");
+    btn.setAttribute("aria-disabled", url ? "false" : "true");
+    btn.classList.toggle("shopify-coming-soon", !url);
+    if (!btn.dataset.shopifyClickBound) {
+      btn.dataset.shopifyClickBound = "true";
+      btn.addEventListener("click", e => {
+        const shopifyUrl = btn.dataset.shopifyUrl || "";
+        if (!shopifyUrl) {
+          e.preventDefault();
+          return;
+        }
+        btn.setAttribute("href", shopifyUrl);
+      });
+    }
+  });
+}
+
+async function initShopifyLinks() {
+  try {
+    shopifyLinks = { ...DEFAULT_SHOPIFY_LINKS, ...(await loadShopifyLinks()) };
+    applyShopifyLinks(shopifyLinks);
+  } catch (_e) {
+    applyShopifyLinks(DEFAULT_SHOPIFY_LINKS);
+  }
+}
+
+/* Legacy quantity controls are intentionally disabled for Shopify checkout. */
+function removeLegacyQuantitySelectors() {
+  document.querySelectorAll(".qty-wrap").forEach(wrap => wrap.remove());
+}
+
+async function initCommerceLinks() {
+  removeLegacyQuantitySelectors();
+  await initShopifyLinks();
 }
 
 async function initProductVisibility() {
   try {
-    hiddenProductIds = await loadHiddenProducts();
-    applyProductVisibility(hiddenProductIds);
+    hiddenProductIds = mergeHiddenProductIds(await loadHiddenProducts());
+    try { applyProductVisibility(hiddenProductIds); } catch(e) {}
   } catch (_e) { /* silent */ }
 }
 
@@ -621,7 +1025,7 @@ async function loadAdminSubmissionsTab() {
           <h4>${escH(s.agency || "")}</h4>
           <p><strong>Name:</strong> ${escH(s.name || "")}</p>
           <p><strong>Email:</strong> ${escH(s.email || "")}</p>
-          <p><strong>Phone:</strong> ${escH(s.phone || "—")}</p>
+          <p><strong>Phone:</strong> ${escH(s.phone || "ÃÂ¢ÃÂÃÂ")}</p>
           <p><strong>Description:</strong> ${escH(s.description || "")}</p>
           <p><strong>Submitted:</strong> ${escH(s.submittedAt ? new Date(s.submittedAt).toLocaleString() : "")}</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">${genImg}${patchImg}</div>
@@ -638,7 +1042,7 @@ async function loadAdminSubmissionsTab() {
 }
 
 /* =========================================================
-   ADMIN — PHOTOS TAB
+   ADMIN ÃÂ¢ÃÂÃÂ PHOTOS TAB
    ========================================================= */
 let adminProductPhotos = {};
 
@@ -646,9 +1050,16 @@ async function loadAdminPhotosTab() {
   const statusEl = document.getElementById("admin-photos-status");
   if (statusEl) { statusEl.textContent = "Loading..."; statusEl.className = "admin-status"; }
   try {
-    [adminProductPhotos, hiddenProductIds, adminHeroImageUrl] = await Promise.all([
-      loadProductPhotos(), loadHiddenProducts(), loadHeroImage()
+    const savedShopifyLinks = await loadShopifyLinks();
+    const [loadedProductPhotos, loadedHiddenProductIds, loadedHeroImageUrl] = await Promise.all([
+      loadProductPhotos(),
+      loadHiddenProducts(),
+      loadHeroImage()
     ]);
+    adminProductPhotos = loadedProductPhotos;
+    hiddenProductIds = mergeHiddenProductIds(loadedHiddenProductIds);
+    adminHeroImageUrl = loadedHeroImageUrl;
+    adminShopifyLinks = { ...DEFAULT_SHOPIFY_LINKS, ...savedShopifyLinks };
     renderAdminPhotos();
     if (statusEl) statusEl.textContent = "";
   } catch (_e) {
@@ -690,6 +1101,7 @@ function renderAdminPhotos() {
         <label for="photo-input-${p.id}" class="btn btn-outline btn-small" style="cursor:pointer;flex-shrink:0">Photo</label>
         <input type="file" id="photo-input-${p.id}" accept="image/*" style="display:none" data-product-id="${p.id}">
         ${toggleBtn}
+        <input type="url" class="admin-shopify-input" data-product-id="${p.id}" placeholder="Shopify product link (https://your-store.myshopify.com/products/...)" value="${escA(adminShopifyLinks[p.id] || '')}" style="flex:1;min-width:160px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:0.8rem">
       </div>
     `;
   }).join("");
@@ -737,6 +1149,31 @@ function renderAdminPhotos() {
     });
   });
 
+
+  list.querySelectorAll(".admin-shopify-input").forEach(input => {
+    input.addEventListener("input", () => {
+      adminShopifyLinks[input.dataset.productId] = input.value.trim();
+    });
+  });
+
+  const saveShopifyBtn = document.getElementById("admin-save-shopify");
+  if (saveShopifyBtn) {
+    saveShopifyBtn.onclick = async () => {
+      const statusEl = document.getElementById("admin-photos-status");
+      saveShopifyBtn.disabled = true;
+      if (statusEl) { statusEl.textContent = "Saving..."; statusEl.className = "admin-status"; }
+      try {
+        await saveShopifyLinks(adminShopifyLinks);
+        shopifyLinks = { ...adminShopifyLinks };
+        applyShopifyLinks(shopifyLinks);
+        if (statusEl) { statusEl.textContent = "Shopify links saved!"; statusEl.className = "admin-status ok"; }
+        setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+      } catch (err) {
+        if (statusEl) { statusEl.textContent = "Save failed: " + err.message; statusEl.className = "admin-status err"; }
+      } finally { saveShopifyBtn.disabled = false; }
+    };
+  }
+
   list.querySelectorAll(".admin-toggle-visibility").forEach(btn => {
     btn.addEventListener("click", async () => {
       const productId = btn.dataset.productId;
@@ -750,7 +1187,7 @@ function renderAdminPhotos() {
           hiddenProductIds = [...hiddenProductIds, productId];
         }
         await saveHiddenProducts(hiddenProductIds);
-        applyProductVisibility(hiddenProductIds);
+        try { applyProductVisibility(hiddenProductIds); } catch(e) {}
         renderAdminPhotos();
         if (statusEl) {
           statusEl.textContent = currentlyHidden ? "Listing restored." : "Listing removed.";
@@ -785,7 +1222,7 @@ if (changePasswordForm) {
 }
 
 /* =========================================================
-   ADMIN — UPLOAD PRODUCT PHOTO
+   ADMIN ÃÂ¢ÃÂÃÂ UPLOAD PRODUCT PHOTO
    ========================================================= */
 (function initUploadProduct() {
   const upFileEl   = document.getElementById("up-file");
@@ -836,7 +1273,7 @@ if (changePasswordForm) {
       const ph  = document.getElementById("up-placeholder");
       if (img) img.style.display = "none";
       if (ph)  ph.style.display = "block";
-      if (msgEl) { msgEl.textContent = "✓ Added to queue!"; msgEl.style.color = "#4caf7a"; }
+      if (msgEl) { msgEl.textContent = "ÃÂ¢ÃÂÃÂ Added to queue!"; msgEl.style.color = "#4caf7a"; }
       setTimeout(() => { if (msgEl) msgEl.textContent = ""; }, 3000);
     } catch (err) {
       if (msgEl) { msgEl.textContent = "Upload failed: " + err.message; msgEl.style.color = "#f87171"; }
@@ -848,7 +1285,7 @@ if (changePasswordForm) {
 })();
 
 /* =========================================================
-   CONTACT PAGE — COPY EMAIL TO CLIPBOARD
+   CONTACT PAGE ÃÂ¢ÃÂÃÂ COPY EMAIL TO CLIPBOARD
    ========================================================= */
 const copyEmailBtn = document.getElementById("copy-email-btn");
 if (copyEmailBtn) {
@@ -1074,30 +1511,31 @@ document.addEventListener("DOMContentLoaded", () => {
   initProductPhotos();
   initProductVisibility();
   initCart();
+  initCommerceLinks();
 });
 
 /*
  * SECURITY AUDIT REPORT
  * =====================
- * 1. XSS PREVENTION      — PASS. All user-supplied content rendered via escH()/escA() before
+ * 1. XSS PREVENTION      ÃÂ¢ÃÂÃÂ PASS. All user-supplied content rendered via escH()/escA() before
  *                          innerHTML insertion. No raw user data injected.
- * 2. NO EVAL             — PASS. eval() is not used anywhere in this codebase.
- * 3. NO INLINE HANDLERS  — PASS. All event handlers bound programmatically in main.js.
- * 4. NO CONSOLE.LOG      — PASS. No debug logging statements present.
- * 5. FILE UPLOAD SAFETY  — PASS. File inputs use accept="image/*". Firebase Storage rules
+ * 2. NO EVAL             ÃÂ¢ÃÂÃÂ PASS. eval() is not used anywhere in this codebase.
+ * 3. NO INLINE HANDLERS  ÃÂ¢ÃÂÃÂ PASS. All event handlers bound programmatically in main.js.
+ * 4. NO CONSOLE.LOG      ÃÂ¢ÃÂÃÂ PASS. No debug logging statements present.
+ * 5. FILE UPLOAD SAFETY  ÃÂ¢ÃÂÃÂ PASS. File inputs use accept="image/*". Firebase Storage rules
  *                          should enforce max file size (recommended 5MB) and MIME type.
- * 6. EXTERNAL LINKS      — PASS. All external links use rel="noopener noreferrer" target="_blank".
- * 7. FORM TARGETS        — PASS. Contact/custom forms POST only to Formspree. Submission form
+ * 6. EXTERNAL LINKS      ÃÂ¢ÃÂÃÂ PASS. All external links use rel="noopener noreferrer" target="_blank".
+ * 7. FORM TARGETS        ÃÂ¢ÃÂÃÂ PASS. Contact/custom forms POST only to Formspree. Submission form
  *                          uses Firebase SDK, no raw POST endpoint.
- * 8. FIREBASE CONFIG     — INFO. API key is public-facing by design (standard Firebase web pattern).
+ * 8. FIREBASE CONFIG     ÃÂ¢ÃÂÃÂ INFO. API key is public-facing by design (standard Firebase web pattern).
  *                          Security is enforced via Firestore and Storage Security Rules.
  *                          Recommended: restrict Firestore writes to authenticated users or
  *                          rate-limited rules. Storage rules should enforce image/* and max size.
- * 9. ADMIN PASSWORD      — INFO. Stored in localStorage (same as existing site). Acceptable for
+ * 9. ADMIN PASSWORD      ÃÂ¢ÃÂÃÂ INFO. Stored in localStorage (same as existing site). Acceptable for
  *                          low-stakes admin use. Not suitable for sensitive data access.
- * 10. CSP HEADERS        — PENDING. See HTML file comments for recommended _headers configuration
+ * 10. CSP HEADERS        ÃÂ¢ÃÂÃÂ PENDING. See HTML file comments for recommended _headers configuration
  *                          to apply via GitHub Pages + Cloudflare or a custom _headers file.
- * 11. SOURCE MAPS        — PASS. No source map references.
- * 12. LINK INTEGRITY     — PASS. All internal links use relative paths. Stripe and Formspree
- *                          placeholders marked with HTML comments for owner replacement.
+ * 11. SOURCE MAPS        ÃÂ¢ÃÂÃÂ PASS. No source map references.
+ * 12. LINK INTEGRITY     ÃÂ¢ÃÂÃÂ PASS. All internal links use relative paths. Shopify and Formspree
+ *                          destinations are managed by the site owner.
  */
