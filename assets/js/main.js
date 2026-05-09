@@ -617,7 +617,7 @@ const PRODUCT_TYPE_DEFAULTS = Object.freeze({
     size: "22mm (approx. 0.875 in.)",
   },
   charm: {
-    label: "Croc Charm",
+    label: "Micro Charm",
     price: 9.99,
     size: "20mm (approx. 0.75 in.)",
   }
@@ -1632,7 +1632,7 @@ function initProductLinks() {
     if (body && !body.querySelector(".card-variant-hint")) {
       const hint = document.createElement("p");
       hint.className = "card-variant-hint";
-      hint.textContent = "Keychain · Micro · Charm · Pin · Magnet";
+      hint.textContent = "Keychain · Micro · Micro Charm · Pin · Magnet";
       body.appendChild(hint);
     }
   });
