@@ -596,6 +596,12 @@ const DEFAULT_SHOPIFY_LINKS = Object.freeze({
    PRODUCT VARIANT TYPES — pricing, sizing, and descriptions
    ========================================================= */
 const PRODUCT_TYPE_DEFAULTS = Object.freeze({
+  magnet: {
+    label: "Micro Magnet",
+    price: 14.99,
+    size: "25mm (approx. 1 in.)",
+    description: "Strong rare-earth magnet backing. Sticks to lockers, vehicles, filing cabinets, fridges, and any metal surface."
+  },
   keychain: {
     label: "Keychain",
     price: 13.99,
@@ -608,23 +614,17 @@ const PRODUCT_TYPE_DEFAULTS = Object.freeze({
     size: "25mm (approx. 1 in.)",
     description: "Same UV-print detail in a smaller form factor. Great for minimalist setups or stacking multiple keychains."
   },
+  pin: {
+    label: "Micro Pin",
+    price: 9.99,
+    size: "22mm (approx. 0.875 in.)",
+    description: "Lapel-pin style with butterfly clutch backing. Attach to jackets, uniform shirts, hats, vests, or gear bags."
+  },
   charm: {
     label: "Croc Charm",
     price: 9.99,
     size: "20mm (approx. 0.75 in.)",
     description: "Fits standard Jibbitz holes. Snaps into Crocs, backpack buckle straps, charm bracelets, and accessory bands."
-  },
-  pin: {
-    label: "Micro Pin",
-    price: 8.99,
-    size: "22mm (approx. 0.875 in.)",
-    description: "Lapel-pin style with butterfly clutch backing. Attach to jackets, uniform shirts, hats, vests, or gear bags."
-  },
-  magnet: {
-    label: "Micro Magnet",
-    price: 8.99,
-    size: "25mm (approx. 1 in.)",
-    description: "Strong rare-earth magnet backing. Sticks to lockers, vehicles, filing cabinets, fridges, and any metal surface."
   }
 });
 
