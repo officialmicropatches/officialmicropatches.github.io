@@ -2197,3 +2197,85 @@ h1, h2, h3, h4, h5, h6 {
   .product-detail-actions { flex-direction: column; }
   .product-detail-atc, .product-detail-shopify { width: 100%; justify-content: center; }
 }
+
+/* =========================================================
+   PRODUCT VARIANT PICKER
+   ========================================================= */
+.product-variant-picker { margin: 20px 0 0; }
+
+.variant-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.variant-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.variant-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, color 0.18s;
+  min-width: 80px;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.variant-pill:hover:not(.coming-soon) {
+  border-color: var(--gold);
+  background: rgba(196,152,62,0.08);
+}
+.variant-pill.active {
+  border-color: var(--gold);
+  background: rgba(196,152,62,0.15);
+  color: #fff;
+}
+.variant-pill.coming-soon {
+  opacity: 0.45;
+  cursor: default;
+}
+.variant-pill-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.variant-pill-price {
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin-top: 2px;
+}
+.variant-pill.coming-soon .variant-pill-price {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Type description blurb below picker */
+.product-type-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 12px 0 0;
+  min-height: 1.5em;
+}
+
+/* =========================================================
+   PRODUCT CARD VARIANT HINT
+   ========================================================= */
+.card-variant-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 6px 0 0;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
+}

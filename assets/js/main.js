@@ -593,6 +593,54 @@ const DEFAULT_SHOPIFY_LINKS = Object.freeze({
 });
 
 /* =========================================================
+   PRODUCT VARIANT TYPES — pricing, sizing, and descriptions
+   ========================================================= */
+const PRODUCT_TYPE_DEFAULTS = Object.freeze({
+  keychain: {
+    label: "Keychain",
+    price: 13.99,
+    size: "45mm (approx. 1.75 in.)",
+    description: "Full-size UV-printed 3D patch keychain. Stainless steel split ring — clips to keys, bags, or lanyards."
+  },
+  micro: {
+    label: "Micro Keychain",
+    price: 11.99,
+    size: "25mm (approx. 1 in.)",
+    description: "Same UV-print detail in a smaller form factor. Great for minimalist setups or stacking multiple keychains."
+  },
+  charm: {
+    label: "Croc Charm",
+    price: 9.99,
+    size: "20mm (approx. 0.75 in.)",
+    description: "Fits standard Jibbitz holes. Snaps into Crocs, backpack buckle straps, charm bracelets, and accessory bands."
+  },
+  pin: {
+    label: "Micro Pin",
+    price: 8.99,
+    size: "22mm (approx. 0.875 in.)",
+    description: "Lapel-pin style with butterfly clutch backing. Attach to jackets, uniform shirts, hats, vests, or gear bags."
+  },
+  magnet: {
+    label: "Micro Magnet",
+    price: 8.99,
+    size: "25mm (approx. 1 in.)",
+    description: "Strong rare-earth magnet backing. Sticks to lockers, vehicles, filing cabinets, fridges, and any metal surface."
+  }
+});
+
+/* Add variant Shopify URLs here as you create Shopify listings.
+   The "keychain" variant is auto-filled from DEFAULT_SHOPIFY_LINKS.
+   Example:
+   "tucson-pd": {
+     micro:   "https://micropatches.myshopify.com/products/tucson-pd-micro-keychain",
+     charm:   "https://micropatches.myshopify.com/products/tucson-pd-croc-charm",
+     pin:     "https://micropatches.myshopify.com/products/tucson-pd-micro-pin",
+     magnet:  "https://micropatches.myshopify.com/products/tucson-pd-micro-magnet",
+   }
+*/
+const PRODUCT_VARIANT_URLS = {};
+
+/* =========================================================
    PRODUCT DATA — supplemental info for product detail pages
    ========================================================= */
 const PRODUCT_DATA = Object.freeze({
@@ -1574,6 +1622,8 @@ function initProductLinks() {
   document.querySelectorAll(".product-card").forEach(card => {
     const productId = card.querySelector("[data-product-id]")?.dataset?.productId;
     if (!productId) return;
+
+    // Make image and title click through to product detail page
     [card.querySelector(".product-card-img"), card.querySelector("h3")].forEach(el => {
       if (!el) return;
       el.style.cursor = "pointer";
@@ -1582,6 +1632,15 @@ function initProductLinks() {
       el.addEventListener("click", () => { window.location.href = `product.html?id=${encodeURIComponent(productId)}`; });
       el.addEventListener("keydown", e => { if (e.key === "Enter") window.location.href = `product.html?id=${encodeURIComponent(productId)}`; });
     });
+
+    // Inject variant type hint into card body
+    const body = card.querySelector(".product-card-body");
+    if (body && !body.querySelector(".card-variant-hint")) {
+      const hint = document.createElement("p");
+      hint.className = "card-variant-hint";
+      hint.textContent = "Keychain · Micro · Charm · Pin · Magnet";
+      body.appendChild(hint);
+    }
   });
 }
 
@@ -1600,7 +1659,6 @@ async function initProductPage() {
   }
 
   const data = PRODUCT_DATA[productId] || {};
-  const shopifyUrl = DEFAULT_SHOPIFY_LINKS[productId] || "";
   const name = data.name || productId.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   const category = data.category || "Patch Keychain";
   const location = data.location || "USA";
@@ -1615,7 +1673,7 @@ async function initProductPage() {
   if (ogTitle) ogTitle.content = `${name} — MicroPatches`;
   if (ogDesc) ogDesc.content = description;
 
-  // Populate visible elements
+  // Populate static elements
   const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
   set("product-name", name);
   set("product-category-badge", category);
@@ -1628,19 +1686,90 @@ async function initProductPage() {
   const backLink = document.getElementById("product-back-link");
   if (backLink) backLink.href = `shop.html#${catSlug}`;
 
-  // Shopify button
-  const shopifyBtn = document.getElementById("product-shopify-btn");
-  if (shopifyBtn) {
-    if (shopifyUrl) { shopifyBtn.href = shopifyUrl; } else { shopifyBtn.style.display = "none"; }
-  }
+  // ── Build variant URLs for this product ──────────────────
+  // keychain always falls back to DEFAULT_SHOPIFY_LINKS
+  const overrides = PRODUCT_VARIANT_URLS[productId] || {};
+  const variantUrls = {
+    keychain: overrides.keychain || DEFAULT_SHOPIFY_LINKS[productId] || "",
+    micro:    overrides.micro    || "",
+    charm:    overrides.charm    || "",
+    pin:      overrides.pin      || "",
+    magnet:   overrides.magnet   || "",
+  };
 
-  // Add to Cart button
-  const atcBtn = document.getElementById("product-atc-btn");
-  if (atcBtn) {
-    atcBtn.addEventListener("click", () => {
-      const img = document.getElementById("product-photo")?.src || "";
-      cartAdd({ id: productId, name, price: 13.99, img, shopifyUrl });
-    });
+  // Track selected variant
+  let selectedType = "keychain";
+
+  // ── Render variant picker ─────────────────────────────────
+  const pickerEl = document.getElementById("product-variant-picker");
+  if (pickerEl) {
+    function renderPicker() {
+      pickerEl.innerHTML = `
+        <p class="variant-label">Type</p>
+        <div class="variant-pills">
+          ${Object.entries(PRODUCT_TYPE_DEFAULTS).map(([type, info]) => {
+            const available = !!variantUrls[type];
+            const active = type === selectedType;
+            return `<button
+              class="variant-pill${active ? " active" : ""}${!available ? " coming-soon" : ""}"
+              data-type="${escH(type)}"
+              ${!available ? 'title="Coming soon"' : ""}
+            >
+              <span class="variant-pill-label">${escH(info.label)}</span>
+              <span class="variant-pill-price">${available ? `$${info.price.toFixed(2)}` : "Soon"}</span>
+            </button>`;
+          }).join("")}
+        </div>
+      `;
+      pickerEl.querySelectorAll(".variant-pill:not(.coming-soon)").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedType = btn.dataset.type;
+          applyVariant(selectedType);
+          renderPicker();
+        });
+      });
+    }
+
+    function applyVariant(type) {
+      const info = PRODUCT_TYPE_DEFAULTS[type];
+      if (!info) return;
+      const url = variantUrls[type] || "";
+
+      // Update price
+      const priceEl = document.getElementById("product-price");
+      if (priceEl) priceEl.textContent = `$${info.price.toFixed(2)}`;
+
+      // Update size spec
+      const sizeEl = document.getElementById("product-size");
+      if (sizeEl) sizeEl.textContent = info.size;
+
+      // Update type description
+      const typeDescEl = document.getElementById("product-type-desc");
+      if (typeDescEl) typeDescEl.textContent = info.description;
+
+      // Update Add to Cart
+      const atcBtn = document.getElementById("product-atc-btn");
+      if (atcBtn) {
+        atcBtn.disabled = !url;
+        atcBtn.textContent = url ? "Add to Cart" : "Coming Soon";
+        atcBtn.onclick = url ? () => {
+          const img = document.getElementById("product-photo")?.src || "";
+          const cartName = `${name} — ${info.label}`;
+          cartAdd({ id: `${productId}--${type}`, name: cartName, price: info.price, img, shopifyUrl: url });
+        } : null;
+      }
+
+      // Update Shopify button
+      const shopifyBtn = document.getElementById("product-shopify-btn");
+      if (shopifyBtn) {
+        shopifyBtn.href = url || "#";
+        shopifyBtn.style.opacity = url ? "1" : "0.4";
+        shopifyBtn.style.pointerEvents = url ? "" : "none";
+      }
+    }
+
+    renderPicker();
+    applyVariant(selectedType);
   }
 
   // Load photo from Firebase
