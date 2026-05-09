@@ -29,6 +29,10 @@
       <li><a href="patch-exchange.html">Patch Exchange</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
+    <button class="cart-toggle" id="cart-toggle" aria-label="View cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
     <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -484,6 +488,29 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
+    <div class="cart-drawer-header">
+      <h2>Your Cart</h2>
+      <button class="cart-close-btn" id="cart-close" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="cart-empty" id="cart-empty" style="display:flex">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Your cart is empty.</p>
+      <a href="shop.html" class="btn btn-outline btn-small">Browse Products</a>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal">
+        <span class="cart-subtotal-label">Subtotal</span>
+        <span class="cart-subtotal-value" id="cart-total">$0.00</span>
+      </div>
+      <p class="cart-shipping-note">Shipping calculated at checkout</p>
+      <button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
+    </div>
+  </aside>
 
   <script type="module" src="assets/js/main.js"></script>
 </body>
