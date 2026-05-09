@@ -1409,14 +1409,13 @@ async function cartCheckout() {
   const cart = cartGet();
   if (!cart.length) return;
   const btn = document.getElementById("cart-checkout-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Processing..."; }
+  if (btn) { btn.disabled = true; btn.textContent = "Redirecting..."; }
 
   if (SHOPIFY_STOREFRONT_TOKEN) {
     try {
       const lineItems = [];
       for (const item of cart) {
-        const handle = item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-        const variantId = await shopifyGetVariantId(handle);
+        const variantId = await shopifyGetVariantId(item.id);
         if (variantId) lineItems.push({ variantId, quantity: item.qty });
       }
       if (lineItems.length > 0) {
@@ -1426,15 +1425,19 @@ async function cartCheckout() {
     } catch (_e) { /* fall through */ }
   }
 
-  if (cart.length === 1 && cart[0].stripeUrl) {
-    window.open(cart[0].stripeUrl, "_blank");
+  // Without Storefront token: single item → direct product page; multi → store
+  if (cart.length === 1 && cart[0].shopifyUrl) {
+    window.location.href = cart[0].shopifyUrl;
   } else {
     window.location.href = `https://${SHOPIFY_DOMAIN}`;
   }
   if (btn) { btn.disabled = false; btn.textContent = "Checkout"; }
 }
 
-async function shopifyGetVariantId(handle) {
+async function shopifyGetVariantId(productId) {
+  // Derive handle from the known Shopify product URL, fall back to slug from productId
+  const url = DEFAULT_SHOPIFY_LINKS[productId] || "";
+  const handle = url.split("/products/")[1] || productId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_TOKEN },
@@ -1458,14 +1461,13 @@ async function shopifyCreateCheckout(lineItems) {
 }
 
 function initCart() {
-  // Transform "Buy Now" buttons into "Add to Cart" buttons
   document.querySelectorAll(".product-card-footer .btn-gold").forEach(link => {
     const card = link.closest(".product-card");
     if (!card) return;
-    const productId = card.querySelector("[data-product-id]")?.dataset?.productId || link.href;
+    const productId = card.querySelector("[data-product-id]")?.dataset?.productId || "";
     const name = card.querySelector("h3")?.textContent?.trim() || "Product";
     const price = parseFloat(card.querySelector(".product-price")?.textContent?.replace(/[^0-9.]/g, "") || "13.99");
-    const stripeUrl = link.href || "";
+    const shopifyUrl = DEFAULT_SHOPIFY_LINKS[productId] || "";
 
     const btn = document.createElement("button");
     btn.className = "btn btn-gold add-to-cart-btn";
@@ -1475,7 +1477,7 @@ function initCart() {
     btn.addEventListener("click", () => {
       const photoEl = card.querySelector(".product-card-photo");
       const img = (photoEl?.src && !photoEl.src.endsWith("/")) ? photoEl.src : "";
-      cartAdd({ id: productId, name, price, img, stripeUrl });
+      cartAdd({ id: productId, name, price, img, shopifyUrl });
     });
     link.replaceWith(btn);
   });
@@ -1485,6 +1487,19 @@ function initCart() {
   document.getElementById("cart-overlay")?.addEventListener("click", cartClose);
   document.getElementById("cart-checkout-btn")?.addEventListener("click", cartCheckout);
   cartUpdateUI();
+}
+
+function initShopSearch() {
+  const input = document.getElementById("shop-search");
+  if (!input) return;
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase().trim();
+    document.querySelectorAll(".product-card").forEach(card => {
+      const name = card.querySelector("h3")?.textContent?.toLowerCase() || "";
+      card.style.display = (!q || name.includes(q)) ? "" : "none";
+    });
+  });
+  input.addEventListener("keydown", e => { if (e.key === "Escape") { input.value = ""; input.dispatchEvent(new Event("input")); } });
 }
 
 /* =========================================================
@@ -1511,6 +1526,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initProductPhotos();
   initProductVisibility();
   initCart();
+  initShopSearch();
   initCommerceLinks();
 });
 

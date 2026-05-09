@@ -1882,3 +1882,124 @@ h1, h2, h3, h4, h5, h6 {
 
 /* "Add to Cart" button */
 .add-to-cart-btn { cursor: pointer; }
+
+/* =========================================================
+   SHOP SEARCH BAR
+   ========================================================= */
+.shop-search-wrap {
+  position: relative;
+  max-width: 480px;
+  margin: 20px auto 0;
+}
+.shop-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.shop-search-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+.shop-search-input::placeholder { color: var(--text-muted); }
+.shop-search-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+/* =========================================================
+   SOCIAL PROOF STATS
+   ========================================================= */
+.proof-section { padding: 48px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.proof-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.proof-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 40px;
+  border-right: 1px solid var(--border);
+}
+.proof-stat:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .proof-stat { padding: 14px 20px; border-right: none; border-bottom: 1px solid var(--border); width: 50%; }
+  .proof-stat:nth-child(odd) { border-right: 1px solid var(--border); }
+  .proof-stat:last-child { border-bottom: none; }
+}
+
+/* =========================================================
+   EMAIL CAPTURE SECTION
+   ========================================================= */
+.email-capture-section { padding: 56px 0; background: var(--bg-card); }
+.email-capture-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.email-capture-text h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.email-capture-text p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+.email-capture-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+.email-capture-input {
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  width: 260px;
+  max-width: 100%;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.email-capture-input::placeholder { color: var(--text-muted); }
+.email-capture-input:focus { border-color: var(--gold); }
+@media (max-width: 720px) {
+  .email-capture-inner { flex-direction: column; align-items: flex-start; }
+  .email-capture-form { width: 100%; }
+  .email-capture-input { width: 100%; }
+}
