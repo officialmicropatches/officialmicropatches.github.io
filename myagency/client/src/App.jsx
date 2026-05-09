@@ -22,7 +22,7 @@ function App() {
       setUser(session?.user ?? null);
       if (session?.user) loadUsername(session.user.id);
       else setLoading(false);
-    });
+    }).catch(() => setLoading(false));
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
