@@ -1535,29 +1535,35 @@ async function cartCheckout() {
   const btn = document.getElementById("cart-checkout-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Redirecting..."; }
 
-  try {
-    const lineItems = [];
-    for (const item of cart) {
-      const productUrl = item.shopifyUrl || DEFAULT_SHOPIFY_LINKS[item.id.split("--")[0]] || "";
-      const handle = productUrl.split("/products/")[1]?.split("?")[0];
-      if (!handle) continue;
-      const res = await fetch(`https://${SHOPIFY_DOMAIN}/products/${handle}.json`);
-      if (!res.ok) continue;
-      const data = await res.json();
-      const variantId = data?.product?.variants?.[0]?.id;
-      if (variantId) lineItems.push(`${variantId}:${item.qty}`);
-    }
-    if (lineItems.length > 0) {
-      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(",")}`;
-      return;
-    }
-  } catch (_e) { /* fall through */ }
+  // Storefront API path: requires SHOPIFY_STOREFRONT_TOKEN to be set
+  if (SHOPIFY_STOREFRONT_TOKEN) {
+    try {
+      const lineItems = [];
+      for (const item of cart) {
+        const variantId = await shopifyGetVariantId(item.id);
+        if (variantId) lineItems.push({ variantId, quantity: item.qty });
+      }
+      if (lineItems.length > 0) {
+        const checkoutUrl = await shopifyCreateCheckout(lineItems);
+        if (checkoutUrl) { window.location.href = checkoutUrl; return; }
+      }
+    } catch (_e) { /* fall through */ }
+  }
 
-  // Fallback: single item → direct product page; multi → store
-  if (cart.length === 1 && cart[0].shopifyUrl) {
-    window.location.href = cart[0].shopifyUrl;
-  } else {
+  // Fallback: send each item to its own Shopify product page.
+  // Single item → direct product page; multiple items → open first, then rest.
+  const urls = cart
+    .map(i => i.shopifyUrl || DEFAULT_SHOPIFY_LINKS[i.id.split("--")[0]] || "")
+    .filter(Boolean);
+
+  if (urls.length === 0) {
     window.location.href = `https://${SHOPIFY_DOMAIN}`;
+  } else if (urls.length === 1) {
+    window.location.href = urls[0];
+  } else {
+    // Open additional items in new tabs, navigate main window to first
+    urls.slice(1).forEach(url => window.open(url, "_blank", "noopener"));
+    window.location.href = urls[0];
   }
   if (btn) { btn.disabled = false; btn.textContent = "Checkout"; }
 }
