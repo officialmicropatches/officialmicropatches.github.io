@@ -592,6 +592,130 @@ const DEFAULT_SHOPIFY_LINKS = Object.freeze({
   "pomona-pink-patch": "https://micropatches.myshopify.com/products/pomona-police-pink-patch-keychain-breast-cancer-awareness-support-3d-replica"
 });
 
+/* =========================================================
+   PRODUCT VARIANT TYPES — pricing, sizing, and descriptions
+   ========================================================= */
+const PRODUCT_TYPE_DEFAULTS = Object.freeze({
+  magnet: {
+    label: "Micro Magnet",
+    price: 14.99,
+    size: "25mm (approx. 1 in.)",
+  },
+  keychain: {
+    label: "Keychain",
+    price: 13.99,
+    size: "45mm (approx. 1.75 in.)",
+  },
+  micro: {
+    label: "Micro Keychain",
+    price: 11.99,
+    size: "25mm (approx. 1 in.)",
+  },
+  pin: {
+    label: "Micro Pin",
+    price: 9.99,
+    size: "22mm (approx. 0.875 in.)",
+  },
+  charm: {
+    label: "Croc Charm",
+    price: 9.99,
+    size: "20mm (approx. 0.75 in.)",
+  }
+});
+
+/* Add variant Shopify URLs here as you create Shopify listings.
+   The "keychain" variant is auto-filled from DEFAULT_SHOPIFY_LINKS.
+   Example:
+   "tucson-pd": {
+     micro:   "https://micropatches.myshopify.com/products/tucson-pd-micro-keychain",
+     charm:   "https://micropatches.myshopify.com/products/tucson-pd-croc-charm",
+     pin:     "https://micropatches.myshopify.com/products/tucson-pd-micro-pin",
+     magnet:  "https://micropatches.myshopify.com/products/tucson-pd-micro-magnet",
+   }
+*/
+const PRODUCT_VARIANT_URLS = {};
+
+/* =========================================================
+   PRODUCT DATA — supplemental info for product detail pages
+   ========================================================= */
+const PRODUCT_DATA = Object.freeze({
+  "az-dps":                   { name: "Arizona Department of Public Safety", location: "Statewide, AZ", category: "Law Enforcement" },
+  "auburn-pd-retired":        { name: "Auburn Police Department Retired", location: "Auburn, WA", category: "Law Enforcement" },
+  "chandler-pd":              { name: "Chandler Police Department", location: "Chandler, AZ", category: "Law Enforcement" },
+  "chandler-pd-retired":      { name: "Chandler Police Department Retired", location: "Chandler, AZ", category: "Law Enforcement" },
+  "chicago-pd":               { name: "Chicago Police Department", location: "Chicago, IL", category: "Law Enforcement" },
+  "surprise-pd":              { name: "City of Surprise Police Department", location: "Surprise, AZ", category: "Law Enforcement" },
+  "el-mirage-pd":             { name: "El Mirage Police Department", location: "El Mirage, AZ", category: "Law Enforcement" },
+  "florida-hp":               { name: "Florida Highway Patrol", location: "Statewide, FL", category: "Law Enforcement" },
+  "gila-river-pd":            { name: "Gila River Indian Police Department", location: "Gila River, AZ", category: "Law Enforcement" },
+  "gilbert-pd":               { name: "Gilbert Police Department", location: "Gilbert, AZ", category: "Law Enforcement" },
+  "goodyear-pd-retired":      { name: "Goodyear Police Department Retired", location: "Goodyear, AZ", category: "Law Enforcement" },
+  "honolulu-pd":              { name: "Honolulu Police Department", location: "Honolulu, HI", category: "Law Enforcement" },
+  "houston-tx":               { name: "Houston Police Department", location: "Houston, TX", category: "Law Enforcement" },
+  "kent-pd":                  { name: "Kent Police Department", location: "Kent, WA", category: "Law Enforcement" },
+  "maricopa-pd":              { name: "Maricopa Police Department", location: "Maricopa, AZ", category: "Law Enforcement" },
+  "maricopa-sheriff":         { name: "Maricopa County Sheriff's Office", location: "Maricopa County, AZ", category: "Law Enforcement" },
+  "maui-pd":                  { name: "Maui Police Department", location: "Maui, HI", category: "Law Enforcement" },
+  "mesa-pd":                  { name: "Mesa Police Department", location: "Mesa, AZ", category: "Law Enforcement" },
+  "nypd":                     { name: "New York City Police Department", location: "New York City, NY", category: "Law Enforcement" },
+  "phoenix-pd":               { name: "Phoenix Police Department", location: "Phoenix, AZ", category: "Law Enforcement" },
+  "pinal-sheriff":            { name: "Pinal County Sheriff's Office", location: "Pinal County, AZ", category: "Law Enforcement" },
+  "prescott-pd":              { name: "Prescott Police Department", location: "Prescott, AZ", category: "Law Enforcement" },
+  "queen-creek-pd":           { name: "Queen Creek Police Department", location: "Queen Creek, AZ", category: "Law Enforcement" },
+  "san-jose-pd":              { name: "San Jose Police Department", location: "San Jose, CA", category: "Law Enforcement" },
+  "scottsdale-pd":            { name: "Scottsdale Police Department", location: "Scottsdale, AZ", category: "Law Enforcement" },
+  "seattle-pd":               { name: "Seattle Police Department", location: "Seattle, WA", category: "Law Enforcement" },
+  "simi-valley-pd":           { name: "Simi Valley Police Department", location: "Simi Valley, CA", category: "Law Enforcement" },
+  "tempe-pd":                 { name: "Tempe Police Department", location: "Tempe, AZ", category: "Law Enforcement" },
+  "tucson-pd":                { name: "Tucson Police Department", location: "Tucson, AZ", category: "Law Enforcement" },
+  "us-border-patrol":         { name: "U.S. Border Patrol", location: "Federal — Nationwide", category: "Law Enforcement" },
+  "harris-constable-pct4":    { name: "Harris County Constable Precinct 4", location: "Harris County, TX", category: "Law Enforcement" },
+  "ice":                      { name: "Immigration and Customs Enforcement", location: "Federal — Nationwide", category: "Law Enforcement" },
+  "flagstaff-pd-retired":     { name: "Flagstaff Police Department Retired", location: "Flagstaff, AZ", category: "Law Enforcement" },
+  "austin-pd":                { name: "Austin Police Department", location: "Austin, TX", category: "Law Enforcement" },
+  "oakland-pd":               { name: "Oakland Police Department", location: "Oakland, CA", category: "Law Enforcement" },
+  "birmingham-pd":            { name: "Birmingham Police Department", location: "Birmingham, AL", category: "Law Enforcement" },
+  "pima-sheriff":             { name: "Pima County Sheriff's Office", location: "Pima County, AZ", category: "Law Enforcement" },
+  "flagstaff-pd":             { name: "Flagstaff Police Department", location: "Flagstaff, AZ", category: "Law Enforcement" },
+  "madison-pd":               { name: "Madison Police Department", location: "Madison, WI", category: "Law Enforcement" },
+  "texarkana-pd":             { name: "Texarkana Police Department", location: "Texarkana, TX/AR", category: "Law Enforcement" },
+  "ohio-deputy-sheriff":      { name: "Ohio Deputy Sheriff", location: "Ohio", category: "Law Enforcement" },
+  "avondale-pd":              { name: "Avondale Police Department", location: "Avondale, AZ", category: "Law Enforcement" },
+  "arizona-rangers":          { name: "Arizona Rangers", location: "Arizona", category: "Law Enforcement" },
+  "harris-county-sheriff":    { name: "Harris County Sheriff's Office", location: "Harris County, TX", category: "Law Enforcement" },
+  "glendale-pd-az":           { name: "Glendale Police Department", location: "Glendale, AZ", category: "Law Enforcement" },
+  "cochise-sheriff":          { name: "Cochise County Sheriff's Office", location: "Cochise County, AZ", category: "Law Enforcement" },
+  "buckeye-pd":               { name: "Buckeye Police Department", location: "Buckeye, AZ", category: "Law Enforcement" },
+  "asu-pd":                   { name: "Arizona State University Police Department", location: "Tempe, AZ", category: "Law Enforcement" },
+  "detroit-pd":               { name: "Detroit Police Department", location: "Detroit, MI", category: "Law Enforcement" },
+  "santa-fe-pd":              { name: "Santa Fe Police Department", location: "Santa Fe, NM", category: "Law Enforcement" },
+  "apache-junction-pd":       { name: "Apache Junction Police Department", location: "Apache Junction, AZ", category: "Law Enforcement" },
+  "peoria-pd-az":             { name: "Peoria Police Department", location: "Peoria, AZ", category: "Law Enforcement" },
+  "auburn-pd":                { name: "Auburn Police Department", location: "Auburn, WA", category: "Law Enforcement" },
+  "maricopa-detention-deputy":{ name: "MCSO Detention Deputy", location: "Maricopa County, AZ", category: "Corrections" },
+  "az-doc":                   { name: "Arizona Department of Corrections", location: "Arizona", category: "Corrections" },
+  "az-doc-logo":              { name: "Arizona Dept. of Corrections Logo", location: "Arizona", category: "Corrections" },
+  "101st-airborne":           { name: "101st Airborne Division — Screaming Eagles", location: "Ft. Campbell, KY", category: "Military" },
+  "10th-mountain":            { name: "10th Mountain Division", location: "Ft. Drum, NY", category: "Military" },
+  "173rd-airborne":           { name: "173rd Airborne Brigade — Sky Soldiers", location: "Vicenza, Italy", category: "Military" },
+  "504th-pir-ww2":            { name: "504th Parachute Infantry Regiment — WW2", location: "Historical — U.S. Army", category: "Military" },
+  "82nd-airborne":            { name: "82nd Airborne Division", location: "Ft. Bragg (Ft. Liberty), NC", category: "Military" },
+  "seabees":                  { name: "U.S. Naval Construction Battalions — Seabees", location: "U.S. Navy", category: "Military" },
+  "75th-ranger-regiment":     { name: "75th Ranger Regiment", location: "Ft. Benning (Ft. Moore), GA", category: "Military" },
+  "us-air-force":             { name: "United States Air Force", location: "U.S. Air Force", category: "Military" },
+  "3rd-battalion-7th-marines":{ name: "3rd Battalion 7th Marines", location: "U.S. Marine Corps", category: "Military" },
+  "army-ranger-medic":        { name: "Army Ranger Medic", location: "U.S. Army", category: "Military" },
+  "chandler-fire":            { name: "Chandler Fire Department", location: "Chandler, AZ", category: "Fire" },
+  "phoenix-fire":             { name: "Phoenix Fire Department", location: "Phoenix, AZ", category: "Fire" },
+  "mammoth-fire":             { name: "Mammoth Fire Department", location: "Mammoth Lakes, CA", category: "Fire" },
+  "amr-emt":                  { name: "AMR Emergency Medical Technician", location: "American Medical Response", category: "EMS" },
+  "amr-paramedic":            { name: "AMR Paramedic", location: "American Medical Response", category: "EMS" },
+  "amr-cct-rn":               { name: "AMR Critical Care Transport RN", location: "American Medical Response", category: "EMS" },
+  "pink-patch":               { name: "Pink Patch Project", location: "Nationwide", category: "Pink Patch" },
+  "chandler-pd-pink":         { name: "Chandler PD — Pink Patch Project", location: "Chandler, AZ", category: "Pink Patch" },
+  "pomona-pink-patch":        { name: "Pomona Police — Pink Patch Project", location: "Pomona, CA", category: "Pink Patch" }
+});
+
 function applyProductVisibility(hidden) {
   if (typeof window.applyActiveShopFilters === "function") {
     window.applyActiveShopFilters();
@@ -1489,6 +1613,175 @@ function initCart() {
   cartUpdateUI();
 }
 
+function initProductLinks() {
+  document.querySelectorAll(".product-card").forEach(card => {
+    const productId = card.querySelector("[data-product-id]")?.dataset?.productId;
+    if (!productId) return;
+
+    // Make image and title click through to product detail page
+    [card.querySelector(".product-card-img"), card.querySelector("h3")].forEach(el => {
+      if (!el) return;
+      el.style.cursor = "pointer";
+      el.setAttribute("role", "link");
+      el.setAttribute("tabindex", "0");
+      el.addEventListener("click", () => { window.location.href = `product.html?id=${encodeURIComponent(productId)}`; });
+      el.addEventListener("keydown", e => { if (e.key === "Enter") window.location.href = `product.html?id=${encodeURIComponent(productId)}`; });
+    });
+
+    // Inject variant type hint into card body
+    const body = card.querySelector(".product-card-body");
+    if (body && !body.querySelector(".card-variant-hint")) {
+      const hint = document.createElement("p");
+      hint.className = "card-variant-hint";
+      hint.textContent = "Keychain · Micro · Charm · Pin · Magnet";
+      body.appendChild(hint);
+    }
+  });
+}
+
+async function initProductPage() {
+  const main = document.getElementById("product-main");
+  if (!main) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
+  const notFound = document.getElementById("product-not-found");
+
+  if (!productId) {
+    main.hidden = true;
+    if (notFound) notFound.hidden = false;
+    return;
+  }
+
+  const data = PRODUCT_DATA[productId] || {};
+  const name = data.name || productId.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  const category = data.category || "Patch Keychain";
+  const location = data.location || "USA";
+  const description = `UV-printed 3D replica of the ${name} patch. Handcrafted in Phoenix, AZ — a collector piece for officers, veterans, families, and supporters.`;
+
+  // Update page metadata
+  document.title = `${name} — MicroPatches`;
+  const metaDesc = document.getElementById("page-description");
+  const ogTitle = document.getElementById("og-title");
+  const ogDesc = document.getElementById("og-description");
+  if (metaDesc) metaDesc.content = description;
+  if (ogTitle) ogTitle.content = `${name} — MicroPatches`;
+  if (ogDesc) ogDesc.content = description;
+
+  // Populate static elements
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  set("product-name", name);
+  set("product-category-badge", category);
+  set("product-spec-category", category);
+  set("product-location", location);
+  set("product-description", description);
+
+  // Back link
+  const catSlug = { "Law Enforcement": "law-enforcement", "Corrections": "corrections", "Military": "military", "Fire": "fire", "EMS": "ems", "Pink Patch": "pink-patch" }[category] || "all";
+  const backLink = document.getElementById("product-back-link");
+  if (backLink) backLink.href = `shop.html#${catSlug}`;
+
+  // ── Build variant URLs for this product ──────────────────
+  // keychain always falls back to DEFAULT_SHOPIFY_LINKS
+  const overrides = PRODUCT_VARIANT_URLS[productId] || {};
+  const variantUrls = {
+    keychain: overrides.keychain || DEFAULT_SHOPIFY_LINKS[productId] || "",
+    micro:    overrides.micro    || "",
+    charm:    overrides.charm    || "",
+    pin:      overrides.pin      || "",
+    magnet:   overrides.magnet   || "",
+  };
+
+  // Track selected variant
+  let selectedType = "keychain";
+
+  // ── Render variant picker ─────────────────────────────────
+  const pickerEl = document.getElementById("product-variant-picker");
+  if (pickerEl) {
+    function renderPicker() {
+      pickerEl.innerHTML = `
+        <p class="variant-label">Type</p>
+        <div class="variant-pills">
+          ${Object.entries(PRODUCT_TYPE_DEFAULTS).map(([type, info]) => {
+            const available = !!variantUrls[type];
+            const active = type === selectedType;
+            return `<button
+              class="variant-pill${active ? " active" : ""}${!available ? " coming-soon" : ""}"
+              data-type="${escH(type)}"
+              ${!available ? 'title="Coming soon"' : ""}
+            >
+              <span class="variant-pill-label">${escH(info.label)}</span>
+              <span class="variant-pill-price">${available ? `$${info.price.toFixed(2)}` : "Soon"}</span>
+            </button>`;
+          }).join("")}
+        </div>
+      `;
+      pickerEl.querySelectorAll(".variant-pill:not(.coming-soon)").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedType = btn.dataset.type;
+          applyVariant(selectedType);
+          renderPicker();
+        });
+      });
+    }
+
+    function applyVariant(type) {
+      const info = PRODUCT_TYPE_DEFAULTS[type];
+      if (!info) return;
+      const url = variantUrls[type] || "";
+
+      // Update price
+      const priceEl = document.getElementById("product-price");
+      if (priceEl) priceEl.textContent = `$${info.price.toFixed(2)}`;
+
+      // Update size spec
+      const sizeEl = document.getElementById("product-size");
+      if (sizeEl) sizeEl.textContent = info.size;
+
+      // Update type description
+      const typeDescEl = document.getElementById("product-type-desc");
+      if (typeDescEl) typeDescEl.textContent = info.description;
+
+      // Update Add to Cart
+      const atcBtn = document.getElementById("product-atc-btn");
+      if (atcBtn) {
+        atcBtn.disabled = !url;
+        atcBtn.textContent = url ? "Add to Cart" : "Coming Soon";
+        atcBtn.onclick = url ? () => {
+          const img = document.getElementById("product-photo")?.src || "";
+          const cartName = `${name} — ${info.label}`;
+          cartAdd({ id: `${productId}--${type}`, name: cartName, price: info.price, img, shopifyUrl: url });
+        } : null;
+      }
+
+      // Update Shopify button
+      const shopifyBtn = document.getElementById("product-shopify-btn");
+      if (shopifyBtn) {
+        shopifyBtn.href = url || "#";
+        shopifyBtn.style.opacity = url ? "1" : "0.4";
+        shopifyBtn.style.pointerEvents = url ? "" : "none";
+      }
+    }
+
+    renderPicker();
+    applyVariant(selectedType);
+  }
+
+  // Load photo from Firebase
+  try {
+    const photos = await loadProductPhotos();
+    const photoUrl = photos[productId];
+    if (photoUrl) {
+      const photoEl = document.getElementById("product-photo");
+      const placeholder = document.getElementById("product-photo-placeholder");
+      if (photoEl) { photoEl.src = photoUrl; photoEl.alt = name; photoEl.style.display = "block"; }
+      if (placeholder) placeholder.style.display = "none";
+      const ogImage = document.getElementById("og-image");
+      if (ogImage) ogImage.content = photoUrl;
+    }
+  } catch (_e) { /* photo non-critical */ }
+}
+
 function initShopSearch() {
   const input = document.getElementById("shop-search");
   if (!input) return;
@@ -1526,7 +1819,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initProductPhotos();
   initProductVisibility();
   initCart();
+  initProductLinks();
   initShopSearch();
+  initProductPage();
   initCommerceLinks();
 });
 

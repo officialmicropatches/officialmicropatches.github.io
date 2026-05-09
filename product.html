@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Product — MicroPatches</title>
+  <meta name="description" id="page-description" content="UV-printed 3D patch keychain — handcrafted in the USA for law enforcement, military, fire, and EMS.">
+  <meta property="og:type" content="product">
+  <meta property="og:site_name" content="MicroPatches">
+  <meta id="og-title" property="og:title" content="MicroPatches Patch Keychain">
+  <meta id="og-description" property="og:description" content="UV-printed 3D patch keychain — handcrafted in the USA.">
+  <meta id="og-image" property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="site-nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+      <div class="nav-links">
+        <a href="shop.html">Shop</a>
+        <a href="custom.html">Custom Orders</a>
+        <a href="queue.html">Waitlist Queue</a>
+        <a href="patch-exchange.html">Patch Exchange</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button class="cart-toggle" id="cart-toggle" aria-label="View cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="nav-mobile-menu" id="nav-mobile-menu">
+    <a href="shop.html">Shop</a>
+    <a href="custom.html">Custom Orders</a>
+    <a href="queue.html">Waitlist Queue</a>
+    <a href="patch-exchange.html">Patch Exchange</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
+    <div class="cart-drawer-header">
+      <span>Your Cart</span>
+      <button id="cart-close" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <p class="cart-empty">Your cart is empty.</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-subtotal">
+        Subtotal: <strong id="cart-subtotal">$0.00</strong>
+      </div>
+      <button class="btn btn-gold" id="cart-checkout-btn" style="width:100%">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- ===== NOT FOUND STATE (hidden by default) ===== -->
+  <div id="product-not-found" class="product-not-found" hidden>
+    <div class="container" style="text-align:center;padding:80px 0">
+      <h1 style="color:var(--gold);font-family:'Oswald',sans-serif;font-size:2rem">Product Not Found</h1>
+      <p style="color:var(--text-muted);margin:16px 0 32px">We couldn't find that product. Browse all available keychains below.</p>
+      <a href="shop.html" class="btn btn-gold">Browse the Shop</a>
+    </div>
+  </div>
+
+  <!-- ===== PRODUCT DETAIL ===== -->
+  <main id="product-main" class="product-detail-page">
+    <div class="container">
+
+      <!-- Back link -->
+      <a href="shop.html" class="product-back-link" id="product-back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Shop
+      </a>
+
+      <div class="product-detail-layout">
+
+        <!-- LEFT: Photo -->
+        <div class="product-detail-photo-wrap">
+          <div class="product-detail-photo-frame">
+            <div class="img-placeholder" id="product-photo-placeholder">[ Loading photo… ]</div>
+            <img id="product-photo" class="product-detail-photo" src="" alt="" loading="eager">
+          </div>
+        </div>
+
+        <!-- RIGHT: Info -->
+        <div class="product-detail-info">
+          <span class="product-detail-category" id="product-category-badge"></span>
+          <h1 class="product-detail-name" id="product-name">Loading…</h1>
+
+          <div class="product-detail-price-row">
+            <span class="product-detail-price" id="product-price">$13.99</span>
+            <span class="product-detail-in-stock">In Stock</span>
+          </div>
+
+          <!-- Variant picker injected by JS -->
+          <div id="product-variant-picker" class="product-variant-picker"></div>
+
+          <p class="product-type-desc" id="product-type-desc"></p>
+
+          <div class="product-detail-meta">
+            <div class="product-detail-meta-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span id="product-location">—</span>
+            </div>
+            <div class="product-detail-meta-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span>Handcrafted in Phoenix, AZ — USA Made</span>
+            </div>
+            <div class="product-detail-meta-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Usually ships within 3–5 business days</span>
+            </div>
+          </div>
+
+          <p class="product-detail-description" id="product-description"></p>
+
+          <div class="product-detail-specs">
+            <div class="spec-row">
+              <span class="spec-label">Size</span>
+              <span class="spec-value" id="product-size">45mm (approx. 1.75 in.)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Material</span>
+              <span class="spec-value">3D printed resin, UV-printed full color</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Attachment</span>
+              <span class="spec-value">Stainless steel split ring — keychain or lanyard ready</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Finish</span>
+              <span class="spec-value">High-detail UV print with protective top coat</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Category</span>
+              <span class="spec-value" id="product-spec-category">—</span>
+            </div>
+          </div>
+
+          <div class="product-detail-actions">
+            <button class="btn btn-gold product-detail-atc" id="product-atc-btn">Add to Cart</button>
+            <a class="btn btn-outline product-detail-shopify" id="product-shopify-btn" href="#" target="_blank" rel="noopener noreferrer">
+              Buy on Shopify
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="margin-left:5px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+
+          <p class="product-detail-mission">
+            A portion of every sale goes toward donations to families of fallen officers, veterans, and first responders. No minimum orders — every department, every unit included.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Also Available / Related CTA -->
+      <div class="product-related-cta">
+        <p>Looking for a different agency or unit?</p>
+        <div class="product-related-links">
+          <a href="shop.html#law-enforcement" class="btn btn-outline btn-sm">Law Enforcement</a>
+          <a href="shop.html#military" class="btn btn-outline btn-sm">Military</a>
+          <a href="shop.html#fire" class="btn btn-outline btn-sm">Fire</a>
+          <a href="shop.html#ems" class="btn btn-outline btn-sm">EMS</a>
+          <a href="custom.html" class="btn btn-gold btn-sm">Custom Order</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
+          <p>Handcrafted for those who serve. USA Made.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
+            <li><a href="shop.html#corrections">Corrections</a></li>
+            <li><a href="shop.html#military">Military</a></li>
+            <li><a href="shop.html#fire">Fire Departments</a></li>
+            <li><a href="shop.html#ems">EMS</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="custom.html">Custom Orders</a></li>
+            <li><a href="patch-exchange.html">Patch Exchange</a></li>
+            <li><a href="queue.html">Waitlist Queue</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 MicroPatches. All rights reserved. USA Made.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
