@@ -2179,11 +2179,17 @@ h1, h2, h3, h4, h5, h6 {
 .product-related-links { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .btn-sm { padding: 8px 18px; font-size: 0.82rem; }
 
-/* Card hover hint */
-.product-card .product-card-img,
-.product-card h3 { transition: opacity 0.18s; }
-.product-card .product-card-img:hover,
-.product-card h3:hover { opacity: 0.8; }
+/* Stretched link covers the card — footer button sits above it */
+.product-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.product-card-footer { position: relative; z-index: 2; }
+.product-card { cursor: pointer; }
+.product-card:hover .product-card-img img,
+.product-card:hover h3 { opacity: 0.85; transition: opacity 0.18s; }
 
 /* Not found */
 .product-not-found { padding: 40px 0; }

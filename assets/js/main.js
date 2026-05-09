@@ -1618,15 +1618,14 @@ function initProductLinks() {
     const productId = card.querySelector("[data-product-id]")?.dataset?.productId;
     if (!productId) return;
 
-    // Make image and title click through to product detail page
-    [card.querySelector(".product-card-img"), card.querySelector("h3")].forEach(el => {
-      if (!el) return;
-      el.style.cursor = "pointer";
-      el.setAttribute("role", "link");
-      el.setAttribute("tabindex", "0");
-      el.addEventListener("click", () => { window.location.href = `product.html?id=${encodeURIComponent(productId)}`; });
-      el.addEventListener("keydown", e => { if (e.key === "Enter") window.location.href = `product.html?id=${encodeURIComponent(productId)}`; });
-    });
+    // Stretched <a> over the card — iOS Safari requires a real anchor for tap events
+    const name = card.querySelector("h3")?.textContent?.trim() || productId;
+    const a = document.createElement("a");
+    a.href = `product.html?id=${encodeURIComponent(productId)}`;
+    a.className = "product-card-link";
+    a.setAttribute("aria-label", `View ${name} details`);
+    card.style.position = "relative";
+    card.appendChild(a);
 
     // Inject variant type hint into card body
     const body = card.querySelector(".product-card-body");
