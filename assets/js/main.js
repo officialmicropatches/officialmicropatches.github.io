@@ -607,7 +607,7 @@ const PRODUCT_TYPE_DEFAULTS = Object.freeze({
     size: "45mm (approx. 1.75 in.)",
   },
   micro: {
-    label: "Micro Keychain",
+    label: "MicroKeychain",
     price: 11.99,
     size: "25mm (approx. 1 in.)",
   },
@@ -1632,7 +1632,7 @@ function initProductLinks() {
     if (body && !body.querySelector(".card-variant-hint")) {
       const hint = document.createElement("p");
       hint.className = "card-variant-hint";
-      hint.textContent = "Keychain · Micro · Micro Charm · Pin · Magnet";
+      hint.textContent = "Keychain · MicroKeychain · Micro Charm · Pin · Magnet";
       body.appendChild(hint);
     }
   });
