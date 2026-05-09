@@ -1530,7 +1530,23 @@ async function cartCheckout() {
   const btn = document.getElementById("cart-checkout-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Redirecting..."; }
 
-  // Storefront API path: requires SHOPIFY_STOREFRONT_TOKEN to be set
+  // Build cart permalink via JSONP (no token, no CORS issues)
+  try {
+    const lineItems = [];
+    for (const item of cart) {
+      const productUrl = item.shopifyUrl || DEFAULT_SHOPIFY_LINKS[item.id.split("--")[0]] || "";
+      const handle = productUrl.split("/products/")[1]?.split("?")[0];
+      if (!handle) continue;
+      const variantId = await shopifyVariantIdJSONP(handle);
+      if (variantId) lineItems.push(`${variantId}:${item.qty}`);
+    }
+    if (lineItems.length > 0) {
+      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(",")}`;
+      return;
+    }
+  } catch (_e) { /* fall through */ }
+
+  // Storefront API path (if token is configured)
   if (SHOPIFY_STOREFRONT_TOKEN) {
     try {
       const lineItems = [];
@@ -1545,22 +1561,28 @@ async function cartCheckout() {
     } catch (_e) { /* fall through */ }
   }
 
-  // Fallback: send each item to its own Shopify product page.
-  // Single item → direct product page; multiple items → open first, then rest.
-  const urls = cart
-    .map(i => i.shopifyUrl || DEFAULT_SHOPIFY_LINKS[i.id.split("--")[0]] || "")
-    .filter(Boolean);
-
-  if (urls.length === 0) {
-    window.location.href = `https://${SHOPIFY_DOMAIN}`;
-  } else if (urls.length === 1) {
-    window.location.href = urls[0];
-  } else {
-    // Open additional items in new tabs, navigate main window to first
-    urls.slice(1).forEach(url => window.open(url, "_blank", "noopener"));
-    window.location.href = urls[0];
-  }
+  // Final fallback: go to first item's product page
+  const fallbackUrl = cart.map(i => i.shopifyUrl || DEFAULT_SHOPIFY_LINKS[i.id.split("--")[0]] || "").find(Boolean);
+  window.location.href = fallbackUrl || `https://${SHOPIFY_DOMAIN}`;
   if (btn) { btn.disabled = false; btn.textContent = "Checkout"; }
+}
+
+function shopifyVariantIdJSONP(handle) {
+  return new Promise((resolve) => {
+    const cb = `_mpv${Math.random().toString(36).slice(2)}`;
+    const timer = setTimeout(() => { cleanup(); resolve(null); }, 6000);
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cb];
+      document.getElementById(cb)?.remove();
+    }
+    window[cb] = (data) => { cleanup(); resolve(data?.product?.variants?.[0]?.id ?? null); };
+    const s = document.createElement("script");
+    s.id = cb;
+    s.src = `https://${SHOPIFY_DOMAIN}/products/${handle}.json?callback=${cb}`;
+    s.onerror = () => { cleanup(); resolve(null); };
+    document.head.appendChild(s);
+  });
 }
 
 async function shopifyGetVariantId(productId) {
