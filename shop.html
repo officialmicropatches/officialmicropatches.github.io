@@ -120,4 +120,125 @@
       <div class="shop-filter-pills" aria-label="Military branch">
         <button class="shop-subfilter active" data-shop-filter="branch" data-filter-value="all">All Military</button>
         <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="army">Army</button>
-        <button class="shop-subfilter" data-shop-
+        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="marines">Marine Corps</button>
+        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="navy">Navy</button>
+        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="air-force">Air Force</button>
+        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="space-force">Space Force</button>
+      </div>
+    </div>
+
+    <div class="shop-filter-group" data-filter-for="fire">
+      <label class="shop-filter-select">
+        <span>State</span>
+        <select data-shop-filter="state">
+          <option value="all">All States</option>
+          <option value="AL">Alabama</option>
+          <option value="AZ">Arizona</option>
+        </select>
+      </label>
+      <div class="shop-filter-pills" aria-label="Fire department type">
+        <button class="shop-subfilter active" data-shop-filter="type" data-filter-value="all">All Fire</button>
+        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="department">Fire Departments</button>
+      </div>
+    </div>
+
+    <div class="shop-filter-group" data-filter-for="ems">
+      <label class="shop-filter-select">
+        <span>State</span>
+        <select data-shop-filter="state">
+          <option value="all">All States</option>
+          <option value="AL">Alabama</option>
+          <option value="AZ">Arizona</option>
+        </select>
+      </label>
+      <div class="shop-filter-pills" aria-label="EMS role">
+        <button class="shop-subfilter active" data-shop-filter="type" data-filter-value="all">All EMS</button>
+        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="emt">EMT</button>
+        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="paramedic">Paramedic</button>
+        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="cct-rn">CCT-RN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PRODUCT GRID ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="shop-note-banner">
+        Don't see your department or unit? We can build it. No minimum orders.
+        <a href="custom.html">Submit a Custom Order</a> and we will make it happen.
+      </div>
+
+      <div class="product-grid" id="product-grid">
+        <div id="shop-loading" style="grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--text-muted);font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.9rem">
+          Loading products…
+        </div>
+      </div>
+
+      <p class="shop-empty-state" id="shop-empty" hidden>No products match this filter yet. More products are being added soon.</p>
+
+      <div class="product-grid" style="margin-top:1px">
+        <div class="product-card anim" data-category="all">
+          <div class="product-card-img" data-product-id="bulk-orders"><div class="img-placeholder">[ Photo ]</div><img class="product-card-photo" src="" alt="Bulk and Wholesale Orders"></div>
+          <div class="product-card-body">
+            <h3>Bulk and Wholesale Orders</h3>
+            <span class="product-price">Custom Quote</span>
+          </div>
+          <div class="product-card-footer">
+            <a href="custom.html" class="btn btn-outline" style="width:100%;font-size:0.82rem">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
+          <p>Handcrafted for those who serve. USA Made.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
+            <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
+            <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
+            <li><a href="shop.html#corrections">Corrections</a></li>
+            <li><a href="shop.html#military">Military</a></li>
+            <li><a href="shop.html#fire">Fire Departments</a></li>
+            <li><a href="shop.html#ems">EMS</a></li>
+            <li><a href="shop.html#pink-patch">Pink Patch</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="custom.html">Custom Orders</a></li>
+            <li><a href="patch-exchange.html">Patch Exchange</a></li>
+            <li><a href="queue.html">Waitlist Queue</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
+            <li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 MicroPatches. All rights reserved. <span id="admin-trigger" style="cursor:default;user-select:none;">USA</span> Made.</p>
+        <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Photo Viewer Modal -->
+  <div class="modal-overlay" id="photo-modal" role="dialog" aria-modal​​​​​​​​​​​​​​​​
