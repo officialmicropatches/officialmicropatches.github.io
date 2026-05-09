@@ -1,9 +1,11 @@
 import { supabase } from './supabase';
+import { mockApi } from './mockApi';
 
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 async function getAuthHeaders() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession().catch(() => ({ data: {} }));
   if (!session) return {};
   return { Authorization: `Bearer ${session.access_token}` };
 }
@@ -23,7 +25,7 @@ async function request(path, options = {}) {
   return json;
 }
 
-export const api = {
+const realApi = {
   // Auth
   register: (data) => request('/auth/register', { method: 'POST', body: JSON.stringify(data) }),
   login: (data) => request('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
@@ -47,3 +49,5 @@ export const api = {
   // Flags
   flagContent: (data) => request('/flags', { method: 'POST', body: JSON.stringify(data) }),
 };
+
+export const api = USE_MOCK ? mockApi : realApi;

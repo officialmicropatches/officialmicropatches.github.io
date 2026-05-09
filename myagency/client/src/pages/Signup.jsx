@@ -5,6 +5,8 @@ import { api } from '../lib/api';
 import { useAuth } from '../App';
 import Navbar from '../components/Navbar';
 
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+
 export default function Signup() {
   const { setUser, setUsername } = useAuth();
   const navigate = useNavigate();
@@ -21,10 +23,12 @@ export default function Signup() {
     try {
       const data = await api.register({ username, password, email: email || undefined });
       if (data.session) {
-        await supabase.auth.setSession({
-          access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
-        });
+        if (!USE_MOCK) {
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
+          });
+        }
         setUser(data.session.user);
         setUsername(data.user.username);
         navigate('/');

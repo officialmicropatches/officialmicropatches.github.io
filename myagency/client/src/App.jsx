@@ -6,6 +6,8 @@ import AgencyPage from './pages/AgencyPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+
 export const AuthContext = createContext(null);
 
 export function useAuth() {
@@ -18,6 +20,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (USE_MOCK) {
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) loadUsername(session.user.id);
