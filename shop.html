@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778361790">
 </head>
 <body>
 
@@ -241,4 +241,124 @@
   </footer>
 
   <!-- Photo Viewer Modal -->
-  <div class="modal-overlay" id="photo-modal" role="dialog" aria-modal​​​​​​​​​​​​​​​​
+  <div class="modal-overlay" id="photo-modal" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <div class="modal" style="background:transparent;border:none;padding:0;max-width:800px">
+      <button class="modal-close" id="photo-modal-close" aria-label="Close photo" style="position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.8)">&times;</button>
+      <img class="photo-modal-img" id="photo-modal-img" src="" alt="Patch photo">
+    </div>
+  </div>
+
+  <!-- ===== ADMIN OVERLAY ===== -->
+  <div class="admin-overlay" id="admin-overlay" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
+    <div class="admin-panel">
+      <button class="modal-close" id="admin-overlay-close" aria-label="Close admin">&times;</button>
+      <h2 id="admin-panel-title">ADMIN PANEL</h2>
+
+      <!-- Auth -->
+      <div id="admin-auth">
+        <form id="admin-login-form" class="admin-auth" novalidate>
+          <label for="admin-pw-input" style="font-family:'Oswald',sans-serif;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)">Password</label>
+          <input type="password" id="admin-pw-input" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;" autocomplete="current-password">
+          <p id="admin-pw-error" style="color:#f87171;font-size:0.85rem;min-height:18px"></p>
+          <button type="submit" class="btn btn-gold btn-small">Log In</button>
+        </form>
+      </div>
+
+      <!-- Content (shown after login) -->
+      <div id="admin-content">
+        <div class="admin-tabs" role="tablist">
+          <button class="admin-tab active" data-admin-tab="queue" role="tab">Queue</button>
+          <button class="admin-tab" data-admin-tab="photos" role="tab">Photos</button>
+          <button class="admin-tab" data-admin-tab="submissions" role="tab">Submissions</button>
+          <button class="admin-tab" data-admin-tab="settings" role="tab">Settings</button>
+        </div>
+
+        <!-- Queue Tab -->
+        <div id="admin-pane-queue" class="admin-tab-pane">
+          <div id="admin-queue-list"></div>
+          <div class="admin-actions">
+            <button id="admin-add-entry" class="btn btn-outline btn-small">+ Add Entry</button>
+            <button id="admin-save-queue" class="btn btn-gold btn-small">Save to Firestore</button>
+          </div>
+          <p id="admin-queue-status" class="admin-status"></p>
+          <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px">
+            <p style="font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">Upload Completed Product</p>
+            <input id="up-name" type="text" placeholder="Agency / Department Name"
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px">
+            <select id="up-status"
+              style="width:100%;background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;margin-bottom:8px;cursor:pointer">
+              <option value="complete" selected>Complete</option>
+              <option value="in-progress">In Progress</option>
+              <option value="Queued">Queued</option>
+            </select>
+            <label for="up-file" id="up-preview"
+              style="display:flex;width:100%;height:180px;background:var(--bg-surface);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;margin-bottom:8px;position:relative">
+              <span id="up-placeholder" style="color:var(--text-muted);font-size:0.9rem;text-align:center;line-height:2">📷<br>Tap to choose or take photo</span>
+              <img id="up-preview-img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+            </label>
+            <input id="up-file" type="file" accept="image/*" style="display:none">
+            <button id="up-submit" class="btn btn-gold" style="width:100%">Upload &amp; Add to Queue</button>
+            <p id="up-status-msg" style="font-size:0.85rem;margin-top:8px;min-height:18px;text-align:center"></p>
+          </div>
+        </div>
+
+        <!-- Photos Tab -->
+        <div id="admin-pane-photos" class="admin-tab-pane" style="display:none">
+          <p style="font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">Product photos and Shopify product links</p>
+          <div id="admin-photos-list"></div>
+          <button id="admin-save-shopify" class="btn btn-gold btn-small" type="button" style="margin-top:14px">Save Shopify Links</button>
+          <p id="admin-photos-status" class="admin-status"></p>
+        </div>
+
+        <!-- Submissions Tab -->
+        <div id="admin-pane-submissions" class="admin-tab-pane" style="display:none">
+          <div id="admin-submissions-list"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="admin-pane-settings" class="admin-tab-pane" style="display:none">
+          <form id="admin-change-pw-form" novalidate style="max-width:320px">
+            <div class="form-group">
+              <label for="admin-new-pw">New Password</label>
+              <input type="password" id="admin-new-pw" autocomplete="new-password" style="background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:10px 14px;font-size:0.95rem;">
+            </div>
+            <div style="margin-top:12px">
+              <button type="submit" class="btn btn-outline btn-small">Update Password</button>
+            </div>
+            <p id="admin-pw-change-status" class="admin-status" style="margin-top:8px"></p>
+          </form>
+          <div style="margin-top:24px">
+            <button id="admin-logout" class="btn btn-small" style="background:rgba(255,59,59,0.1);border:1px solid rgba(255,59,59,0.25);color:#f87171">Log Out</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
+    <div class="cart-drawer-header">
+      <h2>Your Cart</h2>
+      <button class="cart-close-btn" id="cart-close" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="cart-empty" id="cart-empty" style="display:flex">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Your cart is empty.</p>
+      <a href="shop.html" class="btn btn-outline btn-small">Browse Products</a>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal">
+        <span class="cart-subtotal-label">Subtotal</span>
+        <span class="cart-subtotal-value" id="cart-total">$0.00</span>
+      </div>
+      <p class="cart-shipping-note">Shipping calculated at checkout</p>
+      <button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
+    </div>
+  </aside>
+
+  <script type="module" src="assets/js/main.js?v=1778365840"></script>
+</body>
+</html>

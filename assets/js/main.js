@@ -1535,21 +1535,25 @@ async function cartCheckout() {
   const btn = document.getElementById("cart-checkout-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Redirecting..."; }
 
-  if (SHOPIFY_STOREFRONT_TOKEN) {
-    try {
-      const lineItems = [];
-      for (const item of cart) {
-        const variantId = await shopifyGetVariantId(item.id);
-        if (variantId) lineItems.push({ variantId, quantity: item.qty });
-      }
-      if (lineItems.length > 0) {
-        const checkoutUrl = await shopifyCreateCheckout(lineItems);
-        if (checkoutUrl) { window.location.href = checkoutUrl; return; }
-      }
-    } catch (_e) { /* fall through */ }
-  }
+  try {
+    const lineItems = [];
+    for (const item of cart) {
+      const productUrl = item.shopifyUrl || DEFAULT_SHOPIFY_LINKS[item.id.split("--")[0]] || "";
+      const handle = productUrl.split("/products/")[1]?.split("?")[0];
+      if (!handle) continue;
+      const res = await fetch(`https://${SHOPIFY_DOMAIN}/products/${handle}.json`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const variantId = data?.product?.variants?.[0]?.id;
+      if (variantId) lineItems.push(`${variantId}:${item.qty}`);
+    }
+    if (lineItems.length > 0) {
+      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(",")}`;
+      return;
+    }
+  } catch (_e) { /* fall through */ }
 
-  // Without Storefront token: single item → direct product page; multi → store
+  // Fallback: single item → direct product page; multi → store
   if (cart.length === 1 && cart[0].shopifyUrl) {
     window.location.href = cart[0].shopifyUrl;
   } else {
