@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 
 const authRoutes = require('./routes/auth');
 const agencyRoutes = require('./routes/agencies');
+const supervisorRoutes = require('./routes/supervisors');
 const reviewRoutes = require('./routes/reviews');
 const questionRoutes = require('./routes/questions');
 const flagRoutes = require('./routes/flags');
@@ -29,17 +30,18 @@ app.use(limiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/agencies', agencyRoutes);
+app.use('/api/supervisors', supervisorRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/flags', flagRoutes);
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal server error' });
 });
 
 app.listen(PORT, () => {
-  console.log(`MyAgency server running on port ${PORT}`);
+  console.log(`RateMyAgency server running on port ${PORT}`);
 });

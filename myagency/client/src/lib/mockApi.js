@@ -1,7 +1,8 @@
 import {
   MOCK_AGENCIES,
+  MOCK_SUPERVISORS,
   MOCK_AGENCY_REVIEWS,
-  MOCK_SUPERVISOR_REVIEWS,
+  MOCK_SUPERVISOR_REVIEWS_BY_SLUG,
   MOCK_QUESTIONS,
 } from './mockData';
 
@@ -37,7 +38,7 @@ export const mockApi = {
         a.name.toLowerCase().includes(lower) ||
         a.city?.toLowerCase().includes(lower) ||
         a.state.toLowerCase().includes(lower)
-    );
+    ).slice(0, 8);
   },
 
   getAgency: async (slug) => {
@@ -52,9 +53,25 @@ export const mockApi = {
     return { reviews: MOCK_AGENCY_REVIEWS, total: MOCK_AGENCY_REVIEWS.length, page: 1, page_size: 10 };
   },
 
-  getSupervisorReviews: async (_slug, _page) => {
+  getAgencySupervisors: async (slug) => {
     await delay(300);
-    return { reviews: MOCK_SUPERVISOR_REVIEWS, total: MOCK_SUPERVISOR_REVIEWS.length, page: 1, page_size: 10 };
+    const agency = MOCK_AGENCIES.find((a) => a.slug === slug);
+    if (!agency) return [];
+    return MOCK_SUPERVISORS.filter((s) => s.agency_id === agency.id);
+  },
+
+  getSupervisor: async (slug) => {
+    await delay(300);
+    const supervisor = MOCK_SUPERVISORS.find((s) => s.slug === slug);
+    if (!supervisor) throw new Error('Supervisor not found');
+    const agency = MOCK_AGENCIES.find((a) => a.id === supervisor.agency_id);
+    return { ...supervisor, agencies: agency ? { id: agency.id, name: agency.name, slug: agency.slug, city: agency.city, state: agency.state, type: agency.type } : null };
+  },
+
+  getSupervisorReviews: async (slug, _page) => {
+    await delay(300);
+    const reviews = MOCK_SUPERVISOR_REVIEWS_BY_SLUG[slug] || [];
+    return { reviews, total: reviews.length, page: 1, page_size: 10 };
   },
 
   getQuestions: async (_slug, _page) => {

@@ -34,9 +34,13 @@ const realApi = {
   // Agencies
   searchAgencies: (q) => request(`/agencies/search?q=${encodeURIComponent(q)}`),
   getAgency: (slug) => request(`/agencies/${slug}`),
-  getAgencyReviews: (slug, page = 1) => request(`/agencies/${slug}/reviews/agency?page=${page}`),
-  getSupervisorReviews: (slug, page = 1) => request(`/agencies/${slug}/reviews/supervisor?page=${page}`),
+  getAgencyReviews: (slug, page = 1) => request(`/agencies/${slug}/reviews?page=${page}`),
+  getAgencySupervisors: (slug) => request(`/agencies/${slug}/supervisors`),
   getQuestions: (slug, page = 1) => request(`/agencies/${slug}/questions?page=${page}`),
+
+  // Supervisors
+  getSupervisor: (slug) => request(`/supervisors/${slug}`),
+  getSupervisorReviews: (slug, page = 1) => request(`/supervisors/${slug}/reviews?page=${page}`),
 
   // Reviews
   submitAgencyReview: (data) => request('/reviews/agency', { method: 'POST', body: JSON.stringify(data) }),
