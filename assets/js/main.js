@@ -1729,15 +1729,27 @@ function initProductLinks() {
       const photo = imgArea?.querySelector(".product-card-photo");
       const priceEl = body.querySelector(".product-price");
 
+      // Captured lazily on first click away from keychain, so Firebase photos load first
+      let keychainSrc = null;
+
       const switchVariant = (type, info) => {
-        const label = encodeURIComponent(info.label);
-        const src = `https://placehold.co/400x400/0d1424/c9972a?text=${label}`;
-        if (photo) {
-          photo.src = src;
-          photo.style.display = "block";
-          photo.style.opacity = "1";
+        if (type === "keychain") {
+          if (photo) {
+            photo.src = keychainSrc || "";
+            photo.style.display = keychainSrc ? "block" : "none";
+          }
+          if (placeholder) placeholder.style.display = keychainSrc ? "none" : "";
+        } else {
+          // Capture the real keychain photo before switching away for the first time
+          if (keychainSrc === null) keychainSrc = photo?.src || "";
+          const label = encodeURIComponent(info.label);
+          if (photo) {
+            photo.src = `https://placehold.co/400x400/0d1424/c9972a?text=${label}`;
+            photo.style.display = "block";
+            photo.style.opacity = "1";
+          }
+          if (placeholder) placeholder.style.display = "none";
         }
-        if (placeholder) placeholder.style.display = "none";
         if (priceEl) priceEl.textContent = `$${info.price.toFixed(2)}`;
       };
 
@@ -1746,7 +1758,6 @@ function initProductLinks() {
         const btn = document.createElement("button");
         btn.className = "card-variant-btn" + (i === 0 ? " active" : "");
         btn.textContent = info.label;
-        if (i === 0) switchVariant(type, info);
         btn.addEventListener("click", e => {
           e.preventDefault();
           e.stopPropagation();
