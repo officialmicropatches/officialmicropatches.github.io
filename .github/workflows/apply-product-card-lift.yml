@@ -1,6 +1,7 @@
 name: Apply product card lift
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
