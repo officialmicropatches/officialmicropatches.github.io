@@ -3,14 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Challenge Coins - MicroPatches</title>
+  <title>Challenge Coins — MicroPatches</title>
   <meta name="description" content="Premium custom challenge coins made in Phoenix, Arizona. No minimum order quantities, USA made production, and fully custom front and back artwork.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://officialmicropatches.github.io/challenge-coins.html">
+  <meta property="og:title" content="Custom Challenge Coins — MicroPatches">
+  <meta property="og:description" content="Premium USA-made custom challenge coins. No minimum orders. Fully custom front and back artwork. Made in Phoenix, Arizona.">
+  <meta property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://officialmicropatches.github.io/challenge-coins.html">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#c9972a">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.myshopify.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://firebasestorage.googleapis.com https://formspree.io https://formsubmit.co https://*.myshopify.com; img-src 'self' data: blob: https://storage.googleapis.com https://firebasestorage.googleapis.com https://placehold.co; form-action https://formspree.io https://formsubmit.co 'self';">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778388483">
 </head>
 <body>
 
@@ -25,6 +33,10 @@
       <li><a href="patch-exchange.html">Patch Exchange</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
+    <button class="cart-toggle" id="cart-toggle" aria-label="View cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
     <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </nav>
   <nav class="nav-mobile-menu" aria-label="Mobile navigation">
@@ -35,6 +47,29 @@
     <a href="patch-exchange.html">Patch Exchange</a>
     <a href="contact.html">Contact</a>
   </nav>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
+    <div class="cart-drawer-header">
+      <h2>Your Cart</h2>
+      <button class="cart-close-btn" id="cart-close" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="cart-empty" id="cart-empty" style="display:flex">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Your cart is empty.</p>
+      <a href="shop.html" class="btn btn-outline btn-small">Browse Products</a>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal">
+        <span class="cart-subtotal-label">Subtotal</span>
+        <span class="cart-subtotal-value" id="cart-total">$0.00</span>
+      </div>
+      <p class="cart-shipping-note">Shipping calculated at checkout</p>
+      <button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
+    </div>
+  </aside>
 
   <!-- ===== HERO ===== -->
   <section class="coin-hero">
@@ -248,7 +283,12 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
-          <p>Small Patch. Big Meaning.</p>
+          <p>Handcrafted for those who serve. USA Made.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
+            <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
+            <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
+          </div>
         </div>
         <div class="footer-col">
           <h4>Shop</h4>
@@ -280,11 +320,11 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 MicroPatches. All rights reserved. USA Made.</p>
+        <p>&copy; 2026 MicroPatches. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <script type="module" src="assets/js/main.js"></script>
+  <script type="module" src="assets/js/main.js?v=1778388483"></script>
 </body>
 </html>

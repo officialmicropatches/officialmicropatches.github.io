@@ -875,12 +875,17 @@ function renderQueueFull(items) {
     const thumbHtml = hasImg
       ? `<img class="queue-thumb" src="${escH(item.img)}" alt="${escH(item.name || "")}" loading="lazy">`
       : `<div class="queue-thumb-placeholder">IMG</div>`;
+    const isComplete = (item.status || "").toLowerCase() === "complete";
+    const buyLink = isComplete
+      ? `<a href="shop.html" class="queue-buy-btn">Buy Now →</a>`
+      : "";
     return `
       <div class="queue-full-row anim anim-delay-${Math.min((i % 5) + 1, 5)}">
         <span class="queue-pos">#${i + 1}</span>
         ${thumbHtml}
         <span class="queue-name">${escH(item.name || "")}</span>
         <span class="status-badge ${statusClass(item.status)}">${escH(item.status || "Queued")}</span>
+        ${buyLink}
       </div>
     `;
   }).join("");
@@ -1009,7 +1014,7 @@ const adminTrigger  = document.getElementById("admin-trigger");
 const ADMIN_PW_KEY  = "mp_admin_pw";
 
 function getAdminPw() {
-  return localStorage.getItem(ADMIN_PW_KEY) || "micropatches";
+  return localStorage.getItem(ADMIN_PW_KEY) || null;
 }
 
 function escA(str) {
@@ -1043,8 +1048,14 @@ const adminLoginForm = document.getElementById("admin-login-form");
 if (adminLoginForm) {
   adminLoginForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    const storedPw = getAdminPw();
+    if (!storedPw) {
+      document.getElementById("admin-pw-error").textContent =
+        "No password set. In browser console run: localStorage.setItem('mp_admin_pw','yourpassword')";
+      return;
+    }
     const pw = document.getElementById("admin-pw-input").value;
-    if (pw === getAdminPw()) {
+    if (pw === storedPw) {
       adminAuth.style.display = "none";
       adminContent.classList.add("visible");
       loadAdminQueueTab();
@@ -1581,6 +1592,13 @@ function cartClose() {
   document.body.style.overflow = "";
 }
 
+function isSafeShopifyUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.hostname === SHOPIFY_DOMAIN || u.hostname.endsWith(".myshopify.com");
+  } catch { return false; }
+}
+
 async function cartCheckout() {
   const cart = cartGet();
   if (!cart.length) return;
@@ -1618,9 +1636,10 @@ async function cartCheckout() {
     } catch (_e) { /* fall through */ }
   }
 
-  // Final fallback: go to first item's product page
-  const fallbackUrl = cart.map(i => i.shopifyUrl || DEFAULT_SHOPIFY_LINKS[i.id.split("--")[0]] || "").find(Boolean);
-  window.location.href = fallbackUrl || `https://${SHOPIFY_DOMAIN}`;
+  // Final fallback: go to first item's product page (validate URL before redirecting)
+  const rawFallback = cart.map(i => i.shopifyUrl || DEFAULT_SHOPIFY_LINKS[i.id.split("--")[0]] || "").find(Boolean);
+  const fallbackUrl = isSafeShopifyUrl(rawFallback) ? rawFallback : `https://${SHOPIFY_DOMAIN}`;
+  window.location.href = fallbackUrl;
   if (btn) { btn.disabled = false; btn.textContent = "Checkout"; }
 }
 
