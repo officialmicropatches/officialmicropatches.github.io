@@ -1727,8 +1727,9 @@ function initProductLinks() {
       btnWrap.className = "card-variant-btns";
 
       const photo = imgArea?.querySelector(".product-card-photo");
+      const priceEl = body.querySelector(".product-price");
 
-      const switchVariantImage = (type, info) => {
+      const switchVariant = (type, info) => {
         const label = encodeURIComponent(info.label);
         const src = `https://placehold.co/400x400/0d1424/c9972a?text=${label}`;
         if (photo) {
@@ -1737,6 +1738,7 @@ function initProductLinks() {
           photo.style.opacity = "1";
         }
         if (placeholder) placeholder.style.display = "none";
+        if (priceEl) priceEl.textContent = `$${info.price.toFixed(2)}`;
       };
 
       types.forEach((type, i) => {
@@ -1744,13 +1746,13 @@ function initProductLinks() {
         const btn = document.createElement("button");
         btn.className = "card-variant-btn" + (i === 0 ? " active" : "");
         btn.textContent = info.label;
-        if (i === 0) switchVariantImage(type, info);
+        if (i === 0) switchVariant(type, info);
         btn.addEventListener("click", e => {
           e.preventDefault();
           e.stopPropagation();
           btnWrap.querySelectorAll(".card-variant-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-          switchVariantImage(type, info);
+          switchVariant(type, info);
         });
         btnWrap.appendChild(btn);
       });
