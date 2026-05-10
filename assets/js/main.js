@@ -1761,8 +1761,8 @@ function initProductLinks() {
       const photo = imgArea?.querySelector(".product-card-photo");
       const priceEl = body.querySelector(".product-price");
 
-      // Captured lazily on first click away from keychain, so Firebase photos load first
-      let keychainSrc = null;
+      // Capture keychain photo immediately to prevent clearing when re-clicking
+      let keychainSrc = photo?.src || "";
 
       const switchVariant = (type, info) => {
         if (type === "keychain") {
