@@ -827,6 +827,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: calc(var(--nav-h) + 60px) 0 60px;
   background: var(--bg-dark);
   border-bottom: 1px solid var(--border);
+  text-align: center;
 }
 .page-hero h1 { font-size: 2.8rem; color: #fff; }
 .page-hero p {
@@ -834,7 +835,22 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 1.05rem;
   max-width: 600px;
   margin-top: 12px;
+  margin-left: auto;
+  margin-right: auto;
   line-height: 1.7;
+}
+
+/* ---------- NAV LOGO ---------- */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-logo-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 4px;
 }
 
 /* ---------- SHOP PAGE TABS ---------- */
