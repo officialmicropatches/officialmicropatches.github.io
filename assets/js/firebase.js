@@ -86,7 +86,40 @@ function installProductCardLiftStyles() {
   document.head.appendChild(style);
 }
 
+function labelUpcomingProductVariantButtons() {
+  if (typeof document === "undefined") return;
+
+  const updateLabels = (root = document) => {
+    root.querySelectorAll?.(".card-variant-btn").forEach(btn => {
+      const text = (btn.textContent || "").trim().toLowerCase();
+      if (!text || text.includes("keychain") || text === "coming soon...") return;
+      btn.textContent = "Coming Soon...";
+      btn.classList.add("coming-soon");
+      btn.setAttribute("aria-label", "Coming Soon");
+    });
+  };
+
+  const start = () => {
+    updateLabels(document);
+    if (!document.body) return;
+    new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1) updateLabels(node);
+        });
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start, { once: true });
+  } else {
+    start();
+  }
+}
+
 installProductCardLiftStyles();
+labelUpcomingProductVariantButtons();
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
