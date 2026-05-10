@@ -75,6 +75,12 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 2px 24px rgba(0,0,0,0.6);
   border-bottom-color: var(--border);
 }
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
 
 .nav-logo {
   font-family: 'Oswald', sans-serif;
