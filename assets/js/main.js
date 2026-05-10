@@ -1714,15 +1714,34 @@ function initProductLinks() {
     // Remove any legacy description <p> tags that may be cached in older HTML
     const body = card.querySelector(".product-card-body");
     if (body) {
-      body.querySelectorAll("p:not(.card-variant-hint)").forEach(p => p.remove());
+      body.querySelectorAll("p").forEach(p => p.remove());
     }
 
-    // Inject variant type hint into card body
-    if (body && !body.querySelector(".card-variant-hint")) {
-      const hint = document.createElement("p");
-      hint.className = "card-variant-hint";
-      hint.textContent = "MicroKeychain · Micro Magnet · Micro Pin · Micro Charm";
-      body.appendChild(hint);
+    // Inject variant type buttons into card body
+    if (body && !body.querySelector(".card-variant-btns")) {
+      const imgArea = card.querySelector(".product-card-img");
+      const placeholder = imgArea?.querySelector(".img-placeholder");
+      const types = ["keychain", "magnet", "pin", "charm"];
+
+      const btnWrap = document.createElement("div");
+      btnWrap.className = "card-variant-btns";
+
+      types.forEach((type, i) => {
+        const info = PRODUCT_TYPE_DEFAULTS[type];
+        const btn = document.createElement("button");
+        btn.className = "card-variant-btn" + (i === 0 ? " active" : "");
+        btn.textContent = info.label;
+        btn.addEventListener("click", e => {
+          e.preventDefault();
+          e.stopPropagation();
+          btnWrap.querySelectorAll(".card-variant-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          if (placeholder) placeholder.textContent = info.label;
+        });
+        btnWrap.appendChild(btn);
+      });
+
+      body.appendChild(btnWrap);
     }
   });
 }

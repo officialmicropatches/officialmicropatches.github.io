@@ -2539,10 +2539,30 @@ h1, h2, h3, h4, h5, h6 {
 /* =========================================================
    PRODUCT CARD VARIANT HINT
    ========================================================= */
-.card-variant-hint {
-  font-size: 0.72rem;
+.card-variant-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 2;
+}
+.card-variant-btn {
+  font-size: 0.68rem;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 5px 4px;
+  border: 1px solid var(--border);
+  background: rgba(201,151,42,0.04);
   color: var(--text-muted);
-  margin: 6px 0 0;
-  letter-spacing: 0.02em;
-  opacity: 0.8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.card-variant-btn:hover,
+.card-variant-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,151,42,0.1);
 }
