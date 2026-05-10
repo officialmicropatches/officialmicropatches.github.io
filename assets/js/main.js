@@ -1711,8 +1711,13 @@ function initProductLinks() {
     card.style.position = "relative";
     card.appendChild(a);
 
-    // Inject variant type hint into card body
+    // Remove any legacy description <p> tags that may be cached in older HTML
     const body = card.querySelector(".product-card-body");
+    if (body) {
+      body.querySelectorAll("p:not(.card-variant-hint)").forEach(p => p.remove());
+    }
+
+    // Inject variant type hint into card body
     if (body && !body.querySelector(".card-variant-hint")) {
       const hint = document.createElement("p");
       hint.className = "card-variant-hint";
