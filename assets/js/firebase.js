@@ -59,6 +59,14 @@ function installProductCardLiftStyles() {
       opacity: 0.92;
       transition: opacity 0.18s;
     }
+    .card-variant-btn.coming-soon {
+      pointer-events: none;
+      opacity: 0.55;
+      cursor: not-allowed;
+      border-color: rgba(138,155,176,0.22);
+      color: var(--text-muted);
+      background: rgba(138,155,176,0.08);
+    }
     @media (hover: none) and (pointer: coarse) {
       .product-card:hover {
         border-color: var(--border);
@@ -92,15 +100,54 @@ function labelUpcomingProductVariantButtons() {
   const updateLabels = (root = document) => {
     root.querySelectorAll?.(".card-variant-btn").forEach(btn => {
       const text = (btn.textContent || "").trim().toLowerCase();
-      if (!text || text.includes("keychain") || text === "coming soon...") return;
+      if (!text || text.includes("keychain")) return;
       btn.textContent = "Coming Soon...";
+      btn.classList.remove("active");
       btn.classList.add("coming-soon");
+      btn.disabled = true;
+      btn.setAttribute("aria-disabled", "true");
       btn.setAttribute("aria-label", "Coming Soon");
+      btn.setAttribute("title", "Coming soon");
+    });
+
+    root.querySelectorAll?.(".product-card").forEach(card => {
+      const active = card.querySelector(".card-variant-btn.active");
+      if (active && !active.textContent.toLowerCase().includes("keychain")) {
+        active.classList.remove("active");
+        const keychain = Array.from(card.querySelectorAll(".card-variant-btn"))
+          .find(btn => btn.textContent.toLowerCase().includes("keychain"));
+        if (keychain) keychain.classList.add("active");
+      }
     });
   };
 
   const start = () => {
     updateLabels(document);
+    document.addEventListener("click", event => {
+      const unavailableVariant = event.target.closest?.(".card-variant-btn.coming-soon");
+      if (unavailableVariant) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation?.();
+        return;
+      }
+
+      const addButton = event.target.closest?.(".add-to-cart-btn");
+      if (!addButton) return;
+      const card = addButton.closest(".product-card");
+      const active = card?.querySelector(".card-variant-btn.active");
+      if (active && !active.textContent.toLowerCase().includes("keychain")) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation?.();
+        active.classList.remove("active");
+        const keychain = Array.from(card.querySelectorAll(".card-variant-btn"))
+          .find(btn => btn.textContent.toLowerCase().includes("keychain"));
+        if (keychain) keychain.classList.add("active");
+        alert("Only Micro Keychains are available right now. Other product types are coming soon.");
+      }
+    }, true);
+
     if (!document.body) return;
     new MutationObserver(mutations => {
       mutations.forEach(mutation => {
