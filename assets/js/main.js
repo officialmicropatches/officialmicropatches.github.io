@@ -1726,17 +1726,31 @@ function initProductLinks() {
       const btnWrap = document.createElement("div");
       btnWrap.className = "card-variant-btns";
 
+      const photo = imgArea?.querySelector(".product-card-photo");
+
+      const switchVariantImage = (type, info) => {
+        const label = encodeURIComponent(info.label);
+        const src = `https://placehold.co/400x400/0d1424/c9972a?text=${label}`;
+        if (photo) {
+          photo.src = src;
+          photo.style.display = "block";
+          photo.style.opacity = "1";
+        }
+        if (placeholder) placeholder.style.display = "none";
+      };
+
       types.forEach((type, i) => {
         const info = PRODUCT_TYPE_DEFAULTS[type];
         const btn = document.createElement("button");
         btn.className = "card-variant-btn" + (i === 0 ? " active" : "");
         btn.textContent = info.label;
+        if (i === 0) switchVariantImage(type, info);
         btn.addEventListener("click", e => {
           e.preventDefault();
           e.stopPropagation();
           btnWrap.querySelectorAll(".card-variant-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-          if (placeholder) placeholder.textContent = info.label;
+          switchVariantImage(type, info);
         });
         btnWrap.appendChild(btn);
       });
