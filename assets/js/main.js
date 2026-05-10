@@ -2,7 +2,7 @@
  * main.js ÃÂ¢ÃÂÃÂ Shared JS for MicroPatches site
  */
 
-import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadShopifyLinks, saveShopifyLinks } from "./firebase.js";
+import { loadQueue, saveQueue, addSubmission, loadSubmissions, uploadProduct, loadProductPhotos, uploadProductPhoto, loadHiddenProducts, saveHiddenProducts, loadHeroImage, uploadHeroImage, loadShopifyLinks, saveShopifyLinks, signInAdmin, signOutAdmin } from "./firebase.js";
 
 /* =========================================================
    STICKY NAV
@@ -1056,6 +1056,7 @@ if (adminLoginForm) {
     }
     const pw = document.getElementById("admin-pw-input").value;
     if (pw === storedPw) {
+      signInAdmin().catch(() => {}); // sign into Firebase so write rules pass
       adminAuth.style.display = "none";
       adminContent.classList.add("visible");
       loadAdminQueueTab();
@@ -1068,6 +1069,7 @@ if (adminLoginForm) {
 const adminLogoutBtn = document.getElementById("admin-logout");
 if (adminLogoutBtn) {
   adminLogoutBtn.addEventListener("click", () => {
+    signOutAdmin().catch(() => {}); // sign out of Firebase on admin logout
     adminContent.classList.remove("visible");
     adminAuth.style.display = "";
     document.getElementById("admin-pw-input").value = "";

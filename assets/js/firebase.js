@@ -26,6 +26,11 @@ import {
   uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import {
+  getAuth,
+  signInAnonymously,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 function installProductCardLiftStyles() {
   if (typeof document === "undefined" || document.getElementById("product-card-lift-styles")) return;
@@ -363,6 +368,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
+
+/**
+ * signInAdmin — signs in anonymously to Firebase so admin write
+ * operations pass the `request.auth != null` security rule check.
+ * Called after the local password is verified in main.js.
+ */
+export async function signInAdmin() {
+  await signInAnonymously(auth);
+}
+
+/**
+ * signOutAdmin — signs out of Firebase when the admin logs out.
+ */
+export async function signOutAdmin() {
+  await signOut(auth);
+}
 
 const QUEUE_DOC = doc(db, "config", "queue");
 
