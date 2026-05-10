@@ -129,6 +129,16 @@ export async function saveQueue(items) {
 }
 
 /**
+ * validateImageFile — checks that a file is an image and under 10MB.
+ * Throws a user-friendly Error if validation fails.
+ * @param {File} file
+ */
+function validateImageFile(file) {
+  if (!file.type.startsWith('image/')) throw new Error('Only image files are accepted.');
+  if (file.size > 10 * 1024 * 1024) throw new Error('File must be under 10MB.');
+}
+
+/**
  * addSubmission — uploads files to Storage, saves submission to Firestore,
  * appends new entry to the live queue
  * @param {Object} data — { name, email, phone, agency, description }
@@ -140,12 +150,14 @@ export async function addSubmission(data, generatedFile, patchFile) {
   let patchPhotoURL = "";
 
   if (generatedFile) {
+    validateImageFile(generatedFile);
     const gRef = ref(storage, "submissions/" + Date.now() + "_gen_" + generatedFile.name);
     await uploadBytes(gRef, generatedFile);
     generatedImageURL = await getDownloadURL(gRef);
   }
 
   if (patchFile) {
+    validateImageFile(patchFile);
     const pRef = ref(storage, "submissions/" + Date.now() + "_patch_" + patchFile.name);
     await uploadBytes(pRef, patchFile);
     patchPhotoURL = await getDownloadURL(pRef);
