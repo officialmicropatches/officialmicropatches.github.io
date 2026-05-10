@@ -328,6 +328,63 @@ initAnimations();
 /* =========================================================
    QUEUE PAGE ÃÂ¢ÃÂÃÂ LOAD & RENDER QUEUE
    ========================================================= */
+/* =========================================================
+   CHALLENGE COIN REQUEST PAGE
+   ========================================================= */
+(function initChallengeCoinPage() {
+  const form = document.getElementById("coin-request-form");
+  if (!form) return;
+
+  form.querySelectorAll('input[type="file"][data-preview-target]').forEach(input => {
+    input.addEventListener("change", () => {
+      const preview = document.getElementById(input.dataset.previewTarget);
+      const file = input.files && input.files[0] ? input.files[0] : null;
+      if (!preview || !file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.innerHTML = `<img src="${escA(e.target.result)}" alt="">`;
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const front = document.getElementById("coin-front-image");
+    const back = document.getElementById("coin-back-image");
+    const success = document.getElementById("coin-form-success");
+    const btn = form.querySelector("button[type=submit]");
+
+    if (!form.checkValidity() || !front.files.length || !back.files.length) {
+      form.reportValidity();
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+    }
+
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      });
+      if (!res.ok) throw new Error("Request failed");
+      form.style.display = "none";
+      if (success) success.classList.add("visible");
+    } catch (_e) {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Start Your Custom Coin Request";
+      }
+      alert("Submission failed. Please email us directly at OfficialMicroPatches@gmail.com.");
+    }
+  });
+})();
+
 const queueFullList = document.querySelector(".queue-full-list");
 const queuePreviewList = document.querySelector(".queue-preview-list");
 let allQueueItems = [];
