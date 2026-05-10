@@ -1,5 +1,5 @@
 /**
- * firebase.js — All Firebase logic for MicroPatches
+ * firebase.js - All Firebase logic for MicroPatches
  *
  * Firebase API keys in client-side code are normal and expected for Firebase
  * web apps. Security is enforced through Firebase Security Rules in the
@@ -59,13 +59,44 @@ function installProductCardLiftStyles() {
       opacity: 0.92;
       transition: opacity 0.18s;
     }
-    .card-variant-btn.coming-soon {
-      pointer-events: none;
-      opacity: 0.55;
-      cursor: not-allowed;
-      border-color: rgba(138,155,176,0.22);
+    .card-variant-btn.coming-soon,
+    .variant-pill.coming-soon {
+      opacity: 0.72;
+      cursor: pointer;
+      border-color: rgba(201,151,42,0.24);
       color: var(--text-muted);
       background: rgba(138,155,176,0.08);
+    }
+    .card-variant-btn.coming-soon:hover,
+    .variant-pill.coming-soon:hover {
+      border-color: rgba(201,151,42,0.5);
+      background: rgba(201,151,42,0.1);
+      color: #fff;
+    }
+    .mp-coming-soon-bubble {
+      position: fixed;
+      z-index: 99999;
+      max-width: min(280px, calc(100vw - 32px));
+      padding: 12px 16px;
+      border: 1px solid rgba(201,151,42,0.55);
+      border-radius: 8px;
+      background: rgba(9,13,22,0.96);
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.42), 0 0 24px rgba(201,151,42,0.16);
+      font-family: inherit;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      pointer-events: none;
+      transform: translate(-50%, -12px);
+      animation: mpComingSoonBubble 1500ms ease forwards;
+    }
+    @keyframes mpComingSoonBubble {
+      0% { opacity: 0; transform: translate(-50%, 2px); }
+      12% { opacity: 1; transform: translate(-50%, -12px); }
+      78% { opacity: 1; transform: translate(-50%, -12px); }
+      100% { opacity: 0; transform: translate(-50%, -20px); }
     }
     @media (hover: none) and (pointer: coarse) {
       .product-card:hover {
@@ -89,6 +120,10 @@ function installProductCardLiftStyles() {
       .product-card.is-pressing {
         transform: none;
       }
+      .mp-coming-soon-bubble {
+        animation: none;
+        opacity: 1;
+      }
     }
   `;
   document.head.appendChild(style);
@@ -97,25 +132,87 @@ function installProductCardLiftStyles() {
 function labelUpcomingProductVariantButtons() {
   if (typeof document === "undefined") return;
 
+  const variantInfo = {
+    keychain: { label: "Micro Keychain", price: "$13.99" },
+    magnet: { label: "Micro Magnet", price: "$14.99" },
+    pin: { label: "Micro Pin", price: "$9.99" },
+    charm: { label: "Micro Charm", price: "$9.99" }
+  };
+  const nonKeychainOrder = ["magnet", "pin", "charm"];
+
+  const textOf = el => (el?.textContent || "").trim().toLowerCase();
+
+  const inferType = (btn) => {
+    const raw = [
+      btn.dataset?.type,
+      btn.dataset?.variant,
+      btn.dataset?.variantType,
+      btn.value,
+      btn.getAttribute("aria-label"),
+      btn.getAttribute("title"),
+      btn.textContent
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    if (raw.includes("keychain")) return "keychain";
+    if (raw.includes("magnet")) return "magnet";
+    if (raw.includes("pin")) return "pin";
+    if (raw.includes("charm")) return "charm";
+
+    const buttons = Array.from(btn.parentElement?.querySelectorAll(".card-variant-btn, .variant-pill") || []);
+    const nonKeychainButtons = buttons.filter(item => !textOf(item).includes("keychain"));
+    const index = nonKeychainButtons.indexOf(btn);
+    return nonKeychainOrder[index] || "magnet";
+  };
+
+  const setButtonText = (btn, type) => {
+    const info = variantInfo[type] || variantInfo.magnet;
+    btn.dataset.variantType = type;
+
+    const labelEl = btn.querySelector(".variant-pill-label");
+    const priceEl = btn.querySelector(".variant-pill-price");
+    if (labelEl || priceEl) {
+      if (labelEl) labelEl.textContent = info.label;
+      if (priceEl) priceEl.textContent = info.price;
+      return;
+    }
+
+    btn.textContent = `${info.label} ${info.price}`;
+  };
+
+  const showComingSoonBubble = (target) => {
+    document.querySelectorAll(".mp-coming-soon-bubble").forEach(el => el.remove());
+    const bubble = document.createElement("div");
+    bubble.className = "mp-coming-soon-bubble";
+    bubble.textContent = "Coming soon...";
+    document.body.appendChild(bubble);
+
+    const rect = target?.getBoundingClientRect?.();
+    const top = Math.max(24, (rect?.top ?? window.innerHeight / 2) - 10);
+    const left = Math.min(window.innerWidth - 24, Math.max(24, rect ? rect.left + rect.width / 2 : window.innerWidth / 2));
+    bubble.style.top = `${top}px`;
+    bubble.style.left = `${left}px`;
+    window.setTimeout(() => bubble.remove(), 1550);
+  };
+
   const updateLabels = (root = document) => {
-    root.querySelectorAll?.(".card-variant-btn").forEach(btn => {
-      const text = (btn.textContent || "").trim().toLowerCase();
-      if (!text || text.includes("keychain")) return;
-      btn.textContent = "Coming Soon...";
+    root.querySelectorAll?.(".card-variant-btn, .variant-pill").forEach(btn => {
+      const type = inferType(btn);
+      if (type === "keychain") return;
+      setButtonText(btn, type);
       btn.classList.remove("active");
       btn.classList.add("coming-soon");
-      btn.disabled = true;
+      btn.disabled = false;
       btn.setAttribute("aria-disabled", "true");
-      btn.setAttribute("aria-label", "Coming Soon");
-      btn.setAttribute("title", "Coming soon");
+      btn.setAttribute("aria-label", `${variantInfo[type].label} ${variantInfo[type].price} - Coming soon`);
+      btn.setAttribute("title", "Coming soon...");
     });
 
     root.querySelectorAll?.(".product-card").forEach(card => {
       const active = card.querySelector(".card-variant-btn.active");
-      if (active && !active.textContent.toLowerCase().includes("keychain")) {
+      if (active && inferType(active) !== "keychain") {
         active.classList.remove("active");
         const keychain = Array.from(card.querySelectorAll(".card-variant-btn"))
-          .find(btn => btn.textContent.toLowerCase().includes("keychain"));
+          .find(btn => inferType(btn) === "keychain");
         if (keychain) keychain.classList.add("active");
       }
     });
@@ -124,11 +221,12 @@ function labelUpcomingProductVariantButtons() {
   const start = () => {
     updateLabels(document);
     document.addEventListener("click", event => {
-      const unavailableVariant = event.target.closest?.(".card-variant-btn.coming-soon");
+      const unavailableVariant = event.target.closest?.(".card-variant-btn.coming-soon, .variant-pill.coming-soon");
       if (unavailableVariant) {
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation?.();
+        showComingSoonBubble(unavailableVariant);
         return;
       }
 
@@ -136,15 +234,15 @@ function labelUpcomingProductVariantButtons() {
       if (!addButton) return;
       const card = addButton.closest(".product-card");
       const active = card?.querySelector(".card-variant-btn.active");
-      if (active && !active.textContent.toLowerCase().includes("keychain")) {
+      if (active && inferType(active) !== "keychain") {
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation?.();
         active.classList.remove("active");
         const keychain = Array.from(card.querySelectorAll(".card-variant-btn"))
-          .find(btn => btn.textContent.toLowerCase().includes("keychain"));
+          .find(btn => inferType(btn) === "keychain");
         if (keychain) keychain.classList.add("active");
-        alert("Only Micro Keychains are available right now. Other product types are coming soon.");
+        showComingSoonBubble(addButton);
       }
     }, true);
 
@@ -185,7 +283,7 @@ const storage = getStorage(app);
 const QUEUE_DOC = doc(db, "config", "queue");
 
 /**
- * loadQueue — loads queue items from Firestore
+ * loadQueue - loads queue items from Firestore
  * @returns {Promise<Array>} array of { name, status, img }
  */
 export async function loadQueue() {
@@ -201,15 +299,15 @@ export async function loadQueue() {
 }
 
 /**
- * saveQueue — saves queue array to Firestore
- * @param {Array} items — array of { name, status, img }
+ * saveQueue - saves queue array to Firestore
+ * @param {Array} items - array of { name, status, img }
  */
 export async function saveQueue(items) {
   await setDoc(QUEUE_DOC, { items });
 }
 
 /**
- * validateImageFile — checks that a file is an image and under 10MB.
+ * validateImageFile - checks that a file is an image and under 10MB.
  * Throws a user-friendly Error if validation fails.
  * @param {File} file
  */
@@ -219,11 +317,11 @@ function validateImageFile(file) {
 }
 
 /**
- * addSubmission — uploads files to Storage, saves submission to Firestore,
+ * addSubmission - uploads files to Storage, saves submission to Firestore,
  * appends new entry to the live queue
- * @param {Object} data — { name, email, phone, agency, description }
- * @param {File|null} generatedFile — preferred digital/vector file
- * @param {File|null} patchFile — physical patch photo
+ * @param {Object} data - { name, email, phone, agency, description }
+ * @param {File|null} generatedFile - preferred digital/vector file
+ * @param {File|null} patchFile - physical patch photo
  */
 export async function addSubmission(data, generatedFile, patchFile) {
   let generatedImageURL = "";
@@ -267,7 +365,7 @@ export async function addSubmission(data, generatedFile, patchFile) {
 }
 
 /**
- * uploadProduct — uploads a completed keychain photo and prepends it to the queue
+ * uploadProduct - uploads a completed keychain photo and prepends it to the queue
  */
 export async function uploadProduct(name, status, file) {
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
@@ -282,7 +380,7 @@ export async function uploadProduct(name, status, file) {
 }
 
 /**
- * loadSubmissions — returns all submissions ordered by submittedAt desc
+ * loadSubmissions - returns all submissions ordered by submittedAt desc
  * @returns {Promise<Array>}
  */
 export async function loadSubmissions() {
@@ -296,7 +394,7 @@ const HIDDEN_PRODUCTS_DOC = doc(db, "config", "hiddenProducts");
 const HERO_IMAGE_DOC = doc(db, "config", "heroImage");
 
 /**
- * loadProductPhotos — returns map of { productId: photoURL }
+ * loadProductPhotos - returns map of { productId: photoURL }
  */
 export async function loadProductPhotos() {
   const snap = await getDoc(PRODUCT_PHOTOS_DOC);
@@ -304,7 +402,7 @@ export async function loadProductPhotos() {
 }
 
 /**
- * loadHiddenProducts — returns array of hidden product IDs
+ * loadHiddenProducts - returns array of hidden product IDs
  */
 export async function loadHiddenProducts() {
   const snap = await getDoc(HIDDEN_PRODUCTS_DOC);
@@ -312,14 +410,14 @@ export async function loadHiddenProducts() {
 }
 
 /**
- * saveHiddenProducts — saves array of hidden product IDs
+ * saveHiddenProducts - saves array of hidden product IDs
  */
 export async function saveHiddenProducts(ids) {
   await setDoc(HIDDEN_PRODUCTS_DOC, { items: ids });
 }
 
 /**
- * loadHeroImage — returns hero logo URL or empty string
+ * loadHeroImage - returns hero logo URL or empty string
  */
 export async function loadHeroImage() {
   const snap = await getDoc(HERO_IMAGE_DOC);
@@ -327,7 +425,7 @@ export async function loadHeroImage() {
 }
 
 /**
- * uploadHeroImage — uploads logo to Storage and saves URL to Firestore
+ * uploadHeroImage - uploads logo to Storage and saves URL to Firestore
  */
 export async function uploadHeroImage(file) {
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
@@ -339,7 +437,7 @@ export async function uploadHeroImage(file) {
 }
 
 /**
- * uploadProductPhoto — uploads file to Storage and saves URL to Firestore
+ * uploadProductPhoto - uploads file to Storage and saves URL to Firestore
  * @param {string} productId
  * @param {File} file
  * @returns {Promise<string>} download URL
@@ -356,16 +454,16 @@ export async function uploadProductPhoto(productId, file) {
 const SHOPIFY_LINKS_DOC = doc(db, "config", "shopifyLinks");
 
 /**
- * loadShopifyLinks — returns map of { productId: shopifyProductUrl }
+ * loadShopifyLinks - returns map of { productId: shopifyProductUrl }
  */
 export async function loadShopifyLinks() {
-    const snap = await getDoc(SHOPIFY_LINKS_DOC);
-    return snap.exists() ? snap.data() : {};
+  const snap = await getDoc(SHOPIFY_LINKS_DOC);
+  return snap.exists() ? snap.data() : {};
 }
 
 /**
- * saveShopifyLinks — saves map of { productId: shopifyProductUrl }
+ * saveShopifyLinks - saves map of { productId: shopifyProductUrl }
  */
 export async function saveShopifyLinks(links) {
-    await setDoc(SHOPIFY_LINKS_DOC, links);
+  await setDoc(SHOPIFY_LINKS_DOC, links);
 }
