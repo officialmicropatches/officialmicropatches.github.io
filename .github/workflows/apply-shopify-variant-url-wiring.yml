@@ -63,3 +63,5 @@ function buildDefaultVariantUrl(productId, type) {
             git commit -m "Wire Shopify product variant URLs"
             git push
           fi
+
+# trigger: 2026-05-10T05:18Z
