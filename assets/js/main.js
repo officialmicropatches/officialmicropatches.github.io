@@ -1691,7 +1691,7 @@ function initCart() {
 
       // Determine active variant type from selected button
       const activeBtn = card.querySelector(".card-variant-btn.active");
-      const variantLabel = activeBtn?.textContent?.trim() || "MicroKeychain";
+      const variantLabel = activeBtn?.textContent?.trim() || "Micro Keychain";
       const variantType = Object.entries(PRODUCT_TYPE_DEFAULTS).find(([, v]) => v.label === variantLabel)?.[0] || "keychain";
 
       // Use variant-specific Shopify URL if available, else fall back to default
