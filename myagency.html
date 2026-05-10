@@ -293,7 +293,6 @@ function renderDrawer(){
 
 // ─── LANDING ──────────────────────────────────────────────────────────────────
 function renderLanding(){
-  const quickSlugs=['chandler-pd','gilbert-pd','scottsdale-pd','phoenix-pd','lapd','nypd'];
   return`
   ${navbar()}
   <main style="min-height:calc(100vh - 3.5rem);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1.25rem 2rem;">
@@ -315,13 +314,6 @@ function renderLanding(){
         </div>
         <div id="search-dd"></div>
       </div>
-      <div style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;">
-        ${quickSlugs.map(sl=>{
-          const a=AGENCIES.find(x=>x.slug===sl);if(!a)return'';
-          const lbl=a.city||(a.name.split(' ')[0]);
-          return`<a href="#/agency/${sl}" style="display:inline-flex;align-items:center;gap:.375rem;padding:.4rem .875rem;font-size:.75rem;font-weight:500;color:#1B2E4B;border:1px solid #DBEAFE;background:#EFF6FF;border-radius:100px;" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">${x(lbl)} ${badge(a.overall_grade,'sm')}</a>`;
-        }).join('')}
-      </div>
     </div>
   </main>
   <footer style="padding:1.5rem;text-align:center;border-top:1px solid #E5E7EB;">
@@ -338,7 +330,7 @@ function doSearch(v){
   dd.innerHTML=`<div style="position:absolute;top:.5rem;left:0;right:0;background:#fff;border:1px solid #E5E7EB;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;z-index:30;max-height:20rem;overflow-y:auto;">
     ${res.length===0
       ?`<p style="padding:1.25rem;text-align:center;color:#6B7280;font-size:.875rem;">No agencies found for "${x(v)}"</p>`
-      :res.map(a=>`<a href="#/agency/${a.slug}" style="display:flex;align-items:center;justify-content:space-between;padding:.875rem 1rem;text-decoration:none;border-bottom:1px solid #F3F4F6;" onmouseover="this.style.background='#F9F9F7'" onmouseout="this.style.background=''">${'<div><p style="font-size:.875rem;font-weight:600;color:#1A1A1A;margin:0 0 .1rem;">'+x(a.name)+'</p><p style="font-size:.75rem;color:#6B7280;margin:0;">'+x(a.city)+', '+x(a.state)+' · '+x(a.type)+' · '+a.review_count+' review'+(a.review_count!==1?'s':'')+'</p></div>'}${badge(a.overall_grade)}</a>`).join('')
+      :res.map(a=>`<a href="#/agency/${a.slug}" style="display:flex;align-items:center;justify-content:space-between;padding:.875rem 1rem;text-decoration:none;border-bottom:1px solid #F3F4F6;" onmouseover="this.style.background='#F9F9F7'" onmouseout="this.style.background='">${'<div><p style="font-size:.875rem;font-weight:600;color:#1A1A1A;margin:0 0 .1rem;">'+x(a.name)+'</p><p style="font-size:.75rem;color:#6B7280;margin:0;">'+x(a.city)+', '+x(a.state)+' · '+x(a.type)+' · '+a.review_count+' review'+(a.review_count!==1?'s':'')+'</p></div>'}${badge(a.overall_grade)}</a>`).join('')
     }
   </div>`;
 }
@@ -432,8 +424,7 @@ function renderAgency(slug){
         ${sups.length===0
           ?`<div style="padding:3rem;text-align:center;"><p style="color:#6B7280;font-size:.875rem;margin-bottom:1rem;">No supervisors have been reviewed yet.</p><button onclick="openRateSupervisor(${agency.id},'${x(agency.name)}','${x(slug)}')" style="color:#1B2E4B;font-size:.875rem;font-weight:500;border:none;background:none;cursor:pointer;">Rate a supervisor →</button></div>`
           :`<div style="display:flex;flex-direction:column;gap:1rem;">${sups.map(s=>supCard(s)).join('')}</div>`
-        }`:''
-      }
+        }`:''}
     </div>
 
     <div style="margin-top:1.5rem;">
@@ -552,7 +543,8 @@ function questionThread(q,slug){
     </button>
     ${shown?`<div style="border-left:2px solid #E5E7EB;padding-left:.875rem;margin-bottom:.75rem;display:flex;flex-direction:column;gap:.625rem;">
       ${replies.map(r=>`<div><p style="font-size:.8rem;color:#374151;margin:0 0 .2rem;line-height:1.55;">${x(r.body)}</p><p style="font-size:.65rem;color:#9CA3AF;margin:0;">${ago(r.created_at)}</p></div>`).join('')}
-    </div>`:''}`:''}
+    </div>`:''}`:''
+  }
   ${S.user?`<div style="display:flex;gap:.5rem;align-items:center;margin-top:.25rem;">
     <input id="reply-${q.id}" placeholder="Reply anonymously..." style="flex:1;padding:.5rem .75rem;font-size:.8rem;border:1px solid #E5E7EB;border-radius:100px;outline:none;font-family:inherit;background:#F9F9F7;">
     <button onclick="submitReply(${q.id},'${x(slug)}')" style="background:#1B2E4B;color:#fff;font-size:.75rem;padding:.5rem .875rem;border:none;border-radius:100px;cursor:pointer;white-space:nowrap;">Reply</button>
