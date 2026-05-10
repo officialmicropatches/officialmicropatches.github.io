@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import Landing from './pages/Landing';
 import AgencyPage from './pages/AgencyPage';
+import SupervisorPage from './pages/SupervisorPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
@@ -41,11 +42,7 @@ function App() {
   }, []);
 
   async function loadUsername(userId) {
-    const { data } = await supabase
-      .from('users')
-      .select('username')
-      .eq('id', userId)
-      .maybeSingle();
+    const { data } = await supabase.from('users').select('username').eq('id', userId).maybeSingle();
     setUsername(data?.username ?? null);
     setLoading(false);
   }
@@ -53,7 +50,7 @@ function App() {
   if (loading) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-text-secondary text-sm">Loading...</div>
+        <div className="w-5 h-5 border-2 border-navy border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -64,6 +61,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/agency/:slug" element={<AgencyPage />} />
+          <Route path="/supervisor/:slug" element={<SupervisorPage />} />
           <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
           <Route path="/signup" element={user ? <Navigate to="/" replace /> : <Signup />} />
         </Routes>

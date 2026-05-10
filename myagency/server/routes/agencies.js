@@ -4,6 +4,17 @@ const { supabaseAdmin } = require('../lib/supabase');
 
 const PAGE_SIZE = 10;
 
+const RANK_ORDER = {
+  'Chief of Police / Sheriff': 1,
+  'Assistant Chief / Undersheriff': 2,
+  'Deputy Chief': 3,
+  'Commander': 4,
+  'Captain': 5,
+  'Lieutenant': 6,
+  'Sergeant': 7,
+  'Corporal': 8,
+};
+
 // GET /api/agencies/search?q=
 router.get('/search', async (req, res) => {
   const q = (req.query.q || '').trim();
@@ -42,8 +53,8 @@ router.get('/:slug', async (req, res) => {
   res.json({ ...agency, command_staff: commandStaff || [] });
 });
 
-// GET /api/agencies/:slug/reviews/agency?page=1
-router.get('/:slug/reviews/agency', async (req, res) => {
+// GET /api/agencies/:slug/reviews?page=1
+router.get('/:slug/reviews', async (req, res) => {
   const { slug } = req.params;
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const from = (page - 1) * PAGE_SIZE;
@@ -61,8 +72,8 @@ router.get('/:slug/reviews/agency', async (req, res) => {
     .from('agency_reviews')
     .select(`
       id, overall_grade, grade_communication, grade_fairness,
-      grade_accountability, grade_backing_officers, grade_toxic_behavior,
-      grade_promotion_fairness, grade_work_life, grade_morale_impact,
+      grade_accountability, grade_backing_officers, grade_morale,
+      grade_promotion_fairness, grade_work_life, grade_toxic_leadership,
       review_text, created_at,
       users(username)
     `, { count: 'exact' })
@@ -74,12 +85,9 @@ router.get('/:slug/reviews/agency', async (req, res) => {
   res.json({ reviews: reviews || [], total: count || 0, page, page_size: PAGE_SIZE });
 });
 
-// GET /api/agencies/:slug/reviews/supervisor?page=1
-router.get('/:slug/reviews/supervisor', async (req, res) => {
+// GET /api/agencies/:slug/supervisors
+router.get('/:slug/supervisors', async (req, res) => {
   const { slug } = req.params;
-  const page = Math.max(1, parseInt(req.query.page) || 1);
-  const from = (page - 1) * PAGE_SIZE;
-  const to = from + PAGE_SIZE - 1;
 
   const { data: agency } = await supabaseAdmin
     .from('agencies')
@@ -89,21 +97,35 @@ router.get('/:slug/reviews/supervisor', async (req, res) => {
 
   if (!agency) return res.status(404).json({ error: 'Agency not found' });
 
-  const { data: reviews, error, count } = await supabaseAdmin
-    .from('supervisor_reviews')
+  const { data: supervisors, error } = await supabaseAdmin
+    .from('supervisors')
     .select(`
-      id, rank, overall_grade, grade_communication, grade_fairness,
-      grade_accountability, grade_backing_officers, grade_toxic_behavior,
-      grade_promotion_fairness, grade_work_life, grade_morale_impact,
-      review_text, created_at,
-      users(username)
-    `, { count: 'exact' })
-    .eq('agency_id', agency.id)
-    .order('created_at', { ascending: false })
-    .range(from, to);
+      id, display_name, rank, slug, overall_grade, review_count,
+      supervisor_reviews(review_text, created_at, overall_grade)
+    `)
+    .eq('agency_id', agency.id);
 
   if (error) return res.status(500).json({ error: error.message });
-  res.json({ reviews: reviews || [], total: count || 0, page, page_size: PAGE_SIZE });
+
+  const sorted = (supervisors || []).sort((a, b) => {
+    const ra = RANK_ORDER[a.rank] ?? 99;
+    const rb = RANK_ORDER[b.rank] ?? 99;
+    if (ra !== rb) return ra - rb;
+    // within same rank, most recently reviewed first
+    const latestA = a.supervisor_reviews?.sort((x, y) => new Date(y.created_at) - new Date(x.created_at))[0]?.created_at || '';
+    const latestB = b.supervisor_reviews?.sort((x, y) => new Date(y.created_at) - new Date(x.created_at))[0]?.created_at || '';
+    return latestB.localeCompare(latestA);
+  });
+
+  // Attach preview (most recent review_text)
+  const withPreview = sorted.map((s) => {
+    const reviews = (s.supervisor_reviews || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const preview = reviews.find((r) => r.review_text)?.review_text || null;
+    const { supervisor_reviews: _, ...rest } = s;
+    return { ...rest, preview };
+  });
+
+  res.json(withPreview);
 });
 
 // GET /api/agencies/:slug/questions?page=1

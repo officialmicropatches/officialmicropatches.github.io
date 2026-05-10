@@ -57,39 +57,42 @@ export default function QAPanel({ agencyId, slug }) {
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-text-primary mb-4">Community Q&A</h3>
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-base font-semibold text-text-primary">Community Q&A</h3>
+        {total > 0 && <span className="text-xs text-text-secondary">{total} question{total !== 1 ? 's' : ''}</span>}
+      </div>
 
       {user ? (
         <div className="mb-6">
           <textarea
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
-            placeholder="Ask anything about this agency..."
+            placeholder="Ask anonymously about this agency — morale, specialties, lateral culture, schedules..."
             rows={3}
-            className="w-full px-4 py-3 text-sm border border-border rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
+            className="w-full px-4 py-3 text-sm border border-border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-navy/30 focus:border-navy/40 shadow-card"
           />
           {error && <p className="text-xs text-grade-f mt-1">{error}</p>}
           <button
             onClick={submitQuestion}
             disabled={submitting || !questionText.trim()}
-            className="mt-2 bg-navy text-white text-sm px-5 py-2 rounded-full disabled:opacity-50 hover:bg-navy-hover transition-colors"
+            className="mt-2.5 bg-navy text-white text-sm px-5 py-2.5 rounded-full disabled:opacity-50 hover:bg-navy-hover transition-colors"
           >
             {submitting ? 'Posting...' : 'Post Question'}
           </button>
         </div>
       ) : (
-        <div className="mb-6 p-4 bg-bg border border-border rounded-xl text-sm text-text-secondary">
+        <div className="mb-6 p-4 bg-bg border border-border rounded-2xl text-sm text-text-secondary">
           <Link to="/login" className="text-navy hover:underline font-medium">Log in</Link> or{' '}
-          <Link to="/signup" className="text-navy hover:underline font-medium">sign up</Link> to ask a question.
+          <Link to="/signup" className="text-navy hover:underline font-medium">sign up</Link> to ask a question anonymously.
         </div>
       )}
 
       {loading ? (
-        <div className="py-8 flex justify-center">
+        <div className="py-10 flex justify-center">
           <div className="w-5 h-5 border-2 border-navy border-t-transparent rounded-full animate-spin" />
         </div>
       ) : questions.length === 0 ? (
-        <p className="text-text-secondary text-sm text-center py-8">No questions yet. Be the first to ask one.</p>
+        <p className="text-text-secondary text-sm text-center py-10">No questions yet. Be the first to ask one.</p>
       ) : (
         <div className="space-y-4">
           {questions.map((q) => (
@@ -98,9 +101,9 @@ export default function QAPanel({ agencyId, slug }) {
           {questions.length < total && (
             <button
               onClick={loadMore}
-              className="w-full py-3 text-sm text-navy border border-border rounded-xl hover:bg-bg transition-colors"
+              className="w-full py-3 text-sm text-navy border border-border rounded-2xl hover:bg-bg transition-colors"
             >
-              Load more
+              Load more questions
             </button>
           )}
         </div>

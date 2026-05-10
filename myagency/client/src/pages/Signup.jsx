@@ -45,39 +45,46 @@ export default function Signup() {
   return (
     <div className="min-h-screen bg-bg flex flex-col">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center px-6 py-16">
+      <main className="flex-1 flex items-center justify-center px-5 py-16">
         <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-bold text-navy mb-1">Create an account</h1>
-          <p className="text-text-secondary text-sm mb-6">Anonymous. Free. For law enforcement.</p>
+          <div className="mb-6">
+            <h1 className="text-2xl font-extrabold text-navy mb-1.5">Create an account</h1>
+            <p className="text-text-secondary text-sm">Anonymous. Free. For law enforcement professionals.</p>
+          </div>
 
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl mb-6 text-sm text-amber-800">
-            Do not use a work or department email address.
+          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl mb-6 text-sm text-amber-800 leading-relaxed">
+            <strong>Do not use a work, department, or .gov email address.</strong>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-1.5">Username <span className="text-grade-f">*</span></label>
+              <label className="block text-sm font-medium text-text-primary mb-1.5">
+                Username <span className="text-grade-f">*</span>
+              </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsernameInput(e.target.value)}
                 required
                 autoComplete="username"
+                autoFocus
                 placeholder="e.g. officer_anon"
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/30 focus:border-navy/40 bg-surface"
               />
-              <p className="text-xs text-text-secondary mt-1">3–30 characters. Letters, numbers, and underscores only.</p>
+              <p className="text-xs text-text-secondary mt-1">3–30 characters. Letters, numbers, and underscores only. Never linked to your real identity.</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-1.5">Password <span className="text-grade-f">*</span></label>
+              <label className="block text-sm font-medium text-text-primary mb-1.5">
+                Password <span className="text-grade-f">*</span>
+              </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="new-password"
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/30 focus:border-navy/40 bg-surface"
               />
             </div>
 
@@ -91,21 +98,19 @@ export default function Signup() {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 placeholder="personal@example.com"
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-navy/30 focus:border-navy/40 bg-surface"
               />
-              <p className="text-xs text-text-secondary mt-1">Only used for account recovery. Never displayed publicly.</p>
+              <p className="text-xs text-text-secondary mt-1">For account recovery only. Never displayed. Do NOT use a department email.</p>
             </div>
 
-            {error && (
-              <p className="text-sm text-grade-f">{error}</p>
-            )}
+            {error && <p className="text-sm text-grade-f">{error}</p>}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-navy text-white py-3 rounded-full text-sm font-medium disabled:opacity-50 hover:bg-navy-hover transition-colors"
+              className="w-full bg-navy text-white py-3.5 rounded-full text-sm font-medium disabled:opacity-50 hover:bg-navy-hover transition-colors"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? 'Creating account...' : 'Create anonymous account'}
             </button>
           </form>
 

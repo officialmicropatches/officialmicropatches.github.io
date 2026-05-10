@@ -7,7 +7,8 @@ export default {
         bg: '#F9F9F7',
         surface: '#FFFFFF',
         navy: '#1B2E4B',
-        'navy-hover': '#3A5A8C',
+        'navy-hover': '#142540',
+        'slate-blue': '#3A5A8C',
         'text-primary': '#1A1A1A',
         'text-secondary': '#6B7280',
         border: '#E5E7EB',
@@ -19,6 +20,10 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      boxShadow: {
+        card: '0 1px 3px 0 rgba(0,0,0,0.07), 0 1px 2px -1px rgba(0,0,0,0.05)',
+        modal: '0 20px 60px -10px rgba(0,0,0,0.18)',
       },
     },
   },

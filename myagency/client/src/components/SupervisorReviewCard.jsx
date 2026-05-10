@@ -2,48 +2,55 @@ import React, { useState } from 'react';
 import GradeBadge from './GradeBadge';
 import FlagModal from './FlagModal';
 
-const CATEGORIES = [
+const SUPERVISOR_CATEGORIES = [
   { key: 'grade_communication', label: 'Communication' },
   { key: 'grade_fairness', label: 'Fairness' },
   { key: 'grade_accountability', label: 'Accountability' },
-  { key: 'grade_backing_officers', label: 'Backing Officers' },
-  { key: 'grade_toxic_behavior', label: 'Toxic Behavior' },
+  { key: 'grade_professionalism', label: 'Professionalism' },
+  { key: 'grade_retaliation', label: 'No Retaliation' },
+  { key: 'grade_morale_impact', label: 'Morale Impact' },
+  { key: 'grade_backing_officers', label: 'Backs Officers' },
   { key: 'grade_promotion_fairness', label: 'Promotions' },
-  { key: 'grade_work_life', label: 'Work/Life' },
-  { key: 'grade_morale_impact', label: 'Morale' },
+  { key: 'grade_assignment_fairness', label: 'Assignments' },
 ];
 
-function formatDate(ts) {
-  return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+function timeAgo(ts) {
+  const diff = Date.now() - new Date(ts).getTime();
+  const d = Math.floor(diff / 86400000);
+  if (d === 0) return 'Today';
+  if (d === 1) return 'Yesterday';
+  if (d < 30) return `${d}d ago`;
+  if (d < 365) return `${Math.floor(d / 30)}mo ago`;
+  return `${Math.floor(d / 365)}y ago`;
 }
 
 export default function SupervisorReviewCard({ review }) {
   const [flagging, setFlagging] = useState(false);
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-5">
-      <div className="flex items-start justify-between gap-4 mb-3">
+    <div className="bg-surface border border-border rounded-2xl p-5 shadow-card">
+      <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <GradeBadge grade={review.overall_grade} size="lg" />
           <div>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-text-primary">@{review.users?.username ?? 'anonymous'}</p>
-              <span className="text-xs bg-navy/10 text-navy font-medium px-2.5 py-0.5 rounded-full">{review.rank}</span>
-            </div>
-            <p className="text-xs text-text-secondary">{formatDate(review.created_at)}</p>
+            <p className="text-sm font-semibold text-text-primary">@{review.users?.username ?? 'anonymous'}</p>
+            <p className="text-xs text-text-secondary mt-0.5">{timeAgo(review.created_at)}</p>
           </div>
         </div>
         <button
           onClick={() => setFlagging(true)}
-          className="text-xs text-text-secondary hover:text-text-primary transition-colors mt-0.5"
+          className="text-xs text-text-secondary hover:text-text-primary transition-colors shrink-0 mt-0.5 px-1 py-0.5"
         >
           Flag
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        {CATEGORIES.map(({ key, label }) => (
-          <span key={key} className="inline-flex items-center gap-1 text-xs bg-bg border border-border rounded-full px-2.5 py-1">
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        {SUPERVISOR_CATEGORIES.map(({ key, label }) => review[key] && (
+          <span
+            key={key}
+            className="inline-flex items-center gap-1.5 text-xs bg-bg border border-border rounded-full px-2.5 py-1"
+          >
             <span className="text-text-secondary">{label}</span>
             <GradeBadge grade={review[key]} size="sm" />
           </span>
@@ -55,11 +62,7 @@ export default function SupervisorReviewCard({ review }) {
       )}
 
       {flagging && (
-        <FlagModal
-          contentType="supervisor_review"
-          contentId={review.id}
-          onClose={() => setFlagging(false)}
-        />
+        <FlagModal contentType="supervisor_review" contentId={review.id} onClose={() => setFlagging(false)} />
       )}
     </div>
   );

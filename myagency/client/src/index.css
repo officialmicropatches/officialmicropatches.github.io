@@ -2,8 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #F9F9F7;
-  color: #1A1A1A;
-  font-family: 'Inter', system-ui, sans-serif;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #F9F9F7;
+    color: #1A1A1A;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
