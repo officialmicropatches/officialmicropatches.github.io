@@ -659,7 +659,7 @@ const PRODUCT_TYPE_DEFAULTS = Object.freeze({
     size: "25mm (approx. 1 in.)",
   },
   keychain: {
-    label: "MicroKeychain",
+    label: "Micro Keychain",
     price: 13.99,
     size: "45mm (approx. 1.75 in.)",
   },
