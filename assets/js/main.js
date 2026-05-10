@@ -1685,7 +1685,20 @@ function initCart() {
     btn.addEventListener("click", () => {
       const photoEl = card.querySelector(".product-card-photo");
       const img = (photoEl?.src && !photoEl.src.endsWith("/")) ? photoEl.src : "";
-      cartAdd({ id: productId, name, price, img, shopifyUrl });
+
+      // Read price from current DOM so variant selection is reflected
+      const currentPrice = parseFloat(card.querySelector(".product-price")?.textContent?.replace(/[^0-9.]/g, "") || price);
+
+      // Determine active variant type from selected button
+      const activeBtn = card.querySelector(".card-variant-btn.active");
+      const variantLabel = activeBtn?.textContent?.trim() || "MicroKeychain";
+      const variantType = Object.entries(PRODUCT_TYPE_DEFAULTS).find(([, v]) => v.label === variantLabel)?.[0] || "keychain";
+
+      // Use variant-specific Shopify URL if available, else fall back to default
+      const variantShopifyUrl = PRODUCT_VARIANT_URLS[productId]?.[variantType] || shopifyUrl;
+
+      // Include variant in id so keychain + magnet are separate cart line items
+      cartAdd({ id: `${productId}--${variantType}`, name: `${name} — ${variantLabel}`, price: currentPrice, img, shopifyUrl: variantShopifyUrl });
     });
     link.replaceWith(btn);
   });
