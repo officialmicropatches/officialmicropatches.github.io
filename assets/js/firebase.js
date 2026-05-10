@@ -27,6 +27,67 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+function installProductCardLiftStyles() {
+  if (typeof document === "undefined" || document.getElementById("product-card-lift-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "product-card-lift-styles";
+  style.textContent = `
+    .product-card {
+      position: relative;
+      transform: translateY(0) scale(1);
+      will-change: transform, box-shadow, border-color;
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .product-card:hover {
+      border-color: rgba(201,151,42,0.42);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.46), 0 0 28px rgba(201,151,42,0.18);
+      transform: translateY(-8px) scale(1.015);
+    }
+    .product-card:active {
+      border-color: rgba(201,151,42,0.5);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.42), 0 0 18px rgba(201,151,42,0.16);
+      transform: translateY(-4px) scale(1.008);
+      transition-duration: 90ms;
+    }
+    .product-card:hover .product-card-img img,
+    .product-card:hover h3 {
+      opacity: 0.92;
+      transition: opacity 0.18s;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .product-card:hover {
+        border-color: var(--border);
+        box-shadow: none;
+        transform: translateY(0) scale(1);
+      }
+      .product-card:active,
+      .product-card.is-pressing {
+        border-color: rgba(201,151,42,0.5);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.44), 0 0 20px rgba(201,151,42,0.16);
+        transform: translateY(-6px) scale(1.012);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .product-card {
+        transition: border-color 120ms ease, box-shadow 120ms ease;
+      }
+      .product-card:hover,
+      .product-card:active,
+      .product-card.is-pressing {
+        transform: none;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+installProductCardLiftStyles();
+
 const firebaseConfig = {
   apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
   authDomain: "patch-559c8.firebaseapp.com",
