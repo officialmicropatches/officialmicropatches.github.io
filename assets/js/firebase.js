@@ -73,6 +73,9 @@ function installProductCardLiftStyles() {
       background: rgba(201,151,42,0.1);
       color: #fff;
     }
+    .mp-shop-overview-hidden {
+      display: none !important;
+    }
     .mp-coming-soon-bubble {
       position: fixed;
       z-index: 99999;
@@ -127,6 +130,86 @@ function installProductCardLiftStyles() {
     }
   `;
   document.head.appendChild(style);
+}
+
+function initShopCategoryViewportBehavior() {
+  if (typeof document === "undefined") return;
+
+  const validTabs = new Set(["law-enforcement", "corrections", "military", "fire", "ems", "pink-patch"]);
+
+  const findOverviewSections = () => {
+    const candidates = Array.from(document.querySelectorAll("section, .section, [id], [class]"));
+    return candidates.filter(el => {
+      if (el.closest(".site-nav, .nav-mobile-menu, .shop-tabs-wrap, .shop-filter-panel")) return false;
+      const idClass = `${el.id || ""} ${el.className || ""}`.toLowerCase();
+      const text = (el.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+      return idClass.includes("what-we-make") || idClass.includes("whatwemake") || text.includes("what we make");
+    }).filter((el, index, arr) => !arr.some(other => other !== el && other.contains(el)));
+  };
+
+  const toggleShopOverview = (cat) => {
+    const hide = cat && cat !== "all";
+    findOverviewSections().forEach(section => {
+      section.classList.toggle("mp-shop-overview-hidden", hide);
+    });
+  };
+
+  const scrollToProducts = () => {
+    const grid = document.querySelector(".product-grid");
+    if (!grid) return;
+    const target = grid.closest("section") || grid;
+    const nav = document.querySelector(".site-nav")?.getBoundingClientRect().height || 0;
+    const tabs = document.querySelector(".shop-tabs-wrap")?.getBoundingClientRect().height || 0;
+    const filters = document.querySelector(".shop-filter-panel.is-visible")?.getBoundingClientRect().height || 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - nav - tabs - filters - 14;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion ? "auto" : "smooth" });
+  };
+
+  const getActiveCat = () => document.querySelector(".shop-tab.active")?.dataset.tab || "all";
+
+  const sync = (cat = getActiveCat(), shouldScroll = false) => {
+    toggleShopOverview(cat);
+    if (shouldScroll && cat !== "all") {
+      setTimeout(scrollToProducts, 90);
+      setTimeout(scrollToProducts, 260);
+    }
+  };
+
+  const start = () => {
+    sync(getActiveCat(), false);
+
+    document.addEventListener("click", event => {
+      const tab = event.target.closest?.(".shop-tab[data-tab]");
+      if (!tab) return;
+      const cat = tab.dataset.tab || "all";
+      setTimeout(() => sync(cat, validTabs.has(cat)), 0);
+    });
+
+    document.addEventListener("change", event => {
+      if (!event.target.closest?.(".shop-filter-panel")) return;
+      setTimeout(() => sync(getActiveCat(), true), 0);
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest?.(".shop-subfilter")) return;
+      setTimeout(() => sync(getActiveCat(), true), 0);
+    });
+
+    window.addEventListener("hashchange", () => {
+      const hash = location.hash.replace("#", "");
+      setTimeout(() => sync(hash || getActiveCat(), validTabs.has(hash)), 0);
+    });
+
+    const initialHash = location.hash.replace("#", "");
+    if (validTabs.has(initialHash)) setTimeout(() => sync(initialHash, true), 350);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start, { once: true });
+  } else {
+    start();
+  }
 }
 
 function labelUpcomingProductVariantButtons() {
@@ -264,6 +347,7 @@ function labelUpcomingProductVariantButtons() {
 }
 
 installProductCardLiftStyles();
+initShopCategoryViewportBehavior();
 labelUpcomingProductVariantButtons();
 
 const firebaseConfig = {
