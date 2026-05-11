@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -21,7 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778499001">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778500200">
+  <link rel="stylesheet" href="assets/css/hero-carousel.css?v=1778500200">
 </head>
 <body>
 
@@ -73,17 +74,21 @@
       </div>
     </div>
     <div class="hero-right">
-      <div class="hero-product-card fade-in anim-delay-2">
-        <img id="hero-logo-img" src="" alt="MicroPatches" style="display:none;width:100%;object-fit:contain;border-radius:8px;max-height:260px">
-        <div id="hero-logo-placeholder">
-          <div class="badge-star">
-            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
-              <polygon points="40,4 49,28 74,28 54,44 62,68 40,54 18,68 26,44 6,28 31,28" fill="none" stroke="#c9972a" stroke-width="2.5" stroke-linejoin="round"/>
-              <circle cx="40" cy="40" r="14" fill="none" stroke="#c9972a" stroke-width="2"/>
-            </svg>
+      <div class="hero-product-carousel fade-in anim-delay-2" id="hero-product-carousel" aria-label="Product photo carousel">
+        <div class="hero-carousel-stage" id="hero-carousel-stage">
+          <div class="hero-carousel-slide is-active hero-carousel-fallback">
+            <div class="badge-star">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
+                <polygon points="40,4 49,28 74,28 54,44 62,68 40,54 18,68 26,44 6,28 31,28" fill="none" stroke="#c9972a" stroke-width="2.5" stroke-linejoin="round"/>
+                <circle cx="40" cy="40" r="14" fill="none" stroke="#c9972a" stroke-width="2"/>
+              </svg>
+            </div>
           </div>
-          <p>[ Add product photo here ]</p>
         </div>
+        <div class="hero-carousel-caption" id="hero-carousel-caption" hidden>
+          <span id="hero-carousel-title"></span>
+        </div>
+        <div class="hero-carousel-dots" id="hero-carousel-dots" aria-hidden="true"></div>
       </div>
     </div>
   </section>
@@ -374,7 +379,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
             </a>
             <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.33 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg>
             </a>
             <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
@@ -522,7 +527,7 @@
             </select>
             <label for="up-file" id="up-preview"
               style="display:flex;width:100%;height:180px;background:var(--bg-surface);border:2px dashed rgba(201,151,42,0.35);border-radius:8px;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;margin-bottom:8px;position:relative">
-              <span id="up-placeholder" style="color:var(--text-muted);font-size:0.9rem;text-align:center;line-height:2">ðŸ“·<br>Tap to choose or take photo</span>
+              <span id="up-placeholder" style="color:var(--text-muted);font-size:0.9rem;text-align:center;line-height:2">📷<br>Tap to choose or take photo</span>
               <img id="up-preview-img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
             </label>
             <input id="up-file" type="file" accept="image/*" style="display:none">
@@ -591,6 +596,7 @@
     </div>
   </aside>
 
-  <script type="module" src="assets/js/main.js?v=1778499001"></script>
+  <script type="module" src="assets/js/main.js?v=1778500200"></script>
+  <script type="module" src="assets/js/hero-carousel.js?v=1778500200"></script>
 </body>
 </html>
