@@ -16,30 +16,36 @@ import "./main-original.js";
   const rememberPhoto = (photo) => {
     if (!photo) return "";
     const src = photo.currentSrc || photo.src || "";
-    if (isRealProductPhoto(src)) photo.dataset.keychainSrc = src;
-    return photo.dataset.keychainSrc || "";
+    if (isRealProductPhoto(src)) photo.dataset.productPhotoSrc = src;
+    return photo.dataset.productPhotoSrc || "";
   };
 
-  const restoreKeychainPhoto = (card) => {
+  const restoreProductPhoto = (card) => {
     const imgArea = card.querySelector(".product-card-img");
     const photo = imgArea?.querySelector(".product-card-photo");
     const placeholder = imgArea?.querySelector(".img-placeholder");
-    const src = rememberPhoto(photo);
+    const saved = photo?.dataset.productPhotoSrc || "";
+    const current = photo?.currentSrc || photo?.src || "";
+    const src = saved || (isRealProductPhoto(current) ? current : "");
     if (!photo || !src) return;
-    photo.src = src;
+    photo.dataset.productPhotoSrc = src;
+    if (photo.src !== src) photo.src = src;
     photo.style.display = "block";
     photo.style.opacity = "1";
     if (placeholder) placeholder.style.display = "none";
   };
 
   const repairCard = (card) => {
-    if (!card || card.dataset.keychainPhotoHotfix === "true") return;
+    if (!card || card.dataset.productPhotoHotfix === "true") return;
     const photo = card.querySelector(".product-card-photo");
     if (!photo) return;
-    card.dataset.keychainPhotoHotfix = "true";
+    card.dataset.productPhotoHotfix = "true";
     rememberPhoto(photo);
 
-    new MutationObserver(() => rememberPhoto(photo)).observe(photo, {
+    new MutationObserver(() => {
+      const src = photo.currentSrc || photo.src || "";
+      if (isRealProductPhoto(src)) rememberPhoto(photo);
+    }).observe(photo, {
       attributes: true,
       attributeFilter: ["src"]
     });
@@ -55,16 +61,10 @@ import "./main-original.js";
     const card = btn.closest(".product-card");
     if (!card) return;
     repairCard(card);
-    const photo = card.querySelector(".product-card-photo");
-    const isKeychain = /keychain/i.test(btn.textContent || "");
-    rememberPhoto(photo);
-    setTimeout(() => {
-      if (isKeychain) restoreKeychainPhoto(card);
-      else rememberPhoto(photo);
-    }, 0);
-    setTimeout(() => {
-      if (isKeychain) restoreKeychainPhoto(card);
-    }, 80);
+    restoreProductPhoto(card);
+    setTimeout(() => restoreProductPhoto(card), 0);
+    setTimeout(() => restoreProductPhoto(card), 80);
+    setTimeout(() => restoreProductPhoto(card), 250);
   }, true);
 
   document.addEventListener("DOMContentLoaded", () => {
