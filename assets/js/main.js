@@ -43,21 +43,29 @@ import "./main-original.js";
       attributes: true,
       attributeFilter: ["src"]
     });
-
-    card.addEventListener("click", (event) => {
-      const btn = event.target.closest(".card-variant-btn");
-      if (!btn || !card.contains(btn)) return;
-      const isKeychain = /keychain/i.test(btn.textContent || "");
-      setTimeout(() => {
-        if (isKeychain) restoreKeychainPhoto(card);
-        else rememberPhoto(photo);
-      }, 0);
-    });
   };
 
   const repairAllCards = () => {
     document.querySelectorAll(".product-card").forEach(repairCard);
   };
+
+  document.addEventListener("click", (event) => {
+    const btn = event.target.closest(".card-variant-btn");
+    if (!btn) return;
+    const card = btn.closest(".product-card");
+    if (!card) return;
+    repairCard(card);
+    const photo = card.querySelector(".product-card-photo");
+    const isKeychain = /keychain/i.test(btn.textContent || "");
+    rememberPhoto(photo);
+    setTimeout(() => {
+      if (isKeychain) restoreKeychainPhoto(card);
+      else rememberPhoto(photo);
+    }, 0);
+    setTimeout(() => {
+      if (isKeychain) restoreKeychainPhoto(card);
+    }, 80);
+  }, true);
 
   document.addEventListener("DOMContentLoaded", () => {
     repairAllCards();
