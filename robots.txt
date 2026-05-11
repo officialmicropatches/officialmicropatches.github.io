@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /test/
 Disallow: /myagency/
 
-Sitemap: https://officialmicropatches.github.io/sitemap.xml
+Sitemap: https://officialmicropatches.com/sitemap.xml

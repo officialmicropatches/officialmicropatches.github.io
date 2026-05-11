@@ -507,6 +507,13 @@ const PRODUCTS = [
   { id: "bulk-orders",         name: "Bulk and Wholesale Orders" }
 ];
 
+function optimizeProductCardImages() {
+  document.querySelectorAll(".product-card-photo").forEach((img) => {
+    img.loading = "lazy";
+    img.decoding = "async";
+    if (!img.getAttribute("fetchpriority")) img.setAttribute("fetchpriority", "low");
+  });
+}
 function applyProductPhoto(productId, url) {
   if (!url) return;
   const cardImgs = document.querySelectorAll(`.product-card-img[data-product-id="${productId}"]`);
@@ -515,7 +522,7 @@ function applyProductPhoto(productId, url) {
     const placeholder = cardImg.querySelector(".img-placeholder");
     const img = cardImg.querySelector(".product-card-photo");
     if (placeholder) placeholder.style.display = "none";
-    if (img) { img.src = url; img.style.display = "block"; }
+    if (img) { img.src = url; img.style.display = "block"; img.alt = img.alt || "MicroPatches product"; }
   });
 }
 
@@ -1982,15 +1989,31 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    INIT
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
-  initQueuePage();
-  initHeroImage();
-  initProductPhotos();
-  initProductVisibility();
+  const hasProductCards = !!document.querySelector(".product-card-img[data-product-id]");
+  const hasShopSearch = !!document.getElementById("shop-search");
+  const hasQueueUI = !!document.getElementById("queue-preview-list") || !!document.getElementById("queue-full-list") || !!document.getElementById("submission-form");
+  const hasHeroLogo = !!document.getElementById("hero-logo-img");
+  const hasProductPage = !!document.getElementById("product-main");
+
+  if (hasQueueUI) initQueuePage();
+  if (hasHeroLogo) initHeroImage();
+
+  if (hasProductCards) {
+    optimizeProductCardImages();
+    initProductPhotos();
+    initProductVisibility();
+    initProductLinks();
+    initCommerceLinks();
+  }
+
+  if (hasShopSearch) initShopSearch();
+
+  if (hasProductPage) {
+    initProductPage();
+    initProductPhotos();
+  }
+
   initCart();
-  initProductLinks();
-  initShopSearch();
-  initProductPage();
-  initCommerceLinks();
 });
 
 /*
