@@ -2727,3 +2727,230 @@ h1, h2, h3, h4, h5, h6 {
 @media (min-width:500px) { .homepage-product-grid { grid-template-columns:repeat(4,1fr);gap:10px } }
 @media (min-width:768px) { .homepage-product-grid { grid-template-columns:repeat(5,1fr);gap:12px } }
 @media (min-width:1200px) { .homepage-product-grid { grid-template-columns:repeat(6,1fr);gap:14px } }
+
+/* =========================================================
+   HERO REDESIGN — CENTERED, PREMIUM, BRAND-FORWARD
+   ========================================================= */
+
+/* Reset hero to single-column block so we can drive layout via .hero-inner */
+.hero {
+  display: block;
+  min-height: 100vh;
+  background: var(--bg-dark);
+  padding-top: var(--nav-h);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faint gold radial glow on the right quarter */
+.hero::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 55%;
+  background: radial-gradient(ellipse at 70% 50%, rgba(201,151,42,0.07) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Background watermark shield */
+.hero-watermark {
+  position: absolute;
+  right: -6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54%;
+  max-width: 520px;
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-watermark svg { width: 100%; height: auto; display: block; }
+
+/* Inner layout wrapper */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--nav-h));
+  padding: 52px 24px 60px;
+  box-sizing: border-box;
+}
+
+/* ---- Content block — mobile: centered ---- */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+}
+
+/* Large shield mark — above eyebrow on mobile */
+.hero-shield-mark {
+  width: 112px;
+  height: auto;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 0 24px rgba(201,151,42,0.26));
+}
+.hero-shield-mark svg { width: 100%; height: auto; display: block; }
+
+/* Eyebrow spacing in hero */
+.hero-content .eyebrow { margin-bottom: 14px; }
+
+/* Headline — centered, clamp-sized */
+.hero-content h1 {
+  font-size: clamp(2.2rem, 7vw, 3.8rem);
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+/* Sub paragraph — centered */
+.hero-content .hero-sub {
+  text-align: center;
+  max-width: 440px;
+}
+
+/* Proof badges — centered */
+.hero-content .hero-proof-lines { justify-content: center; }
+
+/* CTAs — equal width, side-by-side, centered */
+.hero-content .hero-ctas {
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+.hero-cta-btn {
+  flex: 1 1 0;
+  max-width: 188px;
+  min-width: 128px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Hide visual panel on mobile */
+.hero-visual { display: none; }
+
+/* ---- Desktop ≥ 900px: balanced split ---- */
+@media (min-width: 900px) {
+  .hero-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 80px 64px;
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: calc(100vh - var(--nav-h));
+  }
+
+  .hero-content {
+    align-items: flex-start;
+    text-align: left;
+    flex: 1;
+    max-width: 580px;
+  }
+
+  .hero-shield-mark {
+    width: 72px;
+    margin-bottom: 18px;
+    margin-left: 0;
+  }
+
+  .hero-content h1 { text-align: left; }
+  .hero-content .hero-sub { text-align: left; }
+  .hero-content .hero-proof-lines { justify-content: flex-start; }
+  .hero-content .hero-ctas { justify-content: flex-start; }
+  .hero-cta-btn { flex: 0 0 auto; max-width: none; min-width: 152px; }
+
+  /* Show right visual */
+  .hero-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 360px;
+  }
+
+  .hero-visual-frame {
+    width: 100%;
+    background: rgba(13,20,36,0.75);
+    border: 1px solid rgba(201,151,42,0.28);
+    border-radius: 16px;
+    padding: 40px 32px 36px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(201,151,42,0.09), 0 8px 40px rgba(0,0,0,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-visual-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: radial-gradient(ellipse at 50% 35%, rgba(201,151,42,0.07) 0%, transparent 68%);
+    pointer-events: none;
+  }
+
+  .hero-visual-shield {
+    width: 160px;
+    height: auto;
+    display: block;
+    margin: 0 auto 16px;
+    filter: drop-shadow(0 0 32px rgba(201,151,42,0.3));
+    position: relative;
+    z-index: 2;
+  }
+
+  #hero-logo-placeholder p {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* When product image loads: strip the frame decoration */
+  .hero-visual-frame.hero-logo-loaded {
+    padding: 0;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .hero-visual-frame.hero-logo-loaded #hero-logo-img {
+    border-radius: 12px;
+    max-height: 360px;
+  }
+
+  /* Watermark shifts left on desktop (visual is on right) */
+  .hero-watermark { right: 44%; width: 30%; opacity: 0.025; }
+}
+
+/* Override legacy mobile rules that conflict with new hero */
+@media (max-width: 768px) {
+  .hero { min-height: 100vh; }
+}
+@media (max-width: 480px) {
+  .hero-content .hero-ctas { flex-direction: row; flex-wrap: wrap; }
+  .hero-content .hero-ctas .btn { width: auto; }
+  .hero-cta-btn { flex: 1 1 120px; max-width: 200px; }
+}
+
+/* =========================================================
+   LOGO SHIELD MARK — NAV + FOOTER
+   ========================================================= */
+.logo-shield {
+  width: 18px;
+  height: auto;
+  color: var(--gold);
+  flex-shrink: 0;
+  opacity: 0.9;
+  display: block;
+}
+.footer-brand .logo-shield { width: 20px; }
