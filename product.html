@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -9,33 +9,25 @@
   <meta property="og:site_name" content="MicroPatches">
   <meta id="og-title" property="og:title" content="MicroPatches Patch Keychain">
   <meta id="og-description" property="og:description" content="UV-printed 3D patch keychain — handcrafted in the USA.">
-  <meta id="og-image" property="og:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MicroPatches Patch Keychain">
-  <meta name="twitter:description" content="UV-printed 3D patch keychain — handcrafted in the USA.">
-  <meta name="twitter:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg">
-  <meta id="og-url" property="og:url" content="https://officialmicropatches.com/product.html">
-  <link rel="canonical" href="https://officialmicropatches.com/product.html">
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#c9972a">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.myshopify.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://firebasestorage.googleapis.com https://formspree.io https://formsubmit.co https://*.myshopify.com; img-src 'self' data: blob: https://storage.googleapis.com https://firebasestorage.googleapis.com https://placehold.co; form-action https://formspree.io https://formsubmit.co 'self';">
+  <meta id="og-image" property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778499001">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778500000">
 </head>
 <body>
 
   <!-- ===== NAV ===== -->
   <nav class="site-nav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo"><img src="assets/img/favicon.svg" alt="" class="nav-logo-icon" aria-hidden="true"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+      <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
       <div class="nav-links">
         <a href="shop.html">Shop</a>
         <a href="custom.html">Custom Orders</a>
         <a href="queue.html">Waitlist Queue</a>
         <a href="challenge-coins.html">Challenge Coins</a>
-        <a href="patch-exchange.html">Patch Exchange</a>
+    <a href="patch-exchange.html">Patch Exchange</a>
         <a href="contact.html">Contact</a>
       </div>
       <button class="cart-toggle" id="cart-toggle" aria-label="View cart">
@@ -77,7 +69,7 @@
   <!-- ===== NOT FOUND STATE (hidden by default) ===== -->
   <div id="product-not-found" class="product-not-found" hidden>
     <div class="container" style="text-align:center;padding:80px 0">
-      <h2 style="color:var(--gold);font-family:'Oswald',sans-serif;font-size:2rem">Product Not Found</h2>
+      <h1 style="color:var(--gold);font-family:'Oswald',sans-serif;font-size:2rem">Product Not Found</h1>
       <p style="color:var(--text-muted);margin:16px 0 32px">We couldn't find that product. Browse all available keychains below.</p>
       <a href="shop.html" class="btn btn-gold">Browse the Shop</a>
     </div>
@@ -158,6 +150,15 @@
             </div>
           </div>
 
+          <div class="qty-row">
+            <label for="product-qty">Qty</label>
+            <div class="qty-stepper">
+              <button type="button" id="qty-minus" aria-label="Decrease">&#8722;</button>
+              <input type="number" id="product-qty" value="1" min="1" max="99">
+              <button type="button" id="qty-plus" aria-label="Increase">+</button>
+            </div>
+          </div>
+
           <div class="product-detail-actions">
             <button class="btn btn-gold product-detail-atc" id="product-atc-btn">Add to Cart</button>
             <a class="btn btn-outline product-detail-shopify" id="product-shopify-btn" href="#" target="_blank" rel="noopener noreferrer">
@@ -166,7 +167,7 @@
           </div>
 
           <p class="product-detail-mission">
-            Every purchase brings us closer to our long term goal: a portion of every sale goes toward donations to families of fallen officers, veterans, and first responders. No minimum orders — every department, every unit included.
+            A portion of every sale goes toward donations to families of fallen officers, veterans, and first responders. No minimum orders — every department, every unit included.
           </p>
         </div>
 
@@ -209,6 +210,7 @@
           <h4>Services</h4>
           <ul>
             <li><a href="custom.html">Custom Orders</a></li>
+            <li><a href="challenge-coins.html">Challenge Coins</a></li>
             <li><a href="patch-exchange.html">Patch Exchange</a></li>
             <li><a href="queue.html">Waitlist Queue</a></li>
           </ul>
@@ -222,12 +224,11 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 MicroPatches. All rights reserved. USA Made.</p>
+        <p>&copy; 2025 MicroPatches. All rights reserved. USA Made.</p>
       </div>
     </div>
   </footer>
 
-  <script type="module" src="assets/js/main.js?v=1778499001"></script>
+  <script type="module" src="assets/js/main.js?v=1778500000"></script>
 </body>
 </html>
-

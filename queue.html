@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,121 +6,28 @@
   <title>Waitlist Queue — MicroPatches</title>
   <meta name="description" content="Join the MicroPatches Waitlist Queue. Submit your agency or department to get in line for a custom 3D printed UV-printed keychain patch. Building is free.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://officialmicropatches.com/queue.html">
+  <meta property="og:url" content="https://officialmicropatches.github.io/queue.html">
   <meta property="og:title" content="Waitlist Queue — MicroPatches">
   <meta property="og:description" content="Submit your agency or unit to the MicroPatches Waitlist Queue. Get notified when your patch keychain is ready to order.">
-  <meta property="og:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg">
+  <meta property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Waitlist Queue — MicroPatches">
-  <meta name="twitter:description" content="Submit your agency or unit to the MicroPatches Waitlist Queue. Get notified when your patch keychain is ready to order.">
-  <meta name="twitter:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg">
-  <link rel="canonical" href="https://officialmicropatches.com/queue.html">
+  <link rel="canonical" href="https://officialmicropatches.github.io/queue.html">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#c9972a">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.myshopify.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://firebasestorage.googleapis.com https://formspree.io https://formsubmit.co https://*.myshopify.com; img-src 'self' data: blob: https://storage.googleapis.com https://firebasestorage.googleapis.com https://placehold.co; form-action https://formspree.io https://formsubmit.co 'self';">
+  <!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
+       Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://formspree.io; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com; form-action https://formspree.io;
+       X-Frame-Options: DENY
+       X-Content-Type-Options: nosniff
+       Referrer-Policy: strict-origin-when-cross-origin -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778499001">
-  <style>
-    .mailin-blurb {
-      background: rgba(201,151,42,0.07);
-      border: 1px solid rgba(201,151,42,0.28);
-      border-radius: 10px;
-      padding: 22px 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      transition: background 0.2s, border-color 0.2s;
-      max-width: 720px;
-      margin: 0 auto 32px;
-      user-select: none;
-    }
-    .mailin-blurb:hover { background: rgba(201,151,42,0.12); border-color: rgba(201,151,42,0.45); }
-    .mailin-blurb-icon {
-      font-size: 1.6rem;
-      flex-shrink: 0;
-      line-height: 1;
-      margin-top: 2px;
-    }
-    .mailin-blurb-body { flex: 1; }
-    .mailin-blurb-body strong {
-      display: block;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-    .mailin-blurb-body p { color: var(--text-muted); font-size: 0.93rem; line-height: 1.6; margin: 0; }
-    .mailin-chevron {
-      flex-shrink: 0;
-      color: var(--gold);
-      font-size: 1.2rem;
-      transition: transform 0.25s;
-      align-self: center;
-    }
-    .mailin-blurb.open .mailin-chevron { transform: rotate(180deg); }
-    .mailin-instructions {
-      display: none;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 28px 28px 24px;
-      max-width: 720px;
-      margin: -16px auto 32px;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    }
-    .mailin-instructions.open { display: block; }
-    .mailin-instructions h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #fff;
-      margin: 0 0 16px;
-    }
-    .mailin-instructions ol {
-      color: var(--text-muted);
-      font-size: 0.93rem;
-      line-height: 1.8;
-      padding-left: 20px;
-      margin: 0 0 20px;
-    }
-    .mailin-address-box {
-      background: var(--bg-dark);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px 20px;
-      font-family: monospace;
-      font-size: 0.92rem;
-      color: #fff;
-      line-height: 1.7;
-    }
-    .mailin-address-label {
-      font-family: 'Oswald', sans-serif;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-    .mailin-note {
-      margin-top: 16px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/style.css?v=1778500000">
 </head>
 <body>
 
   <!-- ===== NAV ===== -->
   <nav class="site-nav" role="navigation" aria-label="Main navigation">
-    <a href="index.html" class="nav-logo"><img src="assets/img/favicon.svg" alt="" class="nav-logo-icon" aria-hidden="true"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+    <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
     <ul class="nav-links" role="list">
       <li><a href="shop.html">Shop</a></li>
       <li><a href="queue.html" class="active">Waitlist Queue</a></li>
@@ -185,58 +92,28 @@
     </div>
   </section>
 
-  <!-- ===== FREE KEYCHAIN / MAIL-IN BLURB ===== -->
-  <section class="section" style="background:var(--bg-card)">
+  <!-- ===== HOW IT WORKS (compact) ===== -->
+  <section class="section" style="padding:32px 0 40px;background:var(--bg-card)">
     <div class="container">
-      <div class="section-header">
-        <h2>HOW THE WAITLIST WORKS</h2>
-      </div>
-      <div class="steps-grid" style="margin-bottom:48px">
+      <div class="steps-grid">
         <div class="step anim">
           <div class="step-num">1</div>
           <h3>SUBMIT YOUR AGENCY</h3>
-          <p>Fill out the form with your agency name and any reference photos you have. We review every submission.</p>
         </div>
         <div class="step-connector">&#8250;</div>
         <div class="step anim anim-delay-1">
           <div class="step-num">2</div>
           <h3>WE ADD YOU TO THE LIST</h3>
-          <p>Once reviewed, your agency gets added to the live waitlist. You'll see it right here on this page.</p>
         </div>
         <div class="step-connector">&#8250;</div>
         <div class="step anim anim-delay-2">
           <div class="step-num">3</div>
-          <h3>WE BUILD IT AND CONTACT YOU</h3>
-          <p>When we reach your spot, we produce it and reach out. Building is free — you pay the product cost at that point.</p>
+          <h3>WE BUILD IT &amp; CONTACT YOU</h3>
         </div>
       </div>
-
-      <!-- Mail-in free keychain blurb -->
-      <div class="mailin-blurb" id="mailin-blurb" role="button" tabindex="0" aria-expanded="false" aria-controls="mailin-instructions">
-        <div class="mailin-blurb-icon">&#127873;</div>
-        <div class="mailin-blurb-body">
-          <strong>Want your keychain for free?</strong>
-          <p>Send us the physical patch in the mail for us to add to our collection and we'll build your keychain at no charge. Tap to see mailing instructions.</p>
-        </div>
-        <div class="mailin-chevron">&#8964;</div>
+      <div style="text-align:center;margin-top:24px">
+        <button class="btn btn-gold open-submission-modal">Submit Your Agency</button>
       </div>
-      <div class="mailin-instructions" id="mailin-instructions">
-        <h3>How to Get a Free Keychain</h3>
-        <ol>
-          <li>Package your physical patch securely — a small padded envelope works great.</li>
-          <li>Include a note with your name, email address, and agency name so we can contact you when it's done.</li>
-          <li>Mail it to the address below.</li>
-          <li>Once we receive it and add it to our collection, we'll build your keychain and ship it to you free of charge.</li>
-        </ol>
-        <div class="mailin-address-label">Mail Patches To</div>
-        <div class="mailin-address-box">
-          MicroPatches<br>
-          [PO Box — Coming Soon]<br>
-          Phoenix, AZ 85001
-        </div>
-        <p class="mailin-note">We'll update this address as soon as our PO Box is set up. Check back soon or contact us at OfficialMicroPatches@gmail.com for timing.</p>
-      </div>
-
     </div>
   </section>
 
@@ -283,7 +160,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 MicroPatches. All rights reserved.</p>
+        <p>&copy; 2025 MicroPatches. All rights reserved.</p>
         <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
       </div>
     </div>
@@ -415,30 +292,10 @@
         <span class="cart-subtotal-value" id="cart-total">$0.00</span>
       </div>
       <p class="cart-shipping-note">Shipping calculated at checkout</p>
-      <p class="cart-secure-note">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Secure checkout via Shopify
-      </p>
       <button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
     </div>
   </aside>
 
-  <script type="module" src="assets/js/main.js?v=1778499001"></script>
-  <script>
-    (function() {
-      var blurb = document.getElementById('mailin-blurb');
-      var instructions = document.getElementById('mailin-instructions');
-      function toggle() {
-        var open = blurb.classList.toggle('open');
-        instructions.classList.toggle('open', open);
-        blurb.setAttribute('aria-expanded', open ? 'true' : 'false');
-      }
-      blurb.addEventListener('click', toggle);
-      blurb.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-      });
-    })();
-  </script>
+  <script type="module" src="assets/js/main.js?v=1778500000"></script>
 </body>
 </html>
-

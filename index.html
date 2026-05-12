@@ -6,29 +6,32 @@
   <title>MicroPatches — UV-Printed 3D Patch Keychains for Law Enforcement, Military & First Responders</title>
   <meta name="description" content="Handcrafted UV-printed 3D patch keychains for law enforcement, military, fire, and EMS. No minimum orders. Made by a cop who wears the badge.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://officialmicropatches.com/">
+  <meta property="og:url" content="https://officialmicropatches.github.io/">
   <meta property="og:title" content="MicroPatches — UV-Printed 3D Patch Keychains">
   <meta property="og:description" content="Handcrafted UV-printed 3D patch keychains for law enforcement, military, fire, and EMS. No minimum orders. Made by a cop who wears the badge.">
-  <meta property="og:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg">
+  <meta property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg">
   <meta name="twitter:title" content="MicroPatches — UV-Printed 3D Patch Keychains">
   <meta name="twitter:description" content="Handcrafted UV-printed 3D patch keychains for law enforcement, military, fire, and EMS. No minimum orders.">
-  <link rel="canonical" href="https://officialmicropatches.com/">
+  <link rel="canonical" href="https://officialmicropatches.github.io/">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#c9972a">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.myshopify.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://firebasestorage.googleapis.com https://formspree.io https://formsubmit.co https://*.myshopify.com; img-src 'self' data: blob: https://storage.googleapis.com https://firebasestorage.googleapis.com https://placehold.co; form-action https://formspree.io https://formsubmit.co 'self';">
+  <!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
+       Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://formspree.io; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com; form-action https://formspree.io;
+       X-Frame-Options: DENY
+       X-Content-Type-Options: nosniff
+       Referrer-Policy: strict-origin-when-cross-origin -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>h
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778500200">
-  <link rel="stylesheet" href="assets/css/hero-carousel.css?v=1778500200">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778500000">
 </head>
 <body>
 
   <!-- ===== NAV ===== -->
   <nav class="site-nav" role="navigation" aria-label="Main navigation">
-    <a href="index.html" class="nav-logo"><img src="assets/img/favicon.svg" alt="" class="nav-logo-icon" aria-hidden="true"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+    <a href="index.html" class="nav-logo">
+      <span class="gold">MICRO</span><span class="white"> PATCHES</span>
+    </a>
     <ul class="nav-links" role="list">
       <li><a href="shop.html">Shop</a></li>
       <li><a href="queue.html">Waitlist Queue</a></li>
@@ -64,9 +67,8 @@
         <div class="hero-proof-lines" aria-label="Product highlights">
           <strong>NO MINIMUM ORDERS</strong>
           <strong>MADE IN USA, ALWAYS</strong>
-          <strong>NEW AGENCIES ADDED WEEKLY</strong>
+          <strong>MORE PRODUCTS COMING SOON</strong>
         </div>
-        <p class="hero-mission">Every purchase brings us closer to our long term goal: <strong>a portion of every sale goes toward donations to families of fallen officers, veterans, and first responders.</strong> No minimum orders — every department, every unit included.</p>
       </div>
       <div class="hero-ctas fade-in anim-delay-3">
         <a href="shop.html" class="btn btn-gold">Shop Now</a>
@@ -74,30 +76,31 @@
       </div>
     </div>
     <div class="hero-right">
-      <div class="hero-product-carousel fade-in anim-delay-2" id="hero-product-carousel" aria-label="Product photo carousel">
-        <div class="hero-carousel-stage" id="hero-carousel-stage">
-          <div class="hero-carousel-slide is-active hero-carousel-fallback">
-            <div class="badge-star">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
-                <polygon points="40,4 49,28 74,28 54,44 62,68 40,54 18,68 26,44 6,28 31,28" fill="none" stroke="#c9972a" stroke-width="2.5" stroke-linejoin="round"/>
-                <circle cx="40" cy="40" r="14" fill="none" stroke="#c9972a" stroke-width="2"/>
-              </svg>
-            </div>
+      <div class="hero-product-card fade-in anim-delay-2">
+        <img id="hero-logo-img" src="" alt="MicroPatches" style="display:none;width:100%;object-fit:contain;border-radius:8px;max-height:260px">
+        <div id="hero-logo-placeholder">
+          <div class="badge-star">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
+              <polygon points="40,4 49,28 74,28 54,44 62,68 40,54 18,68 26,44 6,28 31,28" fill="none" stroke="#c9972a" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="40" cy="40" r="14" fill="none" stroke="#c9972a" stroke-width="2"/>
+            </svg>
           </div>
+          <p>[ Add product photo here ]</p>
         </div>
-        <div class="hero-carousel-caption" id="hero-carousel-caption" hidden>
-          <span id="hero-carousel-title"></span>
-        </div>
-        <div class="hero-carousel-dots" id="hero-carousel-dots" aria-hidden="true"></div>
       </div>
     </div>
   </section>
+
+  <!-- ===== PRODUCT FOCUS BANNER ===== -->
+  <div class="focus-banner">
+    <strong>MICROKEYCHAIN EXPANSION IN PROGRESS —</strong> We are currently building out our nationwide MicroKeychain catalog, with new agencies added regularly. MicroMagnets, MicroCharms, and MicroPins are available through <a href="custom.html">custom orders</a>.
+  </div>
 
   <!-- ===== FEATURED PRODUCTS ===== -->
   <section class="section" style="background:var(--bg-card)" aria-labelledby="popular-heading">
     <div class="container">
       <div class="section-header">
-        <h2 id="popular-heading">MOST POPULAR</h2>
+        <h2 id="popular-heading">FEATURED AGENCIES</h2>
         <p>The keychains our community keeps coming back for.</p>
       </div>
       <div class="product-grid featured-products-grid">
@@ -111,6 +114,7 @@
           <div class="product-card-body">
             <span class="best-seller-badge">Best Seller</span>
             <h3>Chandler PD Pink Patch Project</h3>
+            <p>Our best seller. 10% of every sale supports breast cancer research.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -127,6 +131,7 @@
           </div>
           <div class="product-card-body">
             <h3>Tucson Police Department</h3>
+            <p>Tucson PD patch replica. Keychain.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -143,6 +148,7 @@
           </div>
           <div class="product-card-body">
             <h3>Pinal County Sheriff Office</h3>
+            <p>Gold star on black. Pinal County pride.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -159,6 +165,7 @@
           </div>
           <div class="product-card-body">
             <h3>Phoenix Police Department</h3>
+            <p>Iconic Phoenix PD bird patch. Full UV color.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -175,6 +182,7 @@
           </div>
           <div class="product-card-body">
             <h3>82nd Airborne Division</h3>
+            <p>All American. UV-printed collector patch keychain.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -191,6 +199,7 @@
           </div>
           <div class="product-card-body">
             <h3>Mesa Police Department</h3>
+            <p>Mesa PD patch keychain. Clean and detailed.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -207,6 +216,7 @@
           </div>
           <div class="product-card-body">
             <h3>Arizona Dept. of Public Safety</h3>
+            <p>AZ DPS patch keychain. Collector series.</p>
             <span class="product-price">$13.99</span>
           </div>
           <div class="product-card-footer">
@@ -222,120 +232,75 @@
     </div>
   </section>
 
-  <!-- ===== SHOP BY COMMUNITY ===== -->
-  <section class="section" aria-labelledby="community-heading">
+  <!-- ===== ETSY REVIEWS CAROUSEL ===== -->
+  <section class="reviews-section" aria-label="Customer reviews">
     <div class="container">
-      <div class="section-header">
-        <h2 id="community-heading">SHOP BY COMMUNITY</h2>
+      <div class="reviews-header">
+        <p class="reviews-rating-line">
+          <span class="r-stars">★★★★★</span> 5.0 &nbsp;&middot;&nbsp; 26 Etsy Reviews
+        </p>
       </div>
-      <div class="category-grid">
-
-        <a href="shop.html#law-enforcement" class="category-card anim">
-          <h3>Law Enforcement</h3>
-          <p>From Seattle to New York and everywhere in between. Your department, your patch, your keychain.</p>
-          <span class="cat-link">Browse &rarr;</span>
-        </a>
-
-        <a href="shop.html#corrections" class="category-card anim anim-delay-1">
-          <h3>Corrections</h3>
-          <p>Correctional officers, detention deputies, DOC teams, and jail patches.</p>
-          <span class="cat-link">Browse &rarr;</span>
-        </a>
-
-        <a href="shop.html#military" class="category-card anim anim-delay-2">
-          <h3>Military</h3>
-          <p>82nd Airborne, 101st Screaming Eagles, 10th Mountain, Seabees, and more.</p>
-          <span class="cat-link">Browse &rarr;</span>
-        </a>
-
-        <a href="shop.html#fire" class="category-card anim anim-delay-3">
-          <h3>Fire Department</h3>
-          <p>Your department in precision keychain form.</p>
-          <span class="cat-link">Browse &rarr;</span>
-        </a>
-
-        <a href="shop.html#ems" class="category-card anim anim-delay-4">
-          <h3>EMS</h3>
-          <p>AMR EMT, AMR Paramedic, CCT-RN. First responder pride.</p>
-          <span class="cat-link">Browse &rarr;</span>
-        </a>
-
+      <div class="reviews-carousel-wrap">
+        <div class="reviews-track" id="reviews-track"></div>
       </div>
+      <div class="reviews-dots" id="reviews-dots"></div>
     </div>
   </section>
 
   <!-- ===== SOCIAL PROOF ===== -->
-  <section class="section proof-section">
+  <div class="proof-section" style="padding:28px 0">
     <div class="container">
-      <div class="proof-stats">
+      <div class="proof-stats" style="justify-content:center">
         <div class="proof-stat">
           <span class="stat-num">42+</span>
           <span class="stat-label">Agencies &amp; Units</span>
         </div>
         <div class="proof-stat">
           <span class="stat-num">$13.99</span>
-          <span class="stat-label">Per keychain</span>
-        </div>
-        <div class="proof-stat">
-          <span class="stat-num">0</span>
-          <span class="stat-label">Minimum orders</span>
-        </div>
-        <div class="proof-stat">
-          <span class="stat-num">USA</span>
-          <span class="stat-label">Handcrafted &amp; made</span>
+          <span class="stat-label">Per Keychain</span>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- ===== WAITLIST QUEUE CTA ===== -->
-  <section class="section" style="padding:48px 0;text-align:center">
-    <div class="container">
-      <a href="queue.html" class="btn btn-outline">Join the Waitlist Queue</a>
-    </div>
-  </section>
+  </div>
 
   <!-- ===== EMAIL CAPTURE ===== -->
-  <section class="section email-capture-section">
+  <div class="email-capture-section" style="padding:32px 0">
     <div class="container">
       <div class="email-capture-inner">
         <div class="email-capture-text">
-          <h2>New patches drop regularly.</h2>
-          <p>Don't miss your agency. Get notified when new keychains are added.</p>
+          <h2>Don't miss your agency.</h2>
+          <p>Get notified when new keychains drop.</p>
         </div>
         <form action="https://formsubmit.co/officialmicropatches@gmail.com" method="POST" class="email-capture-form">
           <input type="hidden" name="_subject" value="New Patch Drop Signup — MicroPatches">
+          <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" value="https://officialmicropatches.com/?subscribed=1">
+          <input type="hidden" name="_next" value="https://officialmicropatches.github.io/?subscribed=1">
           <input type="email" name="email" placeholder="Your email address" required class="email-capture-input" aria-label="Email address">
           <button type="submit" class="btn btn-gold">Notify Me</button>
         </form>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ===== PINK PATCH PROJECT ===== -->
-  <section class="section pink-section" aria-labelledby="pink-heading">
-    <div class="container" style="position:relative;z-index:2">
-      <div style="max-width:680px">
-        <p class="eyebrow" style="color:var(--pink)">Partner Program</p>
-        <h2 id="pink-heading" style="font-size:2rem;color:var(--pink);margin-bottom:16px">PROUD PARTNER OF THE PINK PATCH PROJECT</h2>
-        <p style="color:var(--text-muted);line-height:1.75;margin-bottom:12px">A portion of every Pink Patch sale goes directly to breast cancer research. When officers wear pink, they carry awareness on duty. Now you can carry it on your keys.</p>
-        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:28px">Our Chandler PD Pink Patch keychain is our most sold product. Every purchase makes a difference.</p>
-        <a href="shop.html#pink-patch" class="btn btn-pink" style="background:var(--pink);color:#fff;display:inline-flex;padding:12px 28px;font-family:'Oswald',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;border-radius:6px;transition:all 0.25s ease">Shop Pink Patch Keychains</a>
+  <!-- ===== PINK PATCH PROJECT (compact) ===== -->
+  <div class="pink-section" style="padding:18px 0">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center">
+        <span style="font-family:'Oswald',sans-serif;font-size:0.85rem;color:var(--pink);letter-spacing:0.08em;text-transform:uppercase;font-weight:700">&#9829; Pink Patch Project Partner</span>
+        <span style="color:var(--text-muted);font-size:0.88rem">A portion of every Pink Patch sale supports breast cancer research.</span>
+        <a href="shop.html#pink-patch" style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:var(--pink);letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--pink);padding:6px 14px;border-radius:4px;white-space:nowrap;transition:all .2s">Shop Pink Patch &rarr;</a>
       </div>
     </div>
-  </section>
+  </div>
 
-
-  <!-- ===== BRAND STORY ===== -->
-  <section class="section" style="background:var(--bg-card)" aria-labelledby="story-heading">
+  <!-- ===== OUR STORY (condensed) ===== -->
+  <section class="section" style="background:var(--bg-card);padding:36px 0">
     <div class="container">
-      <div style="max-width:760px">
+      <div style="max-width:680px">
         <p class="eyebrow fade-in">Our Story</p>
-        <h2 id="story-heading" class="fade-in" style="color:#fff;font-size:2rem;margin-bottom:20px">MADE BY SOMEONE WHO WEARS THE BADGE</h2>
-        <p class="fade-in" style="color:var(--text-muted);line-height:1.8;font-size:1.02rem">MicroPatches was founded by an active duty law enforcement officer and United States Army National Guard veteran based in Phoenix, Arizona. We specialize in UV-printed 3D scaled-down patch keychains for law enforcement, military, fire, EMS, and custom designs. Every purchase brings us closer to our long term goal: a portion of every sale goes toward donations to families of fallen officers, veterans, and first responders. No minimum orders — every department, every unit included.</p>
-        <div class="social-pills fade-in" style="margin-top:24px">
+        <p class="fade-in" style="color:var(--text-muted);line-height:1.8;font-size:0.97rem">Founded by an active duty law enforcement officer and Army National Guard veteran in Phoenix, AZ. Every keychain is USA made with no minimums — so no agency gets left out. A portion of proceeds supports the families of fallen officers and first responders.</p>
+        <div class="social-pills fade-in" style="margin-top:18px">
           <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="social-pill">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
             @micropatches
@@ -353,24 +318,10 @@
     </div>
   </section>
 
-  <!-- ===== CHALLENGE COINS FEATURE ===== -->
-  <section class="section coin-home-feature">
-    <div class="container">
-      <div class="coin-feature-panel anim">
-        <div class="coin-feature-copy">
-          <p class="eyebrow">New Custom Service</p>
-          <h2>Premium Custom Challenge Coins</h2>
-          <p>Made in Phoenix, Arizona. USA made, small batch friendly, and built without the barriers of traditional challenge coin companies.</p>
-        </div>
-        <a href="challenge-coins.html" class="btn btn-gold">Explore Challenge Coins</a>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
+      <div class="footer-grid footer-grid--3col">
         <div class="footer-brand">
           <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
           <p>Handcrafted for those who serve. USA Made.</p>
@@ -379,23 +330,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
             </a>
             <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.33 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg>
             </a>
             <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
             </a>
           </div>
-        </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <ul>
-            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
-            <li><a href="shop.html#corrections">Corrections</a></li>
-            <li><a href="shop.html#military">Military</a></li>
-            <li><a href="shop.html#fire">Fire Departments</a></li>
-            <li><a href="shop.html#ems">EMS</a></li>
-            <li><a href="shop.html#pink-patch">Pink Patch</a></li>
-          </ul>
         </div>
         <div class="footer-col">
           <h4>Services</h4>
@@ -416,7 +356,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 MicroPatches. All rights reserved. <span id="admin-trigger" style="cursor:default;user-select:none;">USA</span> Made.</p>
+        <p>&copy; 2025 MicroPatches. All rights reserved. <span id="admin-trigger" style="cursor:default;user-select:none;">USA</span> Made.</p>
         <span class="pink-partner-badge">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg>
           Pink Patch Project Partner
@@ -588,15 +528,10 @@
         <span class="cart-subtotal-value" id="cart-total">$0.00</span>
       </div>
       <p class="cart-shipping-note">Shipping calculated at checkout</p>
-      <p class="cart-secure-note">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Secure checkout via Shopify
-      </p>
       <button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
     </div>
   </aside>
 
-  <script type="module" src="assets/js/main.js?v=1778500200"></script>
-  <script type="module" src="assets/js/hero-carousel.js?v=1778500200"></script>
+  <script type="module" src="assets/js/main.js?v=1778500000"></script>
 </body>
 </html>
