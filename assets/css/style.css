@@ -2870,9 +2870,9 @@ h1, h2, h3, h4, h5, h6 {
   .hero-content .hero-ctas { justify-content: flex-start; }
   .hero-cta-btn { flex: 0 0 auto; max-width: none; min-width: 152px; }
 
-  /* Show right visual */
+  /* Show right visual — !important overrides inline display:none used as mobile safeguard */
   .hero-visual {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     flex: 0 0 360px;
