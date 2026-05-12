@@ -2692,3 +2692,17 @@ h1, h2, h3, h4, h5, h6 {
 .footer-grid--3col { grid-template-columns:2fr 1fr 1fr }
 @media (max-width:1024px) { .footer-grid--3col { grid-template-columns:1fr 1fr } }
 @media (max-width:768px) { .footer-grid--3col { grid-template-columns:1fr } }
+
+/* =========================================================
+   HOMEPAGE FEATURED GRID — COMPACT 3-COL MOBILE
+   ========================================================= */
+.featured-products-grid { grid-template-columns:repeat(3,1fr);gap:10px }
+.featured-products-grid .product-card-img { aspect-ratio:1/1 }
+.featured-products-grid .product-card-body { padding:8px 10px 4px }
+.featured-products-grid .product-card-body p { display:none }
+.featured-products-grid .product-card-body h3 { font-size:.75rem;line-height:1.3;margin-bottom:4px }
+.featured-products-grid .product-price { font-size:.82rem }
+.featured-products-grid .product-card-footer { padding:5px 10px 10px }
+.featured-products-grid .product-card-footer .btn { font-size:.68rem !important;padding:6px 8px }
+@media (min-width:600px) { .featured-products-grid { grid-template-columns:repeat(4,1fr);gap:14px } }
+@media (min-width:1024px) { .featured-products-grid { grid-template-columns:repeat(5,1fr);gap:16px } }
