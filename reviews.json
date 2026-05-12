@@ -6,10 +6,15 @@
   "customer_service": 5.0,
   "shipping": 4.9,
   "reviews": [
-    { "stars": 5, "quote": "Incredible detail on such a small piece. My coworkers couldn't believe it was a keychain.", "name": "Officer R.M." },
-    { "stars": 5, "quote": "Ordered for the whole squad. Shipping was fast and quality exceeded expectations.", "name": "Sgt. D.T." },
-    { "stars": 5, "quote": "Perfect gift for a retiring deputy. The patch detail is spot on.", "name": "K. Hernandez" },
-    { "stars": 5, "quote": "Got the 82nd Airborne one. Looks exactly like the real patch. Will order more.", "name": "Veteran C.W." },
-    { "stars": 5, "quote": "Great communication and fast turnaround. 100% recommend.", "name": "Firefighter J.L." }
+    { "stars": 5, "quote": "I couldn't be happier with this keychain! The materials feel durable and high-quality! If you're thinking about getting one, do it!", "name": "Tyler" },
+    { "stars": 5, "quote": "PERFECTION! Love it, just what I was looking for. Thank you!", "name": "Anthony Andrews" },
+    { "stars": 5, "quote": "What an amazing product! The seller was amazing! Such great customer service!", "name": "Luis" },
+    { "stars": 5, "quote": "Great customer service and communication. I would definitely recommend this seller and I would buy from him again. Thank you!", "name": "Maureen Kent" },
+    { "stars": 5, "quote": "10/10 great quality. Definitely recommending to co workers", "name": "Morgan Gonzalez" },
+    { "stars": 5, "quote": "Everything was perfect, the seller was amazing! Would definitely recommend, and buy from again!!", "name": "Amy Houser" },
+    { "stars": 5, "quote": "Highly detailed. Love it and how it turned out!", "name": "Amber Adkins" },
+    { "stars": 5, "quote": "Excellent response time. I asked for a product and it was delivered. Would recommend.", "name": "Jen Haupt" },
+    { "stars": 5, "quote": "Great product! Exactly as pictured - great quality.", "name": "F Young" },
+    { "stars": 5, "quote": "He made these with CCT-RN! Love em and included a surprise gift!", "name": "Lori Woodfin" }
   ]
 }
