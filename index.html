@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778600000">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778900000">
 </head>
 <body>
 
@@ -67,11 +67,11 @@
   <section class="hero" aria-label="Hero">
 
     <!-- Faint background shield watermark -->
-    <div class="hero-watermark" aria-hidden="true">
-      <svg viewBox="0 0 100 114" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 4 L93 20 L93 66 Q93 96 50 112 Q7 96 7 66 L7 20 Z" stroke="#fff" stroke-width="2" fill="#fff"/>
+    <div class="hero-watermark" aria-hidden="true" style="position:absolute;right:-6%;top:50%;transform:translateY(-50%);width:54%;max-width:520px;opacity:0.028;pointer-events:none;z-index:0">
+      <svg viewBox="0 0 100 114" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+        <path d="M50 4 L93 20 L93 66 Q93 96 50 112 Q7 96 7 66 L7 20 Z" stroke="#fff" stroke-width="2" fill="none"/>
         <path d="M50 13 L84 27 L84 66 Q84 90 50 104 Q16 90 16 66 L16 27 Z" stroke="#fff" stroke-width="1.5" fill="none"/>
-        <polygon points="50,32 54.7,45.5 69,45.8 57.6,54.5 61.8,68.2 50,60 38.2,68.2 42.4,54.5 31,45.8 45.3,45.5" stroke="#fff" stroke-width="2" stroke-linejoin="round" fill="#fff"/>
+        <polygon points="50,32 54.7,45.5 69,45.8 57.6,54.5 61.8,68.2 50,60 38.2,68.2 42.4,54.5 31,45.8 45.3,45.5" stroke="#fff" stroke-width="2" stroke-linejoin="round" fill="none"/>
         <circle cx="50" cy="50" r="5.5" fill="#fff"/>
       </svg>
     </div>
@@ -82,8 +82,8 @@
       <div class="hero-content">
 
         <!-- Shield logo mark — large + centered on mobile, compact on desktop -->
-        <div class="hero-shield-mark fade-in" aria-hidden="true">
-          <svg viewBox="0 0 100 114" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="hero-shield-mark fade-in" aria-hidden="true" style="width:112px;height:auto;margin-bottom:24px">
+          <svg viewBox="0 0 100 114" fill="none" xmlns="http://www.w3.org/2000/svg" width="112" height="127" style="display:block;width:100%;height:auto">
             <path d="M50 4 L93 20 L93 66 Q93 96 50 112 Q7 96 7 66 L7 20 Z" stroke="#c9972a" stroke-width="3" fill="rgba(201,151,42,0.08)"/>
             <path d="M50 13 L84 27 L84 66 Q84 90 50 104 Q16 90 16 66 L16 27 Z" stroke="#c9972a" stroke-width="1.5" stroke-opacity="0.5" fill="none"/>
             <polygon points="50,32 54.7,45.5 69,45.8 57.6,54.5 61.8,68.2 50,60 38.2,68.2 42.4,54.5 31,45.8 45.3,45.5" stroke="#c9972a" stroke-width="2" stroke-linejoin="round" fill="rgba(201,151,42,0.13)"/>
@@ -108,8 +108,8 @@
 
       </div>
 
-      <!-- Right visual — visible on desktop only -->
-      <div class="hero-visual fade-in anim-delay-2">
+      <!-- Right visual — visible on desktop only (hidden inline; CSS shows at ≥900px) -->
+      <div class="hero-visual fade-in anim-delay-2" style="display:none">
         <div class="hero-visual-frame">
           <img id="hero-logo-img" src="" alt="MicroPatches product" style="display:none;width:100%;object-fit:contain;border-radius:12px;max-height:360px">
           <div id="hero-logo-placeholder">
@@ -1378,6 +1378,6 @@
     </div>
   </aside>
 
-  <script type="module" src="assets/js/main.js?v=1778600000"></script>
+  <script type="module" src="assets/js/main.js?v=1778900000"></script>
 </body>
 </html>
