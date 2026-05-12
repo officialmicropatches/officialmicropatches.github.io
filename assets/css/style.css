@@ -2285,3 +2285,63 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.02em;
   opacity: 0.8;
 }
+
+/* =========================================================
+   PRODUCT FOCUS BANNER
+   ========================================================= */
+.focus-banner { background:rgba(201,151,42,.07);border-top:1px solid rgba(201,151,42,.22);border-bottom:1px solid rgba(201,151,42,.22);padding:12px 24px;text-align:center;font-size:.875rem;color:var(--text-muted);line-height:1.55 }
+.focus-banner strong { color:var(--gold);font-family:'Oswald',sans-serif;letter-spacing:.04em }
+.focus-banner a { color:var(--gold);text-decoration:underline }
+
+/* =========================================================
+   REVIEW CAROUSEL
+   ========================================================= */
+.reviews-section { padding:48px 0;background:var(--bg-card) }
+.reviews-header { text-align:center;margin-bottom:24px }
+.reviews-rating-line { font-family:'Oswald',sans-serif;font-size:1rem;color:var(--gold);letter-spacing:.06em }
+.reviews-rating-line .r-stars { color:#f3cf74;font-size:1.05rem;margin-right:6px }
+.reviews-carousel-wrap { overflow:hidden;position:relative }
+.reviews-track { display:flex;gap:16px;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform }
+.review-card { flex:0 0 280px;background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;display:flex;flex-direction:column;gap:8px;user-select:none }
+.review-card-stars { color:#f3cf74;font-size:.9rem;letter-spacing:.06em }
+.review-card-quote { font-size:.9rem;color:var(--text);line-height:1.6;flex:1;font-style:italic }
+.review-card-name { font-family:'Oswald',sans-serif;font-size:.75rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase }
+.reviews-dots { display:flex;justify-content:center;gap:8px;margin-top:20px }
+.reviews-dot { width:7px;height:7px;border-radius:50%;background:var(--border);border:none;padding:0;cursor:pointer;transition:background var(--transition) }
+.reviews-dot.active { background:var(--gold) }
+@media (max-width:600px) { .review-card { flex:0 0 240px } }
+
+/* =========================================================
+   CUSTOM PAGE — COMPACT PRICING + ACCORDIONS
+   ========================================================= */
+.custom-pricing-summary { background:rgba(201,151,42,.06);border:1px solid rgba(201,151,42,.22);border-radius:var(--radius);padding:14px 22px;max-width:760px;margin:0 auto 20px;font-size:.93rem;color:var(--text-muted);text-align:center;line-height:1.6 }
+.custom-pricing-summary strong { color:var(--gold);font-family:'Oswald',sans-serif;letter-spacing:.04em }
+.faq-accordion { max-width:760px;margin:0 auto 32px;display:flex;flex-direction:column;gap:8px }
+.faq-item { background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden }
+.faq-item summary { display:flex;justify-content:space-between;align-items:center;padding:15px 20px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.9rem;letter-spacing:.05em;text-transform:uppercase;color:#fff;list-style:none;user-select:none;transition:background var(--transition) }
+.faq-item summary::-webkit-details-marker { display:none }
+.faq-item summary:hover { background:rgba(201,151,42,.05) }
+.faq-item summary::after { content:'+';color:var(--gold);font-size:1.2rem;font-weight:400;transition:transform .2s;flex-shrink:0;margin-left:12px }
+.faq-item[open] summary::after { transform:rotate(45deg) }
+.faq-item-body { padding:0 20px 18px;font-size:.9rem;color:var(--text-muted);line-height:1.75 }
+.faq-item-body a { color:var(--gold) }
+.faq-item-body a:hover { text-decoration:underline }
+
+/* =========================================================
+   PRODUCT PAGE — QTY STEPPER
+   ========================================================= */
+.qty-row { display:flex;align-items:center;gap:12px;margin-bottom:16px }
+.qty-row label { font-family:'Oswald',sans-serif;font-size:.88rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted) }
+.qty-stepper { display:flex;align-items:center;border:1px solid rgba(201,151,42,.3);border-radius:6px;overflow:hidden }
+.qty-stepper button { background:#16191e;color:#fff;border:none;width:36px;height:36px;font-size:1.1rem;cursor:pointer;transition:background .15s }
+.qty-stepper button:hover { background:rgba(201,151,42,.15) }
+.qty-stepper input { width:44px;text-align:center;background:#16191e;color:#fff;border:none;border-left:1px solid rgba(201,151,42,.2);border-right:1px solid rgba(201,151,42,.2);height:36px;font-family:'Oswald',sans-serif;font-size:1rem }
+.qty-stepper input::-webkit-inner-spin-button,.qty-stepper input::-webkit-outer-spin-button { -webkit-appearance:none }
+.qty-stepper input[type=number] { -moz-appearance:textfield }
+
+/* =========================================================
+   FOOTER 3-COLUMN VARIANT (index.html only)
+   ========================================================= */
+.footer-grid--3col { grid-template-columns:2fr 1fr 1fr }
+@media (max-width:1024px) { .footer-grid--3col { grid-template-columns:1fr 1fr } }
+@media (max-width:768px) { .footer-grid--3col { grid-template-columns:1fr } }

@@ -1664,7 +1664,7 @@ function initProductLinks() {
     if (body && !body.querySelector(".card-variant-hint")) {
       const hint = document.createElement("p");
       hint.className = "card-variant-hint";
-      hint.textContent = "MicroKeychain · Micro Magnet · Micro Pin · Micro Charm";
+      hint.textContent = "";
       body.appendChild(hint);
     }
   });
@@ -1779,9 +1779,10 @@ async function initProductPage() {
         atcBtn.disabled = !url;
         atcBtn.textContent = url ? "Add to Cart" : "Coming Soon";
         atcBtn.onclick = url ? () => {
+          const qty = parseInt(document.getElementById("product-qty")?.value || "1");
           const img = document.getElementById("product-photo")?.src || "";
           const cartName = `${name} — ${info.label}`;
-          cartAdd({ id: `${productId}--${type}`, name: cartName, price: info.price, img, shopifyUrl: url });
+          for (let i = 0; i < qty; i++) cartAdd({ id: `${productId}--${type}`, name: cartName, price: info.price, img, shopifyUrl: url });
         } : null;
       }
 
@@ -1796,6 +1797,21 @@ async function initProductPage() {
 
     renderPicker();
     applyVariant(selectedType);
+
+    // Qty stepper
+    const qtyInput = document.getElementById("product-qty");
+    const qtyMinus = document.getElementById("qty-minus");
+    const qtyPlus  = document.getElementById("qty-plus");
+    if (qtyInput && qtyMinus && qtyPlus) {
+      qtyMinus.addEventListener("click", () => {
+        const v = parseInt(qtyInput.value) || 1;
+        if (v > 1) qtyInput.value = v - 1;
+      });
+      qtyPlus.addEventListener("click", () => {
+        const v = parseInt(qtyInput.value) || 1;
+        if (v < 99) qtyInput.value = v + 1;
+      });
+    }
   }
 
   // Load photo from Firebase
@@ -1811,6 +1827,54 @@ async function initProductPage() {
       if (ogImage) ogImage.content = photoUrl;
     }
   } catch (_e) { /* photo non-critical */ }
+}
+
+/* =========================================================
+   REVIEW CAROUSEL
+   ========================================================= */
+async function initReviewCarousel() {
+  const track = document.getElementById("reviews-track");
+  const dotsWrap = document.getElementById("reviews-dots");
+  if (!track) return;
+  let reviews = [];
+  try {
+    const res = await fetch("reviews.json");
+    if (res.ok) { const d = await res.json(); reviews = d.reviews || []; }
+  } catch (_e) { return; }
+  if (!reviews.length) return;
+  track.innerHTML = reviews.map(r =>
+    `<div class="review-card">
+      <div class="review-card-stars">${"★".repeat(r.stars)}</div>
+      <p class="review-card-quote">&ldquo;${escH(r.quote)}&rdquo;</p>
+      <span class="review-card-name">&mdash; ${escH(r.name)}</span>
+    </div>`
+  ).join("");
+  if (dotsWrap) {
+    dotsWrap.innerHTML = reviews.map((_, i) =>
+      `<button class="reviews-dot${i === 0 ? " active" : ""}" aria-label="Review ${i+1}"></button>`
+    ).join("");
+  }
+  let cur = 0;
+  const cards = track.querySelectorAll(".review-card");
+  const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll(".reviews-dot")) : [];
+  const cw = () => (cards[0] ? cards[0].offsetWidth + 16 : 296);
+  function goTo(idx) {
+    cur = ((idx % cards.length) + cards.length) % cards.length;
+    track.style.transform = `translateX(-${cur * cw()}px)`;
+    dots.forEach((d, i) => d.classList.toggle("active", i === cur));
+  }
+  dots.forEach((d, i) => d.addEventListener("click", () => goTo(i)));
+  let timer = setInterval(() => goTo(cur + 1), 4000);
+  const wrap = track.parentElement;
+  wrap.addEventListener("mouseenter", () => clearInterval(timer));
+  wrap.addEventListener("mouseleave", () => { timer = setInterval(() => goTo(cur + 1), 4000); });
+  let sx = 0;
+  wrap.addEventListener("touchstart", e => { sx = e.touches[0].clientX; clearInterval(timer); }, { passive: true });
+  wrap.addEventListener("touchend", e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 40) goTo(cur + (dx < 0 ? 1 : -1));
+    timer = setInterval(() => goTo(cur + 1), 4000);
+  }, { passive: true });
 }
 
 function initShopSearch() {
@@ -1854,6 +1918,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initShopSearch();
   initProductPage();
   initCommerceLinks();
+  initReviewCarousel();
 });
 
 /*

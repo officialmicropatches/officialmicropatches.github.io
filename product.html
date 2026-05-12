@@ -13,7 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778388483">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css?v=1778500000">
 </head>
 <body>
 
@@ -147,6 +148,15 @@
             </div>
           </div>
 
+          <div class="qty-row">
+            <label for="product-qty">Qty</label>
+            <div class="qty-stepper">
+              <button type="button" id="qty-minus" aria-label="Decrease">&#8722;</button>
+              <input type="number" id="product-qty" value="1" min="1" max="99">
+              <button type="button" id="qty-plus" aria-label="Increase">+</button>
+            </div>
+          </div>
+
           <div class="product-detail-actions">
             <button class="btn btn-gold product-detail-atc" id="product-atc-btn">Add to Cart</button>
             <a class="btn btn-outline product-detail-shopify" id="product-shopify-btn" href="#" target="_blank" rel="noopener noreferrer">
@@ -216,6 +226,6 @@
     </div>
   </footer>
 
-  <script type="module" src="assets/js/main.js?v=1778388483"></script>
+  <script type="module" src="assets/js/main.js?v=1778500000"></script>
 </body>
 </html>

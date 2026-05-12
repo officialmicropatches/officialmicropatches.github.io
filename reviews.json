@@ -1,0 +1,15 @@
+{
+  "platform": "Etsy",
+  "overall": 5.0,
+  "total": 26,
+  "item_quality": 5.0,
+  "customer_service": 5.0,
+  "shipping": 4.9,
+  "reviews": [
+    { "stars": 5, "quote": "Incredible detail on such a small piece. My coworkers couldn't believe it was a keychain.", "name": "Officer R.M." },
+    { "stars": 5, "quote": "Ordered for the whole squad. Shipping was fast and quality exceeded expectations.", "name": "Sgt. D.T." },
+    { "stars": 5, "quote": "Perfect gift for a retiring deputy. The patch detail is spot on.", "name": "K. Hernandez" },
+    { "stars": 5, "quote": "Got the 82nd Airborne one. Looks exactly like the real patch. Will order more.", "name": "Veteran C.W." },
+    { "stars": 5, "quote": "Great communication and fast turnaround. 100% recommend.", "name": "Firefighter J.L." }
+  ]
+}
