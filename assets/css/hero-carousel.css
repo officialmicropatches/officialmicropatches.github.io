@@ -1,0 +1,103 @@
+.hero-product-carousel {
+  width: min(86%, 620px);
+  position: relative;
+  z-index: 2;
+}
+.hero-carousel-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid rgba(201,151,42,0.28);
+  box-shadow: 0 28px 90px rgba(0,0,0,0.35), 0 0 70px rgba(201,151,42,0.12);
+}
+.hero-carousel-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 34px);
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 700ms ease, transform 900ms ease;
+}
+.hero-carousel-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+.hero-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 28px rgba(0,0,0,0.42));
+}
+.hero-carousel-fallback .badge-star {
+  width: 80px;
+  height: 80px;
+  color: var(--gold);
+}
+.hero-carousel-caption {
+  min-height: 42px;
+  margin: 16px auto 0;
+  padding: 10px 16px;
+  width: fit-content;
+  max-width: 92%;
+  border: 1px solid rgba(201,151,42,0.22);
+  border-radius: 999px;
+  background: rgba(13,20,36,0.78);
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.22);
+}
+.hero-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 14px;
+}
+.hero-carousel-dots[hidden] {
+  display: none;
+}
+.hero-carousel-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.24);
+  transition: width 250ms ease, background 250ms ease;
+}
+.hero-carousel-dot.is-active {
+  width: 22px;
+  background: var(--gold);
+}
+
+@media (max-width: 768px) {
+  .hero-left {
+    min-height: auto;
+    padding: 42px 24px 34px;
+  }
+  .hero-right {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    padding: 4px 24px 44px;
+    background: #0d1424;
+  }
+  .hero-product-carousel {
+    width: 100%;
+  }
+  .hero-carousel-stage {
+    aspect-ratio: 1.08;
+    border-radius: 14px;
+  }
+  .hero-carousel-caption {
+    min-height: 38px;
+    font-size: 0.74rem;
+  }
+}

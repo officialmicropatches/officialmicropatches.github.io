@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /test/
+Disallow: /myagency/
+
+Sitemap: https://officialmicropatches.com/sitemap.xml
