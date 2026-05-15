@@ -471,6 +471,43 @@ export async function addSubmission(data, generatedFile, patchFile) {
 }
 
 /**
+ * addCustomOrder - uploads the patch photo to Storage and records the custom
+ * order request in Firestore. Returns the uploaded photo's download URL so it
+ * can be forwarded to the email notification service.
+ *
+ * Custom orders are recorded here (not sent as a file attachment to Formspree)
+ * because Formspree's free plan rejects multipart file uploads, which silently
+ * failed every custom order submission.
+ *
+ * @param {Object} data - { name, email, phone, agency, product_type, quantity, description, referral }
+ * @param {File} patchFile - the customer's patch photo (required)
+ * @returns {Promise<string>} the patch photo download URL
+ */
+export async function addCustomOrder(data, patchFile) {
+  validateImageFile(patchFile);
+  const safeName = patchFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const pRef = ref(storage, "submissions/" + Date.now() + "_custom_" + safeName);
+  await uploadBytes(pRef, patchFile);
+  const patchPhotoURL = await getDownloadURL(pRef);
+
+  await addDoc(collection(db, "submissions"), {
+    type: "custom-order",
+    name: data.name,
+    email: data.email,
+    phone: data.phone || "",
+    agency: data.agency,
+    productType: data.product_type || "",
+    quantity: data.quantity || "",
+    description: data.description,
+    referral: data.referral || "",
+    patchPhotoURL,
+    submittedAt: new Date().toISOString()
+  });
+
+  return patchPhotoURL;
+}
+
+/**
  * uploadProduct - uploads a completed keychain photo and prepends it to the queue
  */
 export async function uploadProduct(name, status, file) {
