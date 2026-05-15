@@ -422,6 +422,27 @@ function validateImageFile(file) {
   if (file.size > 10 * 1024 * 1024) throw new Error('File must be under 10MB.');
 }
 
+function submissionPathFor(kind, file) {
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return "submissions/" + Date.now() + "_" + kind + "_" + safeName;
+}
+
+async function uploadSubmissionFile(kind, file) {
+  validateImageFile(file);
+  const path = submissionPathFor(kind, file);
+  await uploadBytes(ref(storage, path), file);
+  return path;
+}
+
+async function resolveSubmissionURL(path) {
+  if (!path) return "";
+  try {
+    return await getDownloadURL(ref(storage, path));
+  } catch (_e) {
+    return "";
+  }
+}
+
 /**
  * addSubmission - uploads files to Storage, saves submission to Firestore,
  * appends new entry to the live queue
@@ -430,21 +451,15 @@ function validateImageFile(file) {
  * @param {File|null} patchFile - physical patch photo
  */
 export async function addSubmission(data, generatedFile, patchFile) {
-  let generatedImageURL = "";
-  let patchPhotoURL = "";
+  let generatedImagePath = "";
+  let patchPhotoPath = "";
 
   if (generatedFile) {
-    validateImageFile(generatedFile);
-    const gRef = ref(storage, "submissions/" + Date.now() + "_gen_" + generatedFile.name);
-    await uploadBytes(gRef, generatedFile);
-    generatedImageURL = await getDownloadURL(gRef);
+    generatedImagePath = await uploadSubmissionFile("gen", generatedFile);
   }
 
   if (patchFile) {
-    validateImageFile(patchFile);
-    const pRef = ref(storage, "submissions/" + Date.now() + "_patch_" + patchFile.name);
-    await uploadBytes(pRef, patchFile);
-    patchPhotoURL = await getDownloadURL(pRef);
+    patchPhotoPath = await uploadSubmissionFile("patch", patchFile);
   }
 
   const submission = {
@@ -453,8 +468,10 @@ export async function addSubmission(data, generatedFile, patchFile) {
     phone: data.phone || "",
     agency: data.agency,
     description: data.description,
-    generatedImageURL,
-    patchPhotoURL,
+    generatedImagePath,
+    patchPhotoPath,
+    generatedImageURL: "",
+    patchPhotoURL: "",
     submittedAt: new Date().toISOString()
   };
 
@@ -465,14 +482,14 @@ export async function addSubmission(data, generatedFile, patchFile) {
   const newItem = {
     name: data.agency,
     status: "Queued",
-    img: patchPhotoURL || generatedImageURL || ""
+    img: ""
   };
   await saveQueue([...currentItems, newItem]);
 }
 
 /**
  * addCustomOrder - uploads the patch photo to Storage and records the custom
- * order request in Firestore. Returns the uploaded photo's download URL so it
+ * order request in Firestore. Returns the uploaded photo's private Storage path so it
  * can be forwarded to the email notification service.
  *
  * Custom orders are recorded here (not sent as a file attachment to Formspree)
@@ -481,14 +498,10 @@ export async function addSubmission(data, generatedFile, patchFile) {
  *
  * @param {Object} data - { name, email, phone, agency, product_type, quantity, description, referral }
  * @param {File} patchFile - the customer's patch photo (required)
- * @returns {Promise<string>} the patch photo download URL
+ * @returns {Promise<string>} the patch photo Storage path
  */
 export async function addCustomOrder(data, patchFile) {
-  validateImageFile(patchFile);
-  const safeName = patchFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const pRef = ref(storage, "submissions/" + Date.now() + "_custom_" + safeName);
-  await uploadBytes(pRef, patchFile);
-  const patchPhotoURL = await getDownloadURL(pRef);
+  const patchPhotoPath = await uploadSubmissionFile("custom", patchFile);
 
   await addDoc(collection(db, "submissions"), {
     type: "custom-order",
@@ -500,11 +513,12 @@ export async function addCustomOrder(data, patchFile) {
     quantity: data.quantity || "",
     description: data.description,
     referral: data.referral || "",
-    patchPhotoURL,
+    patchPhotoPath,
+    patchPhotoURL: "",
     submittedAt: new Date().toISOString()
   });
 
-  return patchPhotoURL;
+  return patchPhotoPath;
 }
 
 /**
@@ -529,7 +543,14 @@ export async function uploadProduct(name, status, file) {
 export async function loadSubmissions() {
   const q = query(collection(db, "submissions"), orderBy("submittedAt", "desc"));
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return Promise.all(snap.docs.map(async d => {
+    const submission = { id: d.id, ...d.data() };
+    return {
+      ...submission,
+      generatedImageURL: submission.generatedImageURL || await resolveSubmissionURL(submission.generatedImagePath),
+      patchPhotoURL: submission.patchPhotoURL || await resolveSubmissionURL(submission.patchPhotoPath)
+    };
+  }));
 }
 
 const PRODUCT_PHOTOS_DOC = doc(db, "config", "productPhotos");
