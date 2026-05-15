@@ -256,33 +256,62 @@
 
   <script type="module" src="assets/js/main.js?v=1778500000"></script>
   <script type="module">
-    // Handle Formspree success redirect
+    import { addCustomOrder } from "./assets/js/firebase.js";
+
     const form = document.getElementById("custom-order-form");
     const success = document.getElementById("custom-form-success");
     if (form) {
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = form.querySelector("button[type=submit]");
+
+        if (!form.reportValidity()) return;
+
+        const fileInput = form.querySelector("#co-reference");
+        const patchFile = fileInput && fileInput.files[0];
+        if (!patchFile) {
+          alert("Please attach a photo of your patch.");
+          return;
+        }
+
         btn.disabled = true;
         btn.textContent = "Sending...";
+
+        const fd = new FormData(form);
+        const data = {
+          name: fd.get("name"),
+          email: fd.get("email"),
+          phone: fd.get("phone"),
+          agency: fd.get("agency"),
+          product_type: fd.get("product_type"),
+          quantity: fd.get("quantity"),
+          description: fd.get("description"),
+          referral: fd.get("referral")
+        };
+
         try {
-          const res = await fetch(form.action, {
-            method: "POST",
-            body: new FormData(form),
-            headers: { Accept: "application/json" }
-          });
-          if (res.ok) {
-            form.style.display = "none";
-            success.classList.add("visible");
-          } else {
-            btn.disabled = false;
-            btn.textContent = "Send Request";
-            alert("Submission failed. Please email us directly at OfficialMicroPatches@gmail.com.");
+          // Persist the order (photo to Storage + record to Firestore). This is
+          // the source of truth — the order is captured even if email fails.
+          const patchPhotoURL = await addCustomOrder(data, patchFile);
+
+          // Best-effort email notification via Formspree. Send a URL, not the
+          // file, because Formspree's free plan rejects file uploads.
+          try {
+            await fetch(form.action, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify({ ...data, patch_photo_url: patchPhotoURL })
+            });
+          } catch (_emailErr) {
+            // Order is already saved; a failed notification is non-fatal.
           }
-        } catch (_e) {
+
+          form.style.display = "none";
+          success.classList.add("visible");
+        } catch (err) {
           btn.disabled = false;
           btn.textContent = "Send Request";
-          alert("Submission failed. Please email us directly at OfficialMicroPatches@gmail.com.");
+          alert("Submission failed: " + (err && err.message ? err.message : "please email us directly at OfficialMicroPatches@gmail.com."));
         }
       });
     }
