@@ -292,15 +292,15 @@
         try {
           // Persist the order (photo to Storage + record to Firestore). This is
           // the source of truth — the order is captured even if email fails.
-          const patchPhotoURL = await addCustomOrder(data, patchFile);
+          const patchPhotoPath = await addCustomOrder(data, patchFile);
 
-          // Best-effort email notification via Formspree. Send a URL, not the
-          // file, because Formspree's free plan rejects file uploads.
+          // Best-effort email notification via Formspree. Send the private
+          // Storage path, not the file, because Formspree rejects file uploads.
           try {
             await fetch(form.action, {
               method: "POST",
               headers: { "Content-Type": "application/json", Accept: "application/json" },
-              body: JSON.stringify({ ...data, patch_photo_url: patchPhotoURL })
+              body: JSON.stringify({ ...data, patch_photo_storage_path: patchPhotoPath })
             });
           } catch (_emailErr) {
             // Order is already saved; a failed notification is non-fatal.
