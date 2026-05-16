@@ -1,321 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Custom Order — MicroPatches</title>
-  <meta name="description" content="Request a custom patch keychain for your agency, unit, or department. $25 flat design fee — every design, every order. No minimum orders. Design fee waivable on bulk orders.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://officialmicropatches.github.io/custom.html">
-  <meta property="og:title" content="Custom Orders — MicroPatches">
-  <meta property="og:description" content="$25 flat design fee. No minimum orders. Any law enforcement, military, fire, or EMS agency. Design fee waivable on bulk orders.">
-  <meta property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://officialmicropatches.github.io/custom.html">
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
-       Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://formspree.io; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com; form-action https://formspree.io;
-       X-Frame-Options: DENY
-       X-Content-Type-Options: nosniff
-       Referrer-Policy: strict-origin-when-cross-origin -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778500000">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Order — MicroPatches</title>
+<meta name="description" content="Request a custom patch keychain for your agency, unit, or department. $25 flat design fee — every design, every order. No minimum orders. Design fee waivable on bulk orders.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://officialmicropatches.github.io/custom.html">
+<meta property="og:title" content="Custom Orders — MicroPatches">
+<meta property="og:description" content="$25 flat design fee. No minimum orders. Any law enforcement, military, fire, or EMS agency. Design fee waivable on bulk orders.">
+<meta property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://officialmicropatches.github.io/custom.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
+Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.shopify.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://cdn.shopify.com; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com https://cdn.shopify.com;
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=1778500000">
+<style>
+/* ── Photo upload widget ─────────────────────────────────── */
+#patch-photo-wrap {
+  margin-bottom: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+#patch-photo-wrap .photo-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary, #e2e8f0);
+}
+#co-reference {
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  color: var(--text-muted, #8a9bb0);
+  cursor: pointer;
+}
+#co-reference::file-selector-button {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary, #e2e8f0);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  margin-right: 12px;
+  padding: 6px 14px;
+  transition: border-color 0.15s;
+}
+#co-reference::file-selector-button:hover {
+  border-color: var(--gold, #c9972a);
+}
+#photo-status {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  display: none;
+}
+#photo-preview {
+  display: none;
+  margin-top: 12px;
+  max-width: 220px;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+</style>
 </head>
 <body>
 
-  <!-- ===== NAV ===== -->
-  <nav class="site-nav" role="navigation" aria-label="Main navigation">
-    <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
-    <ul class="nav-links" role="list">
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="queue.html">Waitlist Queue</a></li>
-      <li><a href="custom.html" class="active">Custom Order</a></li>
-      <li><a href="challenge-coins.html">Challenge Coins</a></li>
-      <li><a href="patch-exchange.html">Patch Exchange</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <button class="cart-toggle" id="cart-toggle" aria-label="View cart">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      <span class="cart-count" id="cart-count">0</span>
-    </button>
-    <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
-  </nav>
-  <nav class="nav-mobile-menu" aria-label="Mobile navigation">
-    <a href="shop.html">Shop</a>
-    <a href="queue.html">Waitlist Queue</a>
-    <a href="custom.html">Custom Order</a>
-    <a href="challenge-coins.html">Challenge Coins</a>
-    <a href="patch-exchange.html">Patch Exchange</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+<!-- ===== NAV ===== -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+<a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
+<ul class="nav-links" role="list">
+<li><a href="shop.html">Shop</a></li>
+<li><a href="queue.html">Waitlist Queue</a></li>
+<li><a href="custom.html" class="active">Custom Order</a></li>
+<li><a href="challenge-coins.html">Challenge Coins</a></li>
+<li><a href="patch-exchange.html">Patch Exchange</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+<button class="cart-toggle" id="cart-toggle" aria-label="View cart">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+<span class="cart-count" id="cart-count">0</span>
+</button>
+<button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</nav>
+<nav class="nav-mobile-menu" aria-label="Mobile navigation">
+<a href="shop.html">Shop</a>
+<a href="queue.html">Waitlist Queue</a>
+<a href="custom.html">Custom Order</a>
+<a href="challenge-coins.html">Challenge Coins</a>
+<a href="patch-exchange.html">Patch Exchange</a>
+<a href="contact.html">Contact</a>
+</nav>
 
-  <!-- ===== PAGE HERO ===== -->
-  <section class="page-hero">
-    <div class="container">
-      <p class="eyebrow">Made to Order</p>
-      <h1>CUSTOM ORDER REQUEST</h1>
-      <p>Don't see your agency or unit? We can build it. Send a reference photo or your patch and we will make it happen.</p>
-    </div>
-  </section>
+<!-- ===== PAGE HERO ===== -->
+<section class="page-hero">
+<div class="container">
+<p class="eyebrow">Made to Order</p>
+<h1>CUSTOM ORDER REQUEST</h1>
+<p>Don't see your agency or unit? We can build it. Send a reference photo or your patch and we will make it happen.</p>
+</div>
+</section>
 
-  <!-- ===== PRICING SUMMARY ===== -->
-  <div style="background:var(--bg-card);padding:24px 0 8px">
-    <div class="container" style="max-width:760px">
-      <div class="custom-pricing-summary">
-        <strong>$25 flat design fee</strong> &nbsp;&middot;&nbsp; waived on qualifying bulk orders &nbsp;&middot;&nbsp; unit pricing from $9.99
-      </div>
-      <div class="faq-accordion">
-        <details class="faq-item">
-          <summary>Need a brand new design?</summary>
-          <div class="faq-item-body">We're happy to create something entirely from scratch — memorial patches, retirement gifts, original designs. Pricing is negotiated case by case. Email <a href="mailto:officialmicropatches@gmail.com">officialmicropatches@gmail.com</a> to get started.</div>
-        </details>
-        <details class="faq-item">
-          <summary>Bulk order discount?</summary>
-          <div class="faq-item-body">The $25 design fee can be waived on qualifying bulk orders. Unit cost applies separately. Budget tight? Reach out — we'll always work something out.</div>
-        </details>
-        <details class="faq-item">
-          <summary>Photo tips — get the best result</summary>
-          <div class="faq-item-body">Lay your patch flat on a solid surface. Hold your phone directly overhead and shoot straight down. Avoid angles and shadows. A digital vector file is ideal if you have one. <strong>Better photo = better keychain.</strong></div>
-        </details>
-      </div>
-    </div>
-  </div>
+<!-- ===== PRICING SUMMARY ===== -->
+<div style="background:var(--bg-card);padding:24px 0 8px">
+<div class="container" style="max-width:760px">
+<div class="custom-pricing-summary">
+<strong>$25 flat design fee</strong> &nbsp;&middot;&nbsp; waived on qualifying bulk orders &nbsp;&middot;&nbsp; unit pricing from $9.99
+</div>
+<div class="faq-accordion">
+<details class="faq-item">
+<summary>Need a brand new design?</summary>
+<div class="faq-item-body">We're happy to create something entirely from scratch — memorial patches, retirement gifts, original designs. Pricing is negotiated case by case. Email <a href="mailto:officialmicropatches@gmail.com">officialmicropatches@gmail.com</a> to get started.</div>
+</details>
+<details class="faq-item">
+<summary>Bulk order discount?</summary>
+<div class="faq-item-body">The $25 design fee can be waived on qualifying bulk orders. Unit cost applies separately. Budget tight? Reach out — we'll always work something out.</div>
+</details>
+<details class="faq-item">
+<summary>Photo tips — get the best result</summary>
+<div class="faq-item-body">Lay your patch flat on a solid surface. Hold your phone directly overhead and shoot straight down. Avoid angles and shadows. A digital vector file is ideal if you have one. <strong>Better photo = better keychain.</strong></div>
+</details>
+</div>
+</div>
+</div>
 
-  <!-- ===== FORM ===== -->
-  <section class="section">
-    <div class="container" style="max-width:760px">
-      <div class="section-header" style="text-align:left;margin-bottom:32px">
-        <h2>SEND YOUR REQUEST</h2>
-        <p>We typically respond within 1 to 2 business days.</p>
-      </div>
+<!-- ===== FORM ===== -->
+<section class="section">
+<div class="container" style="max-width:760px">
+<div class="section-header" style="text-align:left;margin-bottom:32px">
+<h2>SEND YOUR REQUEST</h2>
+<p>We typically respond within 1 to 2 business days.</p>
+</div>
 
-      <!-- REPLACE: Your Formspree form ID goes in the action URL below -->
-      <form id="custom-order-form" action="https://formspree.io/f/mqednono" method="POST" enctype="multipart/form-data" novalidate>
-        <div class="form-grid">
+<!-- Photo upload — fires immediately on file select; URL auto-fills into Shopify form -->
+<div id="patch-photo-wrap" style="margin-bottom:24px">
+  <span class="photo-label">Patch Photo <span style="color:#f87171">*</span></span>
+  <input type="file" id="co-reference" accept="image/*" aria-required="true">
+  <p class="form-note" style="margin-top:8px">
+    <strong style="color:#e2e8f0">How to take your photo:</strong> Lay the patch flat on a solid-colored surface. Hold your phone directly above and shoot straight down. No angles or shadows.<br><br>
+    <strong style="color:var(--gold)">Better photo = better result.</strong>
+  </p>
+  <div id="photo-status"></div>
+  <img id="photo-preview" alt="Patch photo preview">
+</div>
 
-          <div class="form-group">
-            <label for="co-name">Name <span style="color:#f87171">*</span></label>
-            <input type="text" id="co-name" name="name" required autocomplete="name">
-          </div>
+<!-- Shopify Forms inline embed — Form ID 992535 -->
+<div id="shopify-form-992535"></div>
 
-          <div class="form-group">
-            <label for="co-email">Email <span style="color:#f87171">*</span></label>
-            <input type="email" id="co-email" name="email" required autocomplete="email">
-          </div>
+</div>
+</section>
 
-          <div class="form-group">
-            <label for="co-phone">Phone <span style="color:var(--text-muted)">(optional)</span></label>
-            <input type="tel" id="co-phone" name="phone" autocomplete="tel">
-          </div>
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-brand">
+<div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
+<p>Handcrafted for those who serve. USA Made.</p>
+<div class="footer-social">
+<a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
+<a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
+<a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
+</div>
+</div>
+<div class="footer-col">
+<h4>Shop</h4>
+<ul>
+<li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
+<li><a href="shop.html#corrections">Corrections</a></li>
+<li><a href="shop.html#military">Military</a></li>
+<li><a href="shop.html#fire">Fire Departments</a></li>
+<li><a href="shop.html#ems">EMS</a></li>
+<li><a href="shop.html#pink-patch">Pink Patch</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Services</h4>
+<ul>
+<li><a href="custom.html">Custom Orders</a></li>
+<li><a href="challenge-coins.html">Challenge Coins</a></li>
+<li><a href="patch-exchange.html">Patch Exchange</a></li>
+<li><a href="queue.html">Waitlist Queue</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Connect</h4>
+<ul>
+<li><a href="contact.html">Contact Us</a></li>
+<li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
+<li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2025 MicroPatches. All rights reserved.</p>
+<span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
+</div>
+</div>
+</footer>
 
-          <div class="form-group">
-            <label for="co-agency">Agency or Unit Name <span style="color:#f87171">*</span></label>
-            <input type="text" id="co-agency" name="agency" required>
-          </div>
+<!-- ===== CART DRAWER ===== -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
+<div class="cart-drawer-header">
+<h2>Your Cart</h2>
+<button class="cart-close-btn" id="cart-close" aria-label="Close cart">&times;</button>
+</div>
+<div class="cart-empty" id="cart-empty" style="display:flex">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+<p>Your cart is empty.</p>
+<a href="shop.html" class="btn btn-outline btn-small">Browse Products</a>
+</div>
+<div class="cart-items" id="cart-items"></div>
+<div class="cart-footer" id="cart-footer" style="display:none">
+<div class="cart-subtotal">
+<span class="cart-subtotal-label">Subtotal</span>
+<span class="cart-subtotal-value" id="cart-total">$0.00</span>
+</div>
+<p class="cart-shipping-note">Shipping calculated at checkout</p>
+<button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
+</div>
+</aside>
 
-          <div class="form-group">
-            <label for="product-type">Product Type</label>
-            <select id="product-type" name="product_type">
-              <option value="">Select one</option>
-              <option value="Keychain">MicroKeychain — $13.99</option>
-              <option value="Magnet">Micro Magnet — $14.99 (custom only)</option>
-              <option value="Micro Charm">Micro Charm — $9.99 (custom only)</option>
-              <option value="Not Sure">Not Sure</option>
-            </select>
-          </div>
+<!-- ===== SCRIPTS ===== -->
+<script src="assets/js/shopify-config.js"></script>
+<script type="module" src="assets/js/main.js?v=1778500000"></script>
 
-          <div class="form-group">
-            <label for="co-qty">Quantity</label>
-            <select id="co-qty" name="quantity">
-              <option value="">Select one</option>
-              <option value="1-4">1 to 4</option>
-              <option value="5-9">5 to 9</option>
-              <option value="10-24">10 to 24</option>
-              <option value="25+">25 or more</option>
-              <option value="Not Sure">Not Sure</option>
-            </select>
-          </div>
+<!-- Shopify Forms embed script -->
+<script src="https://cdn.shopify.com/shopifycloud/forms-ui/assets/v0.1/shopify-form.en.js"
+        data-id="992535" defer></script>
 
-          <div class="form-group full">
-            <label for="co-description">About Your Patch <span style="color:#f87171">*</span></label>
-            <textarea id="co-description" name="description" required rows="4" placeholder="Is this a current patch of your agency, a recently retired design, or a specialty patch (pink patch, memorial, unit patch, etc.)? Let us know so we can properly list it on our store."></textarea>
-          </div>
+<!-- Firebase photo upload → auto-populates Reference Image URL in Shopify form -->
+<script type="module">
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-          <div class="form-group full">
-            <label for="co-reference">Patch Photo <span style="color:#f87171">*</span></label>
-            <input type="file" id="co-reference" name="reference_image" accept="image/*" required>
-            <span class="form-note">
-              <strong style="color:#e2e8f0">How to take your photo:</strong> Lay the patch flat on a solid-colored background (any single color works — table, floor, cardboard). Hold your phone directly above it and shoot straight down. No angles. No shadows across the patch if you can avoid it.<br><br>
-              Your photo doesn't need to be professional — but <strong style="color:var(--gold)">the better the photo you send us, the higher quality micro patch we can make you.</strong>
-            </span>
-          </div>
+// Reuse the Firebase app already initialized by firebase.js (loaded via main.js).
+// Fall back to a fresh init if this page ever loads standalone.
+let storage;
+try {
+  storage = getStorage(getApp());
+} catch (_e) {
+  const app = initializeApp({
+    apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
+    authDomain: "patch-559c8.firebaseapp.com",
+    projectId: "patch-559c8",
+    storageBucket: "patch-559c8.firebasestorage.app",
+    messagingSenderId: "584233188985",
+    appId: "1:584233188985:web:7be3979a2ad505bc711ea8"
+  });
+  storage = getStorage(app);
+}
 
-          <div class="form-group full">
-            <label for="co-referral">How Did You Find Us</label>
-            <select id="co-referral" name="referral">
-              <option value="">Select one</option>
-              <option value="TikTok">TikTok</option>
-              <option value="Instagram">Instagram</option>
-              <option value="YouTube">YouTube</option>
-              <option value="Etsy">Etsy</option>
-              <option value="Word of Mouth">Word of Mouth</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+// ── State ────────────────────────────────────────────────────────────────
+let uploadedURL     = null;   // Firebase Storage download URL, set after upload
+let uploadInFlight  = false;  // true while upload is running
 
-        </div>
+// ── DOM refs ─────────────────────────────────────────────────────────────
+const fileInput  = document.getElementById("co-reference");
+const statusEl   = document.getElementById("photo-status");
+const previewEl  = document.getElementById("photo-preview");
 
-        <div style="margin-top:28px">
-          <button type="submit" class="btn btn-gold" style="width:100%">Send Request</button>
-        </div>
+function setStatus(msg, color) {
+  if (!statusEl) return;
+  statusEl.textContent = msg;
+  statusEl.style.color  = color || "var(--text-muted)";
+  statusEl.style.display = msg ? "block" : "none";
+}
 
-        <p class="form-note" style="margin-top:16px;text-align:center">We typically respond within 1 to 2 business days. $25 design fee — waivable on bulk orders. $13.99 per unit product cost. All custom orders are final sale.</p>
+// ── Upload on file select ────────────────────────────────────────────────
+fileInput?.addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-      </form>
+  if (!file.type.startsWith("image/")) {
+    setStatus("Only image files are accepted.", "#f87171"); return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    setStatus("File must be under 10 MB.", "#f87171"); return;
+  }
 
-      <div class="form-success" id="custom-form-success">
-        Request received. We will be in touch within 1 to 2 business days. Thank you for your service.
-      </div>
+  uploadInFlight = true;
+  uploadedURL    = null;
+  if (previewEl) previewEl.style.display = "none";
+  setStatus("Uploading photo…");
 
-    </div>
-  </section>
+  try {
+    const safeName   = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const storageRef = ref(storage, `submissions/${Date.now()}_custom_${safeName}`);
+    await uploadBytes(storageRef, file);
+    uploadedURL = await getDownloadURL(storageRef);
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
-          <p>Handcrafted for those who serve. USA Made.</p>
-          <div class="footer-social">
-            <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
-            <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
-            <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <ul>
-            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
-            <li><a href="shop.html#corrections">Corrections</a></li>
-            <li><a href="shop.html#military">Military</a></li>
-            <li><a href="shop.html#fire">Fire Departments</a></li>
-            <li><a href="shop.html#ems">EMS</a></li>
-            <li><a href="shop.html#pink-patch">Pink Patch</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Services</h4>
-          <ul>
-            <li><a href="custom.html">Custom Orders</a></li>
-            <li><a href="challenge-coins.html">Challenge Coins</a></li>
-            <li><a href="patch-exchange.html">Patch Exchange</a></li>
-            <li><a href="queue.html">Waitlist Queue</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Connect</h4>
-          <ul>
-            <li><a href="contact.html">Contact Us</a></li>
-            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
-            <li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 MicroPatches. All rights reserved.</p>
-        <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
-      </div>
-    </div>
-  </footer>
+    if (previewEl) { previewEl.src = uploadedURL; previewEl.style.display = "block"; }
+    setStatus("✓ Photo uploaded", "#4ade80");
+    injectURL(uploadedURL);
+  } catch (err) {
+    setStatus("Upload failed — " + (err?.message || "please try again"), "#f87171");
+  } finally {
+    uploadInFlight = false;
+  }
+});
 
-  <!-- ===== CART DRAWER ===== -->
-  <div class="cart-overlay" id="cart-overlay"></div>
-  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
-    <div class="cart-drawer-header">
-      <h2>Your Cart</h2>
-      <button class="cart-close-btn" id="cart-close" aria-label="Close cart">&times;</button>
-    </div>
-    <div class="cart-empty" id="cart-empty" style="display:flex">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      <p>Your cart is empty.</p>
-      <a href="shop.html" class="btn btn-outline btn-small">Browse Products</a>
-    </div>
-    <div class="cart-items" id="cart-items"></div>
-    <div class="cart-footer" id="cart-footer" style="display:none">
-      <div class="cart-subtotal">
-        <span class="cart-subtotal-label">Subtotal</span>
-        <span class="cart-subtotal-value" id="cart-total">$0.00</span>
-      </div>
-      <p class="cart-shipping-note">Shipping calculated at checkout</p>
-      <button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
-    </div>
-  </aside>
+// ── Inject URL into Shopify form's Reference Image URL field ─────────────
+function injectURL(url) {
+  const container = document.getElementById("shopify-form-992535");
+  if (!container || !url) return;
 
-  <script src="assets/js/shopify-config.js"></script>
-  <script type="module" src="assets/js/main.js?v=1778500000"></script>
-  <script type="module">
-    import { addCustomOrder } from "./assets/js/firebase.js?v=1778887000";
+  // Strategy 1: find label whose text contains "Reference" and use its for attr
+  for (const label of container.querySelectorAll("label")) {
+    if (!/reference/i.test(label.textContent)) continue;
+    const input = label.htmlFor
+      ? document.getElementById(label.htmlFor)
+      : label.querySelector("input, textarea");
+    if (input) { setValue(input, url); return; }
+  }
 
-    const form = document.getElementById("custom-order-form");
-    const success = document.getElementById("custom-form-success");
-    if (form) {
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = form.querySelector("button[type=submit]");
+  // Strategy 2: scan all text inputs for one associated with a Reference label
+  for (const input of container.querySelectorAll('input[type="text"], input:not([type]), textarea')) {
+    const label = container.querySelector('label[for="' + input.id + '"]');
+    if (label && /reference/i.test(label.textContent)) { setValue(input, url); return; }
+  }
 
-        if (!form.reportValidity()) return;
-
-        const fileInput = form.querySelector("#co-reference");
-        const patchFile = fileInput && fileInput.files[0];
-        if (!patchFile) {
-          alert("Please attach a photo of your patch.");
-          return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = "Sending...";
-
-        const fd = new FormData(form);
-        const data = {
-          name: fd.get("name"),
-          email: fd.get("email"),
-          phone: fd.get("phone"),
-          agency: fd.get("agency"),
-          product_type: fd.get("product_type"),
-          quantity: fd.get("quantity"),
-          description: fd.get("description"),
-          referral: fd.get("referral")
-        };
-
-        try {
-          // Persist the order (photo to Storage + record to Firestore). This is
-          // the source of truth — the order is captured even if email fails.
-          const patchPhotoPath = await addCustomOrder(data, patchFile);
-
-          // Best-effort email notification via Formspree. Send the private
-          // Storage path, not the file, because Formspree rejects file uploads.
-          try {
-            await fetch(form.action, {
-              method: "POST",
-              headers: { "Content-Type": "application/json", Accept: "application/json" },
-              body: JSON.stringify({ ...data, patch_photo_storage_path: patchPhotoPath })
-            });
-          } catch (_emailErr) {
-            // Order is already saved; a failed notification is non-fatal.
-          }
-
-          form.style.display = "none";
-          success.classList.add("visible");
-        } catch (err) {
-          btn.disabled = false;
-          btn.textContent = "Send Request";
-          alert("Submission failed: " + (err && err.message ? err.message : "please email us directly at OfficialMicroPatches@gmail.com."));
-        }
-      });
+  // Strategy 3: match on placeholder / name / id containing reference or url
+  for (const input of container.querySelectorAll("input")) {
+    if (/reference|image.?url/i.test(input.placeholder + " " + input.name + " " + input.id)) {
+      setValue(input, url); return;
     }
-  </script>
+  }
+}
+
+function setValue(el, value) {
+  const nativeSetter = Object.getOwnPropertyDescriptor(
+    el.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,
+    "value"
+  )?.set;
+  if (nativeSetter) nativeSetter.call(el, value);
+  else el.value = value;
+  el.dispatchEvent(new Event("input",  { bubbles: true }));
+  el.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
+// ── Hide the Reference Image URL row once the Shopify form renders ────────
+function hideReferenceField(container) {
+  for (const label of container.querySelectorAll("label")) {
+    if (!/reference/i.test(label.textContent)) continue;
+    const group = label.closest("div, li, fieldset") || label.parentElement;
+    if (group) group.style.display = "none";
+    return;
+  }
+}
+
+// ── MutationObserver — act once Shopify Forms has rendered the form ────
+const sfContainer = document.getElementById("shopify-form-992535");
+if (sfContainer) {
+  const observer = new MutationObserver(() => {
+    const form = sfContainer.querySelector("form");
+    if (!form) return;
+    observer.disconnect();
+
+    hideReferenceField(sfContainer);
+    if (uploadedURL) injectURL(uploadedURL);
+
+    // Capture-phase submit guard
+    form.addEventListener("submit", (e) => {
+      if (uploadInFlight) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setStatus("Please wait — photo is still uploading…", "#fbbf24");
+        return;
+      }
+      if (!uploadedURL && !fileInput?.files?.length) {
+        const confirmed = confirm(
+          "No patch photo attached. Continue without a photo?\n\n" +
+          "A photo helps us produce the best possible result."
+        );
+        if (!confirmed) { e.preventDefault(); e.stopImmediatePropagation(); return; }
+      }
+      if (uploadedURL) injectURL(uploadedURL);
+    }, true);
+  });
+
+  observer.observe(sfContainer, { childList: true, subtree: true });
+}
+</script>
 </body>
 </html>
