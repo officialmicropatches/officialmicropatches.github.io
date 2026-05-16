@@ -1,20 +1,11 @@
 /**
  * shopify-loader.js
- * MicroPatches — Dynamic product grid loader + filter engine
- * Version: 2.0 — 2026-05-15
+ * MicroPatches — Live product grid loader
+ * Version: 3.0 — 2026-05-15
  *
- * WHAT THIS DOES:
- *   Reads window.SHOPIFY_PRODUCTS (from shopify-products-data.js) and replaces
- *   the static product grid on officialmicropatches.com with live Shopify-sourced
- *   product cards. Owns its own filter engine so the page's original main.js
- *   filter (which holds stale NodeList references) is bypassed entirely.
- *
- * SETUP (add to index.html BEFORE </body>, in this order):
- *   1.  <script src="assets/js/shopify-products-data.js"></script>
- *   2.  <script src="assets/js/shopify-loader.js"></script>
- *
- * TO UPDATE PRODUCTS:
- *   Re-upload a new shopify-products-data.js. No changes needed to this file.
+ * Fetches products live from the public Shopify JSON endpoint on every page
+ * load. No API token required. Add a product in Shopify → it appears on the
+ * site automatically on the next page load.
  */
 
 (function () {
@@ -22,117 +13,156 @@
 
   var STORE_URL = 'https://micropatches.myshopify.com';
 
-  /* ------------------------------------------------------------------ */
-  /*  Bail out if data file wasn't loaded first                          */
-  /* ------------------------------------------------------------------ */
-  if (!window.SHOPIFY_PRODUCTS || !Array.isArray(window.SHOPIFY_PRODUCTS)) {
-    console.warn('[MicroPatches] shopify-products-data.js not loaded — product grid unchanged.');
-    return;
+  var CATEGORY_MAP = [
+    { tags: ['fire', 'fire department', 'fire dept', 'firefighter'], value: 'fire' },
+    { tags: ['military', 'army', 'navy', 'marines', 'air force', 'coast guard', 'national guard', 'usmc', 'usaf', 'usn'], value: 'military' },
+    { tags: ['ems', 'emergency medical', 'paramedic', 'medic', 'ambulance'], value: 'ems' },
+    { tags: ['corrections', 'correctional', 'jail', 'prison', 'detention'], value: 'corrections' },
+    { tags: ['search and rescue', 'sar', 'rescue'], value: 'search-rescue' },
+    { tags: ['law enforcement', 'police', 'sheriff', 'constable', 'marshal', 'trooper', 'highway patrol', 'state police'], value: 'law-enforcement' }
+  ];
+
+  var TYPE_MAP = [
+    { tags: ['sheriff'], value: 'sheriff' },
+    { tags: ['police'], value: 'police' },
+    { tags: ['fire', 'firefighter'], value: 'fire' },
+    { tags: ['corrections', 'correctional'], value: 'corrections' },
+    { tags: ['military'], value: 'military' },
+    { tags: ['ems', 'paramedic'], value: 'ems' },
+    { tags: ['search and rescue', 'sar'], value: 'search-rescue' }
+  ];
+
+  function matchTags(productTags, mapEntry) {
+    var lower = productTags.map(function (t) { return t.toLowerCase(); });
+    return mapEntry.tags.some(function (keyword) {
+      return lower.indexOf(keyword) !== -1;
+    });
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Build a single product card element                                */
-  /* ------------------------------------------------------------------ */
+  function getCategory(tags) {
+    for (var i = 0; i < CATEGORY_MAP.length; i++) {
+      if (matchTags(tags, CATEGORY_MAP[i])) return CATEGORY_MAP[i].value;
+    }
+    return '';
+  }
+
+  function getType(tags) {
+    for (var i = 0; i < TYPE_MAP.length; i++) {
+      if (matchTags(tags, TYPE_MAP[i])) return TYPE_MAP[i].value;
+    }
+    return '';
+  }
+
   function buildCard(product) {
-    var inStock    = product.inventory > 0;
-    var productUrl = STORE_URL + '/products/' + product.handle;
-    var cartUrl    = STORE_URL + '/cart/' + product.variantId + ':1';
+    var variant   = (product.variants && product.variants[0]) || {};
+    var inStock   = variant.available === true;
+    var variantId = variant.id;
+    var price     = variant.price || '13.99';
+    var title     = product.title  || '';
+    var handle    = product.handle || '';
+    var tags      = product.tags   || [];
+    var image     = (product.images && product.images[0]) ? product.images[0].src : null;
+    var category  = getCategory(tags);
+    var type      = getType(tags);
+
+    var productUrl = STORE_URL + '/products/' + handle;
+    var cartUrl    = STORE_URL + '/cart/' + variantId + ':1';
 
     var card = document.createElement('div');
     card.className = 'product-card';
+    card.setAttribute('data-category', category);
+    card.setAttribute('data-type',     type);
+    card.setAttribute('data-state',    '');
 
-    // data attributes used by the filter engine
-    card.setAttribute('data-category', product.category || '');
-    card.setAttribute('data-state',    product.state    || '');
-    card.setAttribute('data-type',     product.type     || '');
-
-    // Out-of-stock badge
-    var badgeHtml = '';
-    if (!inStock) {
-      badgeHtml = '<span class="out-of-stock-badge">Out of Stock</span>';
-    }
-
-    // Build image HTML — lazy-load for performance
-    var imgHtml = product.image
-      ? '<img src="' + escapeAttr(product.image) + '" alt="' + escapeAttr(product.title) + '" loading="lazy" onerror="this.style.display=\'none\'">'
+    var badgeHtml = inStock ? '' : '<span class="out-of-stock-badge">Out of Stock</span>';
+    var imgHtml   = image
+      ? '<img src="' + escapeAttr(image) + '" alt="' + escapeAttr(title) + '" loading="lazy" onerror="this.style.display=\'none\'">'
       : '<div class="no-image">No Image</div>';
 
     card.innerHTML =
       '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener" class="product-image-link">' +
-        '<div class="product-image-container">' +
-          imgHtml +
-          badgeHtml +
-        '</div>' +
+        '<div class="product-image-container">' + imgHtml + badgeHtml + '</div>' +
       '</a>' +
       '<div class="product-info">' +
         '<h3 class="product-title">' +
           '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener">' +
-            escapeHtml(product.title) +
+            escapeHtml(title) +
           '</a>' +
         '</h3>' +
-        '<p class="product-price">$' + escapeHtml(String(product.price)) + '</p>' +
+        '<p class="product-price">$' + escapeHtml(String(parseFloat(price).toFixed(2))) + '</p>' +
         (inStock
           ? '<a href="' + escapeAttr(cartUrl) + '" target="_blank" rel="noopener" class="add-to-cart-btn">Add to Cart</a>'
-          : '<button class="add-to-cart-btn out-of-stock-btn" disabled>Out of Stock</button>'
-        ) +
+          : '<button class="add-to-cart-btn out-of-stock-btn" disabled>Out of Stock</button>') +
       '</div>';
 
     return card;
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Inject products into the grid                                      */
-  /* ------------------------------------------------------------------ */
-  function renderGrid() {
-    var grid = document.querySelector('.product-grid.homepage-product-grid');
-    if (!grid) {
-      grid = document.querySelector('.product-grid') ||
-             document.querySelector('#product-grid') ||
-             document.querySelector('.homepage-product-grid');
-    }
+  function renderGrid(products) {
+    var grid = document.querySelector('.product-grid.homepage-product-grid') ||
+               document.querySelector('.product-grid') ||
+               document.querySelector('#product-grid') ||
+               document.querySelector('.homepage-product-grid');
 
     if (!grid) {
-      console.warn('[MicroPatches] Could not find a product grid container — no products rendered.');
+      console.warn('[MicroPatches] Could not find product grid container.');
       return;
     }
 
-    // Clear existing static cards
+    var display = products.filter(function (p) {
+      return !(/^TEST\s*[\u2014\u2013-]/i.test(p.title || ''));
+    });
+
     grid.innerHTML = '';
-
     var fragment = document.createDocumentFragment();
-    var products = window.SHOPIFY_PRODUCTS;
-
-    for (var i = 0; i < products.length; i++) {
-      fragment.appendChild(buildCard(products[i]));
+    for (var i = 0; i < display.length; i++) {
+      fragment.appendChild(buildCard(display[i]));
     }
-
     grid.appendChild(fragment);
 
-    console.log('[MicroPatches] Loaded ' + products.length + ' products from Shopify catalog.');
-
-    // Now wire up our own filter engine
+    console.log('[MicroPatches] Loaded ' + display.length + ' live products from Shopify.');
     setupFilters();
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Self-contained filter engine                                       */
-  /*  Queries .product-card fresh on every filter change so stale        */
-  /*  NodeList references from main.js are never an issue.               */
-  /* ------------------------------------------------------------------ */
+  function fetchAllProducts(onDone) {
+    var all  = [];
+    var page = 1;
+
+    function next() {
+      fetch(STORE_URL + '/products.json?limit=250&page=' + page)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var batch = data.products || [];
+          all = all.concat(batch);
+          if (batch.length === 250) {
+            page++;
+            next();
+          } else {
+            onDone(all);
+          }
+        })
+        .catch(function (err) {
+          console.error('[MicroPatches] Product fetch failed:', err);
+          onDone(all);
+        });
+    }
+
+    next();
+  }
+
   function setupFilters() {
     var activeTab  = 'all';
     var activeType = 'all';
     var searchTerm = '';
 
-    /* -- Apply all active filters to every card ----------------------- */
     function applyFilters() {
-      var cards = document.querySelectorAll('.product-card');
+      var cards   = document.querySelectorAll('.product-card');
       var visible = 0;
-
       for (var i = 0; i < cards.length; i++) {
-        var cat  = cards[i].getAttribute('data-category') || '';
-        var type = cards[i].getAttribute('data-type')     || '';
-        var title = (cards[i].querySelector('.product-title') || {}).textContent || '';
+        var cat     = cards[i].getAttribute('data-category') || '';
+        var type    = cards[i].getAttribute('data-type')     || '';
+        var titleEl = cards[i].querySelector('.product-title');
+        var title   = titleEl ? titleEl.textContent : '';
 
         var tabMatch    = activeTab  === 'all' || cat  === activeTab;
         var typeMatch   = activeType === 'all' || type === activeType;
@@ -142,50 +172,32 @@
         cards[i].style.display = show ? '' : 'none';
         if (show) visible++;
       }
-
-      updateCount(visible);
-    }
-
-    /* -- Update any product-count display on the page ----------------- */
-    function updateCount(n) {
       var countEl = document.querySelector('.product-count, #product-count, .results-count');
-      if (countEl) {
-        countEl.textContent = n + ' product' + (n === 1 ? '' : 's');
-      }
+      if (countEl) countEl.textContent = visible + ' product' + (visible === 1 ? '' : 's');
     }
 
-    /* -- Category tab buttons (data-tab="military" etc.) -------------- */
     var tabBtns = document.querySelectorAll('[data-tab]');
     for (var t = 0; t < tabBtns.length; t++) {
       (function (btn) {
         btn.addEventListener('click', function () {
           activeTab  = btn.getAttribute('data-tab') || 'all';
-          activeType = 'all';   // reset sub-filter when switching tabs
-
-          // Update active class on tab buttons
+          activeType = 'all';
           for (var j = 0; j < tabBtns.length; j++) {
             tabBtns[j].classList.toggle('active', tabBtns[j] === btn);
           }
-
-          // Clear active class on type filter buttons
-          var typeBtns = document.querySelectorAll('[data-shop-filter]');
-          for (var k = 0; k < typeBtns.length; k++) {
-            typeBtns[k].classList.remove('active');
-          }
-
+          document.querySelectorAll('[data-shop-filter]').forEach(function (b) {
+            b.classList.remove('active');
+          });
           applyFilters();
         });
       })(tabBtns[t]);
     }
 
-    /* -- Sub-type filter buttons (data-shop-filter="type" etc.) ------- */
     var filterBtns = document.querySelectorAll('[data-shop-filter]');
     for (var f = 0; f < filterBtns.length; f++) {
       (function (btn) {
         btn.addEventListener('click', function () {
           var val = btn.getAttribute('data-filter-value') || 'all';
-
-          // Toggle: clicking an already-active type filter resets it
           if (activeType === val) {
             activeType = 'all';
             btn.classList.remove('active');
@@ -195,13 +207,11 @@
               filterBtns[j].classList.toggle('active', filterBtns[j] === btn);
             }
           }
-
           applyFilters();
         });
       })(filterBtns[f]);
     }
 
-    /* -- Search input ------------------------------------------------- */
     var searchInput = document.querySelector('input[type="search"], .shop-search-input, #product-search, .search-input');
     if (searchInput) {
       searchInput.addEventListener('input', function () {
@@ -210,32 +220,20 @@
       });
     }
 
-    /* -- Initial pass: show all products and set count ---------------- */
     applyFilters();
   }
 
-  /* ------------------------------------------------------------------ */
-  /*  Safety helpers                                                     */
-  /* ------------------------------------------------------------------ */
   function escapeHtml(str) {
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+  function escapeAttr(str) { return String(str).replace(/"/g, '&quot;'); }
 
-  function escapeAttr(str) {
-    return String(str).replace(/"/g, '&quot;');
-  }
-
-  /* ------------------------------------------------------------------ */
-  /*  Entry point — run after DOM is ready                               */
-  /* ------------------------------------------------------------------ */
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderGrid);
+    document.addEventListener('DOMContentLoaded', function () { fetchAllProducts(renderGrid); });
   } else {
-    renderGrid();
+    fetchAllProducts(renderGrid);
   }
 
 })();
