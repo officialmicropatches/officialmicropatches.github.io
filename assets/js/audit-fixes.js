@@ -1,4 +1,4 @@
-/* MicroPatches — audit fixes runtime v2 */
+/* MicroPatches — audit fixes runtime v2.1 */
 (function () {
   "use strict";
   var ZAPIER_WEBHOOK_URL = "REPLACE_ME_AFTER_ZAPIER_SETUP";
@@ -17,8 +17,7 @@
   });
   if (!document.querySelector('link[rel="icon"], link[rel="shortcut icon"]')) {
     var ico = document.createElement("link");
-    ico.rel = "icon";
-    ico.href = "/assets/img/favicon.svg";
+    ico.rel = "icon"; ico.href = "/assets/img/favicon.svg";
     document.head.appendChild(ico);
   }
   if (!document.querySelector('meta[property="og:image"]')) {
@@ -47,7 +46,7 @@
   if (footers.length > 1) {
     for (var i = 0; i < footers.length - 1; i++) { footers[i].remove(); }
   }
-  document.documentElement.setAttribute("data-audit-fixes", "2026-05-16-v2");
+  document.documentElement.setAttribute("data-audit-fixes", "2026-05-16-v2.1");
 
   if (!/custom\.html/i.test(location.pathname)) return;
 
@@ -57,6 +56,16 @@
   }
 
   ready(function () {
+    /* CLEANUP: hide original patch-photo-wrap section (the leftover widget below new form) */
+    document.querySelectorAll('#patch-photo-wrap, .patch-photo-wrap, .shopify-form-container').forEach(function(n){ n.style.display='none'; });
+    /* Also hide any orphaned file input outside our new form */
+    document.querySelectorAll('input[type="file"]').forEach(function(inp){
+      if (!inp.closest('.patch-form-wrap')) {
+        var wrap = inp.closest('section, .section, fieldset, .form-section') || inp.parentElement;
+        if (wrap) wrap.style.display = 'none';
+      }
+    });
+
     var headings = Array.from(document.querySelectorAll("h2, h3, .section-head"));
     var target = null;
     headings.forEach(function (h) {
@@ -67,6 +76,7 @@
       target = sf && sf.parentElement ? sf.parentElement : null;
     }
     if (!target) return;
+    if (document.querySelector('.patch-form-wrap')) return;
 
     var formHtml = '<form class="patch-form" novalidate><div class="patch-form-grid"><label class="patch-field"><span>First name *</span><input type="text" name="firstName" required maxlength="80"></label><label class="patch-field"><span>Last name</span><input type="text" name="lastName" maxlength="80"></label><label class="patch-field"><span>Email *</span><input type="email" name="email" required maxlength="120"></label><label class="patch-field"><span>Phone</span><input type="tel" name="phone" maxlength="40"></label><label class="patch-field patch-field--full"><span>Agency / Unit name *</span><input type="text" name="agency" required maxlength="160"></label><label class="patch-field patch-field--full"><span>Product type</span><select name="productType"><option value="MicroKeychain">MicroKeychain (13.99)</option><option value="MicroMagnet">MicroMagnet</option><option value="MicroCharm">MicroCharm</option><option value="MicroPin">MicroPin</option><option value="Not sure">Not sure</option></select></label><label class="patch-field patch-field--full"><span>Quantity / notes</span><textarea name="message" rows="4" maxlength="2000"></textarea></label><label class="patch-field patch-field--full"><span>Patch photo *</span><input type="file" name="photo" accept="image/*" capture="environment" required><small class="patch-hint">Lay flat on solid surface. Phone directly above. No angles.</small></label></div><button type="submit" class="patch-submit">Send custom order request</button><p class="patch-status" role="status" aria-live="polite"></p><p class="patch-fallback"><small>Form not working? Email us at <a href="mailto:' + NOTIFY_EMAIL + '">' + NOTIFY_EMAIL + '</a>.</small></p></form>';
 
