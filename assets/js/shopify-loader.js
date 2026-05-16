@@ -1,12 +1,13 @@
 /**
  * shopify-loader.js
- * MicroPatches — Dynamic product grid loader
- * Version: 1.0 — 2026-05-15
+ * MicroPatches — Dynamic product grid loader + filter engine
+ * Version: 2.0 — 2026-05-15
  *
  * WHAT THIS DOES:
  *   Reads window.SHOPIFY_PRODUCTS (from shopify-products-data.js) and replaces
  *   the static product grid on officialmicropatches.com with live Shopify-sourced
- *   product cards. All existing filters (category, state, type) continue to work.
+ *   product cards. Owns its own filter engine so the page's original main.js
+ *   filter (which holds stale NodeList references) is bypassed entirely.
  *
  * SETUP (add to index.html BEFORE </body>, in this order):
  *   1.  <script src="assets/js/shopify-products-data.js"></script>
@@ -40,7 +41,7 @@
     var card = document.createElement('div');
     card.className = 'product-card';
 
-    // data attributes used by the existing filter JS
+    // data attributes used by the filter engine
     card.setAttribute('data-category', product.category || '');
     card.setAttribute('data-state',    product.state    || '');
     card.setAttribute('data-type',     product.type     || '');
@@ -85,7 +86,6 @@
   function renderGrid() {
     var grid = document.querySelector('.product-grid.homepage-product-grid');
     if (!grid) {
-      // Try common fallback selectors
       grid = document.querySelector('.product-grid') ||
              document.querySelector('#product-grid') ||
              document.querySelector('.homepage-product-grid');
@@ -108,60 +108,114 @@
 
     grid.appendChild(fragment);
 
-    // Update product count display if one exists on the page
-    var countEl = document.querySelector('.product-count, #product-count, .results-count');
-    if (countEl) {
-      countEl.textContent = products.length + ' products';
-    }
-
     console.log('[MicroPatches] Loaded ' + products.length + ' products from Shopify catalog.');
 
-    // Re-trigger the existing filter system so it recognizes the new cards
-    triggerFilterRefresh();
+    // Now wire up our own filter engine
+    setupFilters();
   }
 
   /* ------------------------------------------------------------------ */
-  /*  Re-initialize the page's existing filter/search logic              */
+  /*  Self-contained filter engine                                       */
+  /*  Queries .product-card fresh on every filter change so stale        */
+  /*  NodeList references from main.js are never an issue.               */
   /* ------------------------------------------------------------------ */
-  function triggerFilterRefresh() {
-    // Pattern 1: filterProducts() global function
-    if (typeof window.filterProducts === 'function') {
-      try { window.filterProducts(); } catch (e) {}
-      return;
+  function setupFilters() {
+    var activeTab  = 'all';
+    var activeType = 'all';
+    var searchTerm = '';
+
+    /* -- Apply all active filters to every card ----------------------- */
+    function applyFilters() {
+      var cards = document.querySelectorAll('.product-card');
+      var visible = 0;
+
+      for (var i = 0; i < cards.length; i++) {
+        var cat  = cards[i].getAttribute('data-category') || '';
+        var type = cards[i].getAttribute('data-type')     || '';
+        var title = (cards[i].querySelector('.product-title') || {}).textContent || '';
+
+        var tabMatch    = activeTab  === 'all' || cat  === activeTab;
+        var typeMatch   = activeType === 'all' || type === activeType;
+        var searchMatch = searchTerm === ''    || title.toLowerCase().indexOf(searchTerm) !== -1;
+
+        var show = tabMatch && typeMatch && searchMatch;
+        cards[i].style.display = show ? '' : 'none';
+        if (show) visible++;
+      }
+
+      updateCount(visible);
     }
 
-    // Pattern 2: applyFilters() global function
-    if (typeof window.applyFilters === 'function') {
-      try { window.applyFilters(); } catch (e) {}
-      return;
+    /* -- Update any product-count display on the page ----------------- */
+    function updateCount(n) {
+      var countEl = document.querySelector('.product-count, #product-count, .results-count');
+      if (countEl) {
+        countEl.textContent = n + ' product' + (n === 1 ? '' : 's');
+      }
     }
 
-    // Pattern 3: dispatch a custom event the filter script might listen for
-    var evt;
-    try {
-      evt = new CustomEvent('productsLoaded', { bubbles: true });
-    } catch (e) {
-      evt = document.createEvent('CustomEvent');
-      evt.initCustomEvent('productsLoaded', true, false, {});
-    }
-    document.dispatchEvent(evt);
+    /* -- Category tab buttons (data-tab="military" etc.) -------------- */
+    var tabBtns = document.querySelectorAll('[data-tab]');
+    for (var t = 0; t < tabBtns.length; t++) {
+      (function (btn) {
+        btn.addEventListener('click', function () {
+          activeTab  = btn.getAttribute('data-tab') || 'all';
+          activeType = 'all';   // reset sub-filter when switching tabs
 
-    // Pattern 4: simulate a change event on any active filter dropdowns/buttons
-    // so the filter re-runs without the user needing to interact
-    var filterControls = document.querySelectorAll(
-      'select[data-filter], input[data-filter], .filter-btn.active, .filter-button.active'
-    );
-    for (var i = 0; i < filterControls.length; i++) {
-      try {
-        var changeEvt = document.createEvent('HTMLEvents');
-        changeEvt.initEvent('change', true, true);
-        filterControls[i].dispatchEvent(changeEvt);
-      } catch (e) {}
+          // Update active class on tab buttons
+          for (var j = 0; j < tabBtns.length; j++) {
+            tabBtns[j].classList.toggle('active', tabBtns[j] === btn);
+          }
+
+          // Clear active class on type filter buttons
+          var typeBtns = document.querySelectorAll('[data-shop-filter]');
+          for (var k = 0; k < typeBtns.length; k++) {
+            typeBtns[k].classList.remove('active');
+          }
+
+          applyFilters();
+        });
+      })(tabBtns[t]);
     }
+
+    /* -- Sub-type filter buttons (data-shop-filter="type" etc.) ------- */
+    var filterBtns = document.querySelectorAll('[data-shop-filter]');
+    for (var f = 0; f < filterBtns.length; f++) {
+      (function (btn) {
+        btn.addEventListener('click', function () {
+          var val = btn.getAttribute('data-filter-value') || 'all';
+
+          // Toggle: clicking an already-active type filter resets it
+          if (activeType === val) {
+            activeType = 'all';
+            btn.classList.remove('active');
+          } else {
+            activeType = val;
+            for (var j = 0; j < filterBtns.length; j++) {
+              filterBtns[j].classList.toggle('active', filterBtns[j] === btn);
+            }
+          }
+
+          applyFilters();
+        });
+      })(filterBtns[f]);
+    }
+
+    /* -- Search input ------------------------------------------------- */
+    var searchInput = document.querySelector('input[type="search"], .shop-search-input, #product-search, .search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        searchTerm = (searchInput.value || '').trim().toLowerCase();
+        applyFilters();
+      });
+    }
+
+    /* -- Initial pass: show all products and set count ---------------- */
+    applyFilters();
   }
 
   /* ------------------------------------------------------------------ */
-  /*  Safety helpers (no template-literal deps for older browser compat) */
+  /*  Safety helpers                                                     */
   /* ------------------------------------------------------------------ */
   function escapeHtml(str) {
     return String(str)
@@ -181,7 +235,6 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', renderGrid);
   } else {
-    // DOMContentLoaded already fired (script is deferred or at bottom of body)
     renderGrid();
   }
 
