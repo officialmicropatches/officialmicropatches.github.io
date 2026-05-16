@@ -1,0 +1,55 @@
+/* MicroPatches — audit fixes
+ * Applied via Cowork / Claude / Zapier-GitHub on 2026-05-15.
+ */
+.footer-social-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 32px !important;
+  height: 32px !important;
+}
+.footer-social-link svg,
+.footer-social-link img {
+  width: 24px !important;
+  height: 24px !important;
+  display: block;
+}
+body[data-active-tab] .shop-filter-panel .shop-filter-group { display: none; }
+body[data-active-tab="all"] .shop-filter-panel .shop-filter-group[data-filter-for="all"],
+body[data-active-tab="law-enforcement"] .shop-filter-panel .shop-filter-group[data-filter-for="law-enforcement"],
+body[data-active-tab="corrections"] .shop-filter-panel .shop-filter-group[data-filter-for="corrections"],
+body[data-active-tab="military"] .shop-filter-panel .shop-filter-group[data-filter-for="military"],
+body[data-active-tab="fire"] .shop-filter-panel .shop-filter-group[data-filter-for="fire"],
+body[data-active-tab="ems"] .shop-filter-panel .shop-filter-group[data-filter-for="ems"],
+body[data-active-tab="pink-patch"] .shop-filter-panel .shop-filter-group[data-filter-for="pink-patch"] {
+  display: block;
+}
+body[data-active-tab="all"] .shop-filter-panel { display: none; }
+@media (max-width: 768px) {
+  .new-additions-grid,
+  .featured-grid,
+  .product-grid,
+  [class*="featured-grid"],
+  [class*="product-grid"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .marquee-bar, [class*="marquee"] { overflow-x: hidden !important; }
+  body { overflow-x: hidden; }
+}
+.site-header {
+  transition: padding 200ms ease, background 200ms ease, backdrop-filter 200ms ease, box-shadow 200ms ease;
+}
+.site-header.is-scrolled {
+  padding-block: 6px;
+  background: rgba(10, 22, 51, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.3);
+}
+.site-header.is-scrolled .brand,
+.site-header.is-scrolled .brand__mark {
+  transform: scale(0.92);
+  transition: transform 200ms ease;
+}
+body > footer.site-footer ~ footer.site-footer { display: none; }
