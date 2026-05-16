@@ -302,11 +302,24 @@
     const toggle = document.querySelector('[data-menu-toggle]');
     const nav = document.querySelector('[data-mobile-nav]');
     if (!toggle || !nav) return;
+
+    const closeMenu = () => {
+      if (nav.hasAttribute('hidden')) return;
+      nav.setAttribute('hidden', '');
+      toggle.setAttribute('aria-expanded', 'false');
+    };
+
     toggle.addEventListener('click', () => {
       const open = nav.hasAttribute('hidden');
       if (open) { nav.removeAttribute('hidden'); toggle.setAttribute('aria-expanded', 'true'); }
-      else      { nav.setAttribute('hidden', '');  toggle.setAttribute('aria-expanded', 'false'); }
+      else      { closeMenu(); }
     });
+
+    // Retract the menu when the page is scrolled.
+    window.addEventListener('scroll', closeMenu, { passive: true });
+
+    // Close after picking a destination.
+    nav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   }
 
   // ============================================================
