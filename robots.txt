@@ -1,5 +1,8 @@
+# MicroPatches — officialmicropatches.com
 User-agent: *
-Disallow: /test/
-Disallow: /myagency/
+Allow: /
+Disallow: /internal/
+Disallow: /_archive/
+Disallow: /uploads/
 
 Sitemap: https://officialmicropatches.com/sitemap.xml

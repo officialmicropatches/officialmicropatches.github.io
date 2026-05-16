@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Launch Checklist | MicroPatches (internal)</title>
+<meta name="robots" content="noindex,nofollow" />
+<meta name="theme-color" content="#0e0c0a" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+<style>
+  .check-list { border-top: 1px solid var(--line); }
+  .check-row {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+  .check-row .mark {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    display: grid; place-items: center;
+    font-family: var(--f-mono); font-size: 13px; font-weight: 600;
+    margin-top: 2px;
+  }
+  .mark.done    { background: oklch(0.5 0.13 145); color: var(--bg); }
+  .mark.partial { background: var(--gold);          color: var(--bg); }
+  .mark.todo    { background: var(--line-2);        color: var(--ink-dim); }
+  .check-row h4 {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: 17px; text-transform: uppercase; letter-spacing: 0.01em;
+    margin: 0 0 4px;
+  }
+  .check-row p {
+    margin: 0; color: var(--ink-dim);
+    font-size: 14px; line-height: 1.55;
+  }
+  .check-row code {
+    font-family: var(--f-mono); font-size: 12px;
+    background: var(--bg-2); padding: 2px 6px; border-radius: 2px;
+    color: var(--ink);
+  }
+  .legend {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    margin: 0 0 24px;
+    font-family: var(--f-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .pip { width: 12px; height: 12px; border-radius: 3px; }
+  h2.section-head { font-family: var(--f-display); font-weight: 800; text-transform: uppercase; font-size: 28px; letter-spacing: 0.005em; margin: 56px 0 12px; }
+  h2.section-head:first-of-type { margin-top: 24px; }
+  .status-banner {
+    margin: 8px 0 28px;
+    padding: 16px 20px;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--bg-2);
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .status-banner.ok      { border-color: oklch(0.5 0.13 145); background: color-mix(in oklab, oklch(0.5 0.13 145) 12%, var(--bg-2)); color: var(--ink); }
+  .status-banner.blocked { border-color: var(--accent);          background: color-mix(in oklab, var(--accent) 8%, var(--bg-2));          color: var(--ink); }
+</style>
+</head>
+<body data-page="">
+
+<div data-site-header></div>
+
+<section class="page-head">
+  <div class="container">
+    <div class="eyebrow">§ INTERNAL · NOT INDEXED</div>
+    <h1 class="display h-xl">Launch checklist.</h1>
+    <p>Honest accounting of what's done in this build, what still requires your hand in Shopify or DNS, and what can't be completed from inside a static front-end alone.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="doc" style="max-width: 980px;">
+
+      <div class="legend">
+        <span><span class="pip" style="background: oklch(0.5 0.13 145);"></span> Done in this build</span>
+        <span><span class="pip" style="background: var(--gold);"></span> Partial — needs your config</span>
+        <span><span class="pip" style="background: var(--line-2);"></span> Requires Shopify admin / DNS / external setup</span>
+      </div>
+
+      <div id="status-banner" class="status-banner">Checking current configuration…</div>
+
+      <h2 class="section-head">1 · Pages &amp; structure</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Home, Shop, Custom Orders, About, FAQ, Contact</h4><p>All built with mobile-first layout, consistent navigation, and footer. Active page indicated in nav.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Shipping, Refund, Privacy, Terms</h4><p>Starter policies written for a small US ecommerce business. <strong>Have your own counsel review before launch</strong>, or replace with Shopify-generated policies from <code>Settings → Policies</code>.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Product detail page (PDP)</h4><p>Generic template at <code>product.html?handle=…</code>. Pulls title, description, images, price, stock from <code>listings.json</code> and emits JSON-LD product schema. When <code>SHOP_DOMAIN</code> is set, a "Buy on Shopify" CTA appears.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Internal inventory review</h4><p>The earlier inventory tool is preserved at <code>internal/inventory.html</code> — not linked from public nav, not in sitemap, blocked in <code>robots.txt</code>.</p></div></div>
+      </div>
+
+      <h2 class="section-head">2 · Shopify connection</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark partial" data-check="shop-domain">!</span><div><h4>SHOP_DOMAIN: <code>micropatches.myshopify.com</code></h4><p>Set in <code>assets/js/shopify-config.js</code>. Product page links and checkout route to the real Shopify storefront. <strong>Verify checkout end-to-end with a real test order before announcing launch.</strong></p></div></div>
+        <div class="check-row"><span class="mark done" data-check="storefront">✓</span><div><h4>Live product/inventory sync</h4><p>Storefront API token + <code>shopify-loader.js</code> wired up on the live site (per Claude Code handoff). Shop grid populates from Shopify, inventory is live.</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Variant IDs for one-click cart checkout (optional polish)</h4><p>Current flow: each product card opens its Shopify product page directly. Multi-item cart-bridge requires variant IDs per product. Not blocking — just polish.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>No fake checkout in code</h4><p>Removed the "Stripe checkout opens here" placeholder. Cart drawer is hidden site-wide now that SHOP_DOMAIN is set; every <em>Buy</em> button opens a real Shopify product page.</p></div></div>
+      </div>
+
+      <h2 class="section-head">3 · Custom orders</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Shopify Forms installed (form #992535)</h4><p>Live on <code>custom.html</code>. Fields: Name, Email, Phone, Agency, Product Type (MicroKeychain / MicroMagnet / MicroPin / MicroCharm), Quantity, Order Details, Reference Image URL (hidden, auto-filled), How did you hear. Submissions create a Shopify customer record with all fields stored as metafields. <strong>Update the Product Type options in Shopify Forms admin from "Patch / Keychain / Coin / Other" to the four <em>Micro*</em> singular names</strong> if you haven't yet.</p></div></div>
+        <div class="check-row"><span class="mark done" data-check="custom-endpoint">✓</span><div><h4>Image upload working (Firebase Storage)</h4><p>Patch image upload widget on <code>custom.html</code> writes to <code>patch-559c8.firebasestorage.app</code>. The Firebase download URL is auto-injected into the Shopify Forms <em>Reference Image URL</em> field so it lives with the customer record.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Customer confirmation + admin notification</h4><p>Shopify Forms sends submission notifications to <code>OfficialMicroPatches@gmail.com</code> and a confirmation email to the submitter. Verify both in Shopify Forms → Notifications.</p></div></div>
+      </div>
+
+      <h2 class="section-head">4 · SEO</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Page titles, descriptions, canonicals, Open Graph</h4><p>Set on every public page. Titles follow the spec format (e.g. <em>"Home: MicroPatches | Premium Miniature Patch Keychains"</em>).</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Structured data (JSON-LD)</h4><p><code>Organization</code> on home, <code>Product</code> on PDP, <code>FAQPage</code> on FAQ. Will surface as rich results in Google.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>sitemap.xml and robots.txt</h4><p>At the project root. Sitemap lists all 10 public pages with priorities. <code>robots.txt</code> blocks <code>/internal/</code>, <code>/_archive/</code>, and <code>/uploads/</code>.</p></div></div>
+        <div class="check-row"><span class="mark done">✓</span><div><h4>Image alt text</h4><p>Product images use the product title as alt text (set in shop / PDP render). Decorative images use empty alt.</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Google Search Console verification</h4><p>After DNS, add this site to Search Console, verify ownership (TXT record or HTML tag), and submit the sitemap. I can drop a meta verification tag once you have the code.</p></div></div>
+      </div>
+
+      <h2 class="section-head">5 · Analytics</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Google Analytics</h4><p>Easiest path: enable GA in Shopify's <em>Online Store → Preferences</em>, which injects it onto Shopify-hosted pages. For this front-end, paste your GA4 measurement tag into the <code>&lt;head&gt;</code> of each page (or ask me to add it once you have the ID).</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Microsoft Clarity, Meta Pixel</h4><p>Same pattern as GA — paste the snippets when you have IDs.</p></div></div>
+      </div>
+
+      <h2 class="section-head">6 · Domain &amp; hosting</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Deploy this front-end</h4><p>Upload these files to your host (Cloudflare Pages, Netlify, Vercel, GitHub Pages, or your existing webhost). All static, no build step needed. The <code>internal/</code> folder can be deployed too (it's just hidden from nav and indexing).</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>DNS for officialmicropatches.com</h4><p>Point the apex (A/AAAA or ALIAS) and <code>www</code> CNAME at your host. Issue HTTPS (auto on most hosts). If you want the Shopify-hosted checkout to live on a subdomain (e.g. <code>shop.officialmicropatches.com</code>), set that up in Shopify admin → Settings → Domains.</p></div></div>
+      </div>
+
+      <h2 class="section-head">7 · Email</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Shopify customer notifications</h4><p>Order confirmation, shipping confirmation, etc. are sent by Shopify automatically. Customize copy in <em>Settings → Notifications</em>. Verify <code>OfficialMicroPatches@gmail.com</code> as your sender address.</p></div></div>
+        <div class="check-row"><span class="mark partial">!</span><div><h4>Custom-order submission notifications</h4><p>Default mailto flow opens the customer's email app — you receive the request via email. To get a server-side notification independent of the customer's email client, install Shopify Forms (recommended) or deploy a serverless function.</p></div></div>
+      </div>
+
+      <h2 class="section-head">8 · Manual testing before launch</h2>
+      <div class="check-list">
+        <div class="check-row"><span class="mark todo">○</span><div><h4>End-to-end purchase test</h4><p>Open shop → click any product → follow to Shopify → complete a real order with a real card. Confirm it appears in Shopify Orders. (Pending per Claude Code handoff — task #9.)</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Custom order test</h4><p>Fill out the custom form on the live site, upload a patch image, submit. Confirm: (1) admin email arrives at <code>OfficialMicroPatches@gmail.com</code>, (2) submitter receives a confirmation email, (3) Shopify customer record is created with all metafields populated, (4) Firebase image URL is present in the Reference Image URL metafield, (5) the image actually opens from that URL.</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Shopify Forms visual styling</h4><p>The embed renders with Shopify's default light theme inside a custom element / possibly shadow DOM — it may not inherit the site's dark theme. After deploy, inspect the rendered form on a real device and either override styling or accept the visual gap.</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Mobile test (iPhone &amp; Android)</h4><p>Tap navigation, scroll the catalog, open a product, run the file upload on the custom form. Confirm no horizontal scroll, all tap targets &gt; 44px, text readable.</p></div></div>
+        <div class="check-row"><span class="mark todo">○</span><div><h4>Link audit</h4><p>Click every footer link, every nav link, every CTA. Confirm no 404s.</p></div></div>
+      </div>
+
+      <h2 class="section-head">Things this front-end build deliberately doesn't do</h2>
+      <ul>
+        <li><strong>Push to Shopify Admin API directly from the browser.</strong> Admin tokens must never live in client-side code. Server-side ops (like draft-order creation) live in a serverless function or the Shopify Forms app.</li>
+        <li><strong>Replace lawyer-reviewed legal policies.</strong> The drafts in this build are reasonable defaults but should be reviewed by counsel familiar with your business and jurisdiction.</li>
+        <li><strong>Set up your DNS or deploy itself.</strong> The files are ready; deploy is push-button (Cloudflare Pages or GitHub Pages).</li>
+      </ul>
+
+      <p style="margin-top:48px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute);">— End of checklist —</p>
+    </div>
+  </div>
+</section>
+
+<div data-site-footer></div>
+<div data-cart-drawer-mount></div>
+
+<script src="assets/js/image-slot.js"></script>
+<script src="assets/js/shopify-config.js"></script>
+<script src="assets/js/site.js"></script>
+<script>
+/* Live config self-check — flips the static marks in the Shopify section
+   based on what's actually configured. Honest signal, not aspirational. */
+document.addEventListener('DOMContentLoaded', () => {
+  const cfg = window.SHOPIFY || {};
+  const set = (sel, cls, txt) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    el.className = 'mark ' + cls;
+    el.textContent = txt;
+  };
+  // 1. SHOP_DOMAIN
+  if (cfg.SHOP_DOMAIN) set('[data-check="shop-domain"]', 'done', '✓');
+  else                 set('[data-check="shop-domain"]', 'todo', '○');
+  // 2. Storefront API token / client id
+  if (cfg.STOREFRONT_TOKEN || cfg.STOREFRONT_CLIENT_ID) set('[data-check="storefront"]', 'done', '✓');
+  else                                                  set('[data-check="storefront"]', 'todo', '○');
+  // 3. Custom form endpoint
+  const ep = cfg.CUSTOM_FORM_ENDPOINT || '';
+  if (ep.startsWith('mailto:'))                   set('[data-check="custom-endpoint"]', 'partial', '!');
+  else if (ep)                                    set('[data-check="custom-endpoint"]', 'done',    '✓');
+  else                                            set('[data-check="custom-endpoint"]', 'todo',    '○');
+
+  // Status banner
+  const blockers = [];
+  if (!cfg.SHOP_DOMAIN)                  blockers.push('SHOP_DOMAIN not set');
+  if (!ep || ep.startsWith('mailto:'))   blockers.push('Custom-order endpoint is mailto only');
+  const banner = document.getElementById('status-banner');
+  if (banner) {
+    if (blockers.length === 0) {
+      banner.className = 'status-banner ok';
+      banner.innerHTML = '<strong>✓ Configuration looks complete.</strong> Run end-to-end tests before announcing launch.';
+    } else {
+      banner.className = 'status-banner blocked';
+      banner.innerHTML = '<strong>⚠ Not production ready.</strong> Blockers: ' + blockers.join(' · ');
+    }
+  }
+});
+</script>
+</body>
+</html>

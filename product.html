@@ -1,235 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Product — MicroPatches</title>
-  <meta name="description" id="page-description" content="UV-printed 3D patch keychain — handcrafted in the USA for law enforcement, military, fire, and EMS.">
-  <meta property="og:type" content="product">
-  <meta property="og:site_name" content="MicroPatches">
-  <meta id="og-title" property="og:title" content="MicroPatches Patch Keychain">
-  <meta id="og-description" property="og:description" content="UV-printed 3D patch keychain — handcrafted in the USA.">
-  <meta id="og-image" property="og:image" content="https://officialmicropatches.github.io/assets/img/og-cover.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/style.css?v=1778500000">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="page-title">MicroKeychain — MicroPatches</title>
+<meta id="page-desc" name="description" content="Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format." />
+<link id="page-canonical" rel="canonical" href="https://officialmicropatches.com/product.html" />
+<meta property="og:type" content="product" />
+<meta name="theme-color" content="#0e0c0a" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body>
+<body data-page="shop">
 
-  <!-- ===== NAV ===== -->
-  <nav class="site-nav">
-    <div class="container nav-inner">
-      <a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
-      <div class="nav-links">
-        <a href="shop.html">Shop</a>
-        <a href="custom.html">Custom Orders</a>
-        <a href="queue.html">Waitlist Queue</a>
-        <a href="challenge-coins.html">Challenge Coins</a>
-    <a href="patch-exchange.html">Patch Exchange</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <button class="cart-toggle" id="cart-toggle" aria-label="View cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        <span class="cart-count" id="cart-count">0</span>
-      </button>
-      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
+<div data-site-header></div>
+
+<section data-screen-label="PDP / Detail">
+  <div class="container">
+    <div id="crumb-wrap" style="padding: 24px 0 0; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim);">
+      <a href="shop.html" style="color:var(--ink-dim);">Shop</a> <span style="margin:0 8px;">/</span>
+      <span style="color:var(--ink);" id="crumb-title">MicroKeychain</span>
     </div>
-  </nav>
-  <div class="nav-mobile-menu" id="nav-mobile-menu">
-    <a href="shop.html">Shop</a>
-    <a href="custom.html">Custom Orders</a>
-    <a href="queue.html">Waitlist Queue</a>
-    <a href="challenge-coins.html">Challenge Coins</a>
-    <a href="patch-exchange.html">Patch Exchange</a>
-    <a href="contact.html">Contact</a>
+
+    <div class="pdp">
+      <div class="pdp__gallery">
+        <div class="pdp__gallery__main" id="gallery-main">
+          <span class="card__lot" style="position:absolute;top:16px;right:16px;z-index:2;" id="pdp-lot">LOT —</span>
+          <img id="hero-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover; display:none;" />
+        </div>
+        <div class="pdp__gallery__thumbs" id="thumbs"></div>
+      </div>
+
+      <div>
+        <div class="pdp__head">
+          <span class="eyebrow" id="pdp-cat">MicroKeychain</span>
+          <h1 class="display h-l pdp__title" id="pdp-title">Loading…</h1>
+          <p id="pdp-sub" style="color:var(--ink-dim); font-size: 16px; line-height: 1.6; margin: 0;"></p>
+        </div>
+
+        <div class="pdp__price"><span class="cur">$</span><span id="pdp-price">13.99</span></div>
+
+        <dl class="pdp__specs">
+          <div><dt>Design</dt><dd>UV-cured ink</dd></div>
+          <div><dt>Base</dt><dd>3D-printed</dd></div>
+          <div><dt>Hardware</dt><dd>Stainless ring</dd></div>
+          <div><dt>Made in</dt><dd>Phoenix, AZ</dd></div>
+          <div><dt>Ships in</dt><dd>5–9 business days</dd></div>
+          <div><dt>Stock</dt><dd id="pdp-stock">—</dd></div>
+        </dl>
+
+        <div class="pdp__cta">
+          <div class="qty-stepper" role="group" aria-label="Quantity">
+            <button type="button" onclick="adjustQty(-1)">−</button>
+            <input id="qty" type="text" value="1" inputmode="numeric" />
+            <button type="button" onclick="adjustQty(1)">+</button>
+          </div>
+          <button class="btn btn--primary btn--lg" id="add-btn">
+            <span class="label">Add to Cart</span>
+            <span class="arr">→</span>
+          </button>
+          <a class="btn btn--ghost btn--lg" id="shopify-btn" href="#" target="_blank" rel="noopener" hidden>
+            <span class="label">Buy on Shopify</span>
+            <span class="arr">↗</span>
+          </a>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <span class="tag dot red">USA Made · Phoenix, AZ</span>
+          <span class="tag dot">Active LE Owned</span>
+          <span class="tag dot">Ships in 5–9 days</span>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid var(--line);">
+          <details style="border-bottom: 1px solid var(--line);" open>
+            <summary style="cursor:pointer; padding: 20px 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between;">
+              <span>Description</span><span>+</span>
+            </summary>
+            <div id="pdp-body" style="padding: 0 0 24px; color: var(--ink-dim); line-height: 1.65; font-size: 14.5px;"></div>
+          </details>
+          <details style="border-bottom: 1px solid var(--line);">
+            <summary style="cursor:pointer; padding: 20px 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between;">
+              <span>Details &amp; Craftsmanship</span><span>+</span>
+            </summary>
+            <div style="padding: 0 0 24px; color: var(--ink-dim); line-height: 1.6; font-size: 14.5px;">
+              Each MicroPatch is hand-assembled in Phoenix. The base is 3D-printed for raised texture and crisp edges; the design on top is premium UV-cured ink for sharp full-color detail. The ring is solid stainless. Built to replicate the look and feel of a real patch in a compact collectible format.
+            </div>
+          </details>
+          <details style="border-bottom: 1px solid var(--line);">
+            <summary style="cursor:pointer; padding: 20px 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between;">
+              <span>Shipping &amp; Returns</span><span>+</span>
+            </summary>
+            <div style="padding: 0 0 24px; color: var(--ink-dim); line-height: 1.6; font-size: 14.5px;">
+              Ships in 5–9 business days from Phoenix, AZ. Defects replaced free within 60 days — see the <a href="refunds.html" style="color:var(--ink);">refund policy</a> and <a href="shipping.html" style="color:var(--ink);">shipping policy</a> for details.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <!-- ===== CART DRAWER ===== -->
-  <div class="cart-overlay" id="cart-overlay"></div>
-  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
-    <div class="cart-drawer-header">
-      <span>Your Cart</span>
-      <button id="cart-close" aria-label="Close cart">&times;</button>
-    </div>
-    <div class="cart-items" id="cart-items">
-      <p class="cart-empty">Your cart is empty.</p>
-    </div>
-    <div class="cart-footer">
-      <div class="cart-subtotal">
-        Subtotal: <strong id="cart-subtotal">$0.00</strong>
-      </div>
-      <button class="btn btn-gold" id="cart-checkout-btn" style="width:100%">Checkout</button>
-    </div>
-  </aside>
+<div data-site-footer></div>
+<div data-cart-drawer-mount></div>
 
-  <!-- ===== NOT FOUND STATE (hidden by default) ===== -->
-  <div id="product-not-found" class="product-not-found" hidden>
-    <div class="container" style="text-align:center;padding:80px 0">
-      <h1 style="color:var(--gold);font-family:'Oswald',sans-serif;font-size:2rem">Product Not Found</h1>
-      <p style="color:var(--text-muted);margin:16px 0 32px">We couldn't find that product. Browse all available keychains below.</p>
-      <a href="shop.html" class="btn btn-gold">Browse the Shop</a>
-    </div>
-  </div>
+<script src="assets/js/image-slot.js"></script>
+<script src="assets/js/shopify-config.js"></script>
+<script src="assets/js/site.js"></script>
+<script id="pdp-jsonld" type="application/ld+json"></script>
+<script>
+function adjustQty(d) {
+  const i = document.getElementById('qty');
+  i.value = Math.max(1, (parseInt(i.value)||1) + d);
+}
 
-  <!-- ===== PRODUCT DETAIL ===== -->
-  <main id="product-main" class="product-detail-page">
-    <div class="container">
+(async function () {
+  const params = new URLSearchParams(location.search);
+  const handle = params.get('handle');
+  if (!handle) { document.getElementById('pdp-title').textContent = 'Product not found'; return; }
 
-      <!-- Back link -->
-      <a href="shop.html" class="product-back-link" id="product-back-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Shop
-      </a>
+  let res, list;
+  try {
+    res = await fetch('listings.json');
+    list = await res.json();
+  } catch (e) {
+    document.getElementById('pdp-title').textContent = 'Catalog unavailable';
+    return;
+  }
 
-      <div class="product-detail-layout">
+  const p = list.find(x => x.handle === handle);
+  if (!p) { document.getElementById('pdp-title').textContent = 'Product not found'; return; }
 
-        <!-- LEFT: Photo -->
-        <div class="product-detail-photo-wrap">
-          <div class="product-detail-photo-frame">
-            <div class="img-placeholder" id="product-photo-placeholder">[ Loading photo… ]</div>
-            <img id="product-photo" class="product-detail-photo" src="" alt="" loading="eager">
-          </div>
-        </div>
+  const cleaned = (p.title || '').replace(/\s*\|\s*$/, '').trim();
+  const main = cleaned.split(/\s*\|\s*/)[0] || cleaned;
+  const stripHtml = (s) => (s || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
-        <!-- RIGHT: Info -->
-        <div class="product-detail-info">
-          <span class="product-detail-category" id="product-category-badge"></span>
-          <h1 class="product-detail-name" id="product-name">Loading…</h1>
+  document.title = main + ' — MicroPatches';
+  document.getElementById('page-title').textContent = main + ' — MicroPatches';
+  document.getElementById('page-desc').setAttribute('content', stripHtml(p.body).slice(0, 160) || main);
+  document.getElementById('page-canonical').setAttribute('href', 'https://officialmicropatches.com/product.html?handle=' + encodeURIComponent(p.handle));
+  document.getElementById('crumb-title').textContent = main;
+  document.getElementById('pdp-title').textContent = main;
+  document.getElementById('pdp-sub').textContent = 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
+  document.getElementById('pdp-price').textContent = (p.price || 13.99).toFixed(2);
+  document.getElementById('pdp-stock').textContent = (p.qty || 0) > 0 ? (p.qty + ' in stock') : 'Sold out';
+  document.getElementById('pdp-body').innerHTML = (p.body || '').replace(/<script[\s\S]*?<\/script>/g, '') || 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
 
-          <div class="product-detail-price-row">
-            <span class="product-detail-price" id="product-price">$13.99</span>
-            <span class="product-detail-in-stock">In Stock</span>
-          </div>
+  // Hero image + thumbs
+  const imgs = (p.images || []).slice(0, 6);
+  if (imgs.length) {
+    const hero = document.getElementById('hero-img');
+    hero.src = imgs[0];
+    hero.alt = main;
+    hero.style.display = 'block';
+    document.getElementById('thumbs').innerHTML = imgs.slice(0, 4).map((src, i) => `
+      <div class="pdp__thumb ${i===0?'active':''}" data-i="${i}">
+        <img src="${src}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" />
+      </div>`).join('');
+    document.querySelectorAll('.pdp__thumb').forEach(t => t.addEventListener('click', () => {
+      document.querySelectorAll('.pdp__thumb').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      hero.src = imgs[parseInt(t.dataset.i)];
+    }));
+  }
 
-          <!-- Variant picker injected by JS -->
-          <div id="product-variant-picker" class="product-variant-picker"></div>
+  // Lot number — deterministic from handle so it's stable per product
+  let h = 0; for (const c of p.handle) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  document.getElementById('pdp-lot').textContent = 'LOT ' + String(h % 900 + 100);
 
-          <p class="product-type-desc" id="product-type-desc"></p>
+  // Add to cart
+  document.getElementById('add-btn').addEventListener('click', () => {
+    const qty = parseInt(document.getElementById('qty').value) || 1;
+    window.MP.addToCart({
+      id: p.handle, name: main, price: p.price || 13.99, qty,
+      handle: p.handle, image: imgs[0] || '', cat: 'MicroKeychain'
+    });
+  });
 
-          <div class="product-detail-meta">
-            <div class="product-detail-meta-row">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span id="product-location">—</span>
-            </div>
-            <div class="product-detail-meta-row">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-              <span>Handcrafted in Phoenix, AZ — USA Made</span>
-            </div>
-            <div class="product-detail-meta-row">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>Usually ships within 3–5 business days</span>
-            </div>
-          </div>
+  // Direct Shopify product link
+  const cfg = window.SHOPIFY || {};
+  if (cfg.SHOP_DOMAIN) {
+    const a = document.getElementById('shopify-btn');
+    a.href = cfg.productUrl(p.handle);
+    a.hidden = false;
+  }
 
-          <p class="product-detail-description" id="product-description"></p>
-
-          <div class="product-detail-specs">
-            <div class="spec-row">
-              <span class="spec-label">Size</span>
-              <span class="spec-value" id="product-size">45mm (approx. 1.75 in.)</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Material</span>
-              <span class="spec-value">3D printed resin, UV-printed full color</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Attachment</span>
-              <span class="spec-value">Stainless steel split ring — keychain or lanyard ready</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Finish</span>
-              <span class="spec-value">High-detail UV print with protective top coat</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Category</span>
-              <span class="spec-value" id="product-spec-category">—</span>
-            </div>
-          </div>
-
-          <div class="qty-row">
-            <label for="product-qty">Qty</label>
-            <div class="qty-stepper">
-              <button type="button" id="qty-minus" aria-label="Decrease">&#8722;</button>
-              <input type="number" id="product-qty" value="1" min="1" max="99">
-              <button type="button" id="qty-plus" aria-label="Increase">+</button>
-            </div>
-          </div>
-
-          <div class="product-detail-actions">
-            <button class="btn btn-gold product-detail-atc" id="product-atc-btn">Add to Cart</button>
-            <a class="btn btn-outline product-detail-shopify" id="product-shopify-btn" href="#" target="_blank" rel="noopener noreferrer">
-              Buy Now
-            </a>
-          </div>
-
-          <p class="product-detail-mission">
-            A portion of every sale goes toward donations to families of fallen officers, veterans, and first responders. No minimum orders — every department, every unit included.
-          </p>
-        </div>
-
-      </div>
-
-      <!-- Also Available / Related CTA -->
-      <div class="product-related-cta">
-        <p>Looking for a different agency or unit?</p>
-        <div class="product-related-links">
-          <a href="shop.html#law-enforcement" class="btn btn-outline btn-sm">Law Enforcement</a>
-          <a href="shop.html#military" class="btn btn-outline btn-sm">Military</a>
-          <a href="shop.html#fire" class="btn btn-outline btn-sm">Fire</a>
-          <a href="shop.html#ems" class="btn btn-outline btn-sm">EMS</a>
-          <a href="custom.html" class="btn btn-gold btn-sm">Custom Order</a>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
-          <p>Handcrafted for those who serve. USA Made.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <ul>
-            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
-            <li><a href="shop.html#corrections">Corrections</a></li>
-            <li><a href="shop.html#military">Military</a></li>
-            <li><a href="shop.html#fire">Fire Departments</a></li>
-            <li><a href="shop.html#ems">EMS</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Services</h4>
-          <ul>
-            <li><a href="custom.html">Custom Orders</a></li>
-            <li><a href="challenge-coins.html">Challenge Coins</a></li>
-            <li><a href="patch-exchange.html">Patch Exchange</a></li>
-            <li><a href="queue.html">Waitlist Queue</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Connect</h4>
-          <ul>
-            <li><a href="contact.html">Contact Us</a></li>
-            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 MicroPatches. All rights reserved. USA Made.</p>
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/js/shopify-config.js"></script>
-  <script type="module" src="assets/js/main.js?v=1778500000"></script>
+  // JSON-LD product schema
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": main,
+    "image": imgs,
+    "description": stripHtml(p.body).slice(0, 300) || main,
+    "sku": p.sku || p.handle,
+    "brand": { "@type": "Brand", "name": "MicroPatches" },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://officialmicropatches.com/product.html?handle=" + p.handle,
+      "priceCurrency": "USD",
+      "price": (p.price || 13.99).toFixed(2),
+      "availability": (p.qty || 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+    }
+  };
+  document.getElementById('pdp-jsonld').textContent = JSON.stringify(ld);
+})();
+</script>
 </body>
 </html>
