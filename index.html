@@ -370,7 +370,7 @@
 
       var withImages = products.filter(function(p) {
         return p.images && p.images[0] && p.images[0].src;
-      });
+      }).slice(0, 8);  // show up to 8 products in carousel
 
       if (!withImages.length) return;
 
