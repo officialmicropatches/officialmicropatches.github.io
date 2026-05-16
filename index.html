@@ -75,7 +75,12 @@
 
       <div class="hero__media">
         <span class="hero__tag">CARRY YOUR PATCH. ANYWHERE.</span>
-        <image-slot id="hero-product" placeholder="Hero shot — single MicroKeychain on a key ring (top-down or 3/4)"></image-slot>
+        <div class="hero-carousel" id="hero-carousel">
+          <div class="hero-carousel__track" id="hero-carousel-track">
+            <!-- Populated live from Shopify -->
+          </div>
+          <div class="hero-carousel__dots" id="hero-carousel-dots"></div>
+        </div>
         <div class="hero__spec">
           DESIGN&nbsp;<b>UV-cured ink</b><br/>
           BASE&nbsp;&nbsp;&nbsp;<b>3D-printed</b><br/>
@@ -136,7 +141,7 @@
   <div class="container">
     <header class="section-head">
       <div>
-        <div class="eyebrow">§ 02 · The Catalog</div>
+        <div class="eyebrow">NEW ADDITIONS</div>
         <h2 class="display h-l section-head__title">MicroKeychains.<br/>Your patch, scaled down.</h2>
         <p class="section-head__lead">Premium UV-cured ink on a 3D-printed base — the patch you wear on duty, scaled down. Browse the full catalog — every active department, every $13.99.</p>
       </div>
@@ -202,7 +207,7 @@
     <div class="story">
       <div class="story__media">
         <span class="hero__tag" style="z-index:2">FOUNDER · PHOENIX, AZ</span>
-        <image-slot id="founder" placeholder="Founder photo — in workshop or on duty (replace via Tweaks)"></image-slot>
+        <img src="assets/img/nav-logo.svg" alt="MicroPatches" class="story__logo-img" style="width:100%;height:100%;object-fit:contain;display:block;padding:24px;">
       </div>
       <div class="story__copy">
         <div class="eyebrow">§ 04 · Our Story</div>
@@ -258,13 +263,22 @@
    multi-item Shopify checkout. Falls back to listings.json if the snapshot
    isn't deployed (e.g. local preview). */
 (function loadSnapshot() {
-  return new Promise((resolve) => {
-    const s = document.createElement('script');
-    s.src = 'assets/js/shopify-products-data.js';
-    s.onload = () => resolve();
-    s.onerror = () => { s.remove(); resolve(); };
-    document.head.appendChild(s);
-  }).then(renderFeatured);
+  return fetch('https://micropatches.myshopify.com/products.json?limit=250')
+    .then(r => r.ok ? r.json() : { products: [] })
+    .then(data => {
+      window.SHOPIFY_PRODUCTS = (data.products || [])
+        .filter(p => !(/^TEST\s*[—–-]/i.test(p.title || '')))
+        .map(p => ({
+          title: p.title,
+          handle: p.handle,
+          variantId: (p.variants && p.variants[0]) ? String(p.variants[0].id) : '',
+          image: (p.images && p.images[0]) ? p.images[0].src : '',
+          price: (p.variants && p.variants[0]) ? p.variants[0].price : '13.99',
+          inventory: (p.variants && p.variants[0] && p.variants[0].available) ? 1 : 0
+        }));
+    })
+    .catch(() => { window.SHOPIFY_PRODUCTS = []; })
+    .then(renderFeatured);
 
   function renderFeatured() {
     const titleParts = (t) => {
@@ -334,6 +348,77 @@
       }).join('');
     });
   }
+})();
+</script>
+
+<script>
+/* Hero carousel — live MicroKeychains from Shopify */
+(function initCarousel() {
+  var STORE = 'https://micropatches.myshopify.com';
+  var track = document.getElementById('hero-carousel-track');
+  var dotsEl = document.getElementById('hero-carousel-dots');
+  if (!track) return;
+
+  fetch(STORE + '/products.json?limit=250')
+    .then(function(r) { return r.ok ? r.json() : { products: [] }; })
+    .then(function(data) {
+      var products = (data.products || []).filter(function(p) {
+        var t = (p.title || '').toLowerCase();
+        return !(/^TEST\s*[—–-]/i.test(p.title || '')) &&
+               (t.indexOf('keychain') !== -1 || t.indexOf('microkey') !== -1);
+      });
+
+      var withImages = products.filter(function(p) {
+        return p.images && p.images[0] && p.images[0].src;
+      });
+
+      if (!withImages.length) return;
+
+      // Build slides
+      withImages.forEach(function(p, i) {
+        var slide = document.createElement('div');
+        slide.className = 'hero-carousel__slide' + (i === 0 ? ' active' : '');
+        var img = document.createElement('img');
+        img.src = p.images[0].src;
+        img.alt = p.title || '';
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        slide.appendChild(img);
+        track.appendChild(slide);
+
+        var dot = document.createElement('button');
+        dot.className = 'hero-carousel__dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dotsEl.appendChild(dot);
+      });
+
+      var slides = track.querySelectorAll('.hero-carousel__slide');
+      var dots = dotsEl.querySelectorAll('.hero-carousel__dot');
+      var current = 0;
+      var timer;
+
+      function goTo(n) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+      }
+
+      function autoPlay() {
+        timer = setInterval(function() { goTo(current + 1); }, 3500);
+      }
+
+      dots.forEach(function(dot, i) {
+        dot.addEventListener('click', function() {
+          clearInterval(timer);
+          goTo(i);
+          autoPlay();
+        });
+      });
+
+      autoPlay();
+    })
+    .catch(function() {}); // fail silently — hero just shows placeholder bg
 })();
 </script>
 </body>

@@ -79,33 +79,9 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 </style>
   <link rel="stylesheet" href="assets/css/shopify-forms-theme.css">
 </head>
-<body>
+<body data-page="custom">
 
-<!-- ===== NAV ===== -->
-<nav class="site-nav" role="navigation" aria-label="Main navigation">
-<a href="index.html" class="nav-logo"><span class="gold">MICRO</span><span class="white"> PATCHES</span></a>
-<ul class="nav-links" role="list">
-<li><a href="shop.html">Shop</a></li>
-<li><a href="queue.html">Waitlist Queue</a></li>
-<li><a href="custom.html" class="active">Custom Order</a></li>
-<li><a href="challenge-coins.html">Challenge Coins</a></li>
-<li><a href="patch-exchange.html">Patch Exchange</a></li>
-<li><a href="contact.html">Contact</a></li>
-</ul>
-<button class="cart-toggle" id="cart-toggle" aria-label="View cart">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-<span class="cart-count" id="cart-count">0</span>
-</button>
-<button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
-</nav>
-<nav class="nav-mobile-menu" aria-label="Mobile navigation">
-<a href="shop.html">Shop</a>
-<a href="queue.html">Waitlist Queue</a>
-<a href="custom.html">Custom Order</a>
-<a href="challenge-coins.html">Challenge Coins</a>
-<a href="patch-exchange.html">Patch Exchange</a>
-<a href="contact.html">Contact</a>
-</nav>
+<div data-site-header></div>
 
 <!-- ===== PAGE HERO ===== -->
 <section class="page-hero">
@@ -398,5 +374,8 @@ if (sfContainer) {
   observer.observe(sfContainer, { childList: true, subtree: true });
 }
 </script>
+  <script src="assets/js/site.js"></script>
+<div data-site-footer></div>
+<div data-cart-drawer-mount></div>
 </body>
 </html>

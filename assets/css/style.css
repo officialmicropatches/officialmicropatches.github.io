@@ -1156,3 +1156,71 @@ image-slot {
   margin: 0 0 10px;
 }
 .about-cell p { color: var(--ink-dim); font-size: 14.5px; line-height: 1.65; margin: 0; }
+
+/* ===== HERO CAROUSEL ===== */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--ink-faint, #1a1814);
+}
+
+.hero-carousel__track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-carousel__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.hero-carousel__slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-carousel__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-carousel__dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.hero-carousel__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s;
+}
+
+.hero-carousel__dot.active {
+  background: var(--accent, #d9a441);
+}
+
+/* ===== STORY LOGO ===== */
+.story__media {
+  background: var(--ink-faint, #1a1814);
+  border-radius: 8px;
+  overflow: hidden;
+}
