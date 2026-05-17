@@ -1449,3 +1449,108 @@ image-slot {
   .h-xxl { font-size: clamp(48px, 16vw, 88px); line-height: 0.95; }
   .h-xl  { font-size: clamp(40px, 13vw, 72px); line-height: 1; }
 }
+
+/* =====================================================================
+   Catalog listing cards — match the landing-page card design
+   The shop catalog renders .product-card markup (kept intact for the
+   filter JS). These rules give it the same look/typography as the
+   landing page's .card so listings are visually consistent.
+   ===================================================================== */
+#dynamic-products-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+@media (max-width: 1080px) { #dynamic-products-container { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 780px)  { #dynamic-products-container { grid-template-columns: repeat(2, 1fr); } }
+
+.product-card {
+  position: relative;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.product-card-img {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background:
+    linear-gradient(135deg, transparent 49.5%, var(--line) 49.5%, var(--line) 50.5%, transparent 50.5%),
+    var(--bg-2);
+  overflow: hidden;
+}
+.product-card-img img,
+.product-card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.product-card-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.product-card-body h3 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1.08;
+  color: var(--ink);
+  margin: 0;
+}
+.product-price {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ink);
+}
+.product-card-footer {
+  margin-top: auto;
+  padding: 14px 22px 20px;
+}
+.product-card-footer .btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 2px;
+}
+
+/* =====================================================================
+   Mobile density — less scrolling
+   ===================================================================== */
+@media (max-width: 880px) {
+  /* The hero image box was 4/5 while the carousel stage is 1/1, leaving
+     a tall black gap below the product photo. Match them. */
+  .hero__media { aspect-ratio: 1 / 1; }
+  .hero { padding: clamp(32px, 8vw, 56px) 0 clamp(28px, 6vw, 44px); }
+  .hero__title { margin-bottom: 16px; }
+  .hero__sub { margin-bottom: 24px; }
+}
+@media (max-width: 560px) {
+  /* Two-up product grids instead of a single tall column */
+  .products { grid-template-columns: 1fr 1fr; }
+  .product-card-body { padding: 14px 14px; }
+  .product-card-footer { padding: 12px 14px 16px; }
+  .product-card-body h3 { font-size: 16px; }
+  .product-price { font-size: 17px; }
+  .card__body { padding: 14px 14px; }
+  .card__title { font-size: 17px; }
+  .card__price { font-size: 18px; }
+}
