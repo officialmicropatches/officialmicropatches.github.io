@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260526" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260527" />
   <link rel="stylesheet" href="assets/css/audit-fixes.css">
   <script src="assets/js/audit-fixes.js?v=20260526" defer></script>
 <script type="application/ld+json">
@@ -292,7 +292,7 @@
     const ready = fromSnapshot
       ? Promise.resolve(window.SHOPIFY_PRODUCTS
           .filter(p => (p.inventory ?? 1) > 0)
-          .slice(0, 8)
+          .slice(0, 6)
           .map(p => ({ title: p.title, handle: p.handle, variantId: p.variantId || '', image: p.image || '', price: +p.price || 13.99 })))
       : fetch('listings.json')
           .then(r => r.ok ? r.json() : [])
@@ -307,7 +307,7 @@
             return [...byTitle.values()]
               .filter(p => (p.qty || 0) > 0)
               .sort((a, b) => (b.qty || 0) - (a.qty || 0) || a.title.localeCompare(b.title))
-              .slice(0, 8)
+              .slice(0, 6)
               .map(p => ({ title: p.title, handle: p.handle, variantId: '', image: (p.images || [])[0] || '', price: +p.price || 13.99 }));
           })
           .catch(() => []);
@@ -368,7 +368,7 @@
 
       var withImages = products.filter(function(p) {
         return p.images && p.images[0] && p.images[0].src;
-      }).slice(0, 8);  // show up to 8 products in carousel
+      }).slice(0, 6);  // show up to 6 products in carousel
 
       if (!withImages.length) return;
 
