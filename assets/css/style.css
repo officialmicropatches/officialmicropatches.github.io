@@ -1333,13 +1333,76 @@ image-slot {
 
 /* Filter panel */
 .shop-filter-panel {
-  padding: 12px var(--pad);
+  padding: 14px var(--pad) 6px;
   max-width: var(--maxw);
   margin: 0 auto;
+}
+.shop-filter-group { display: none; }
+.shop-filter-group.active {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 10px 12px;
 }
+.shop-filter-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.shop-filter-select select {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--ink);
+  background-color: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 10px 32px 10px 12px;
+  min-height: 42px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  cursor: pointer;
+}
+.shop-filter-pills {
+  display: flex;
+  gap: 8px;
+  flex: 1 1 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.shop-filter-pills::-webkit-scrollbar { display: none; }
+.shop-subfilter {
+  flex: 0 0 auto;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 10px 16px;
+  min-height: 42px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.shop-subfilter:hover { color: var(--ink); border-color: var(--line); }
+.shop-subfilter.active {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+/* legacy single-row filter buttons (kept for back-compat) */
 .shop-filter-btn {
   font-family: var(--f-mono);
   font-size: 10px;
@@ -1356,6 +1419,12 @@ image-slot {
   color: var(--on-accent);
   background: var(--accent);
   border-color: var(--accent);
+}
+@media (max-width: 560px) {
+  .shop-filter-group.active { gap: 10px; }
+  .shop-filter-select { width: 100%; justify-content: space-between; }
+  .shop-filter-select select { flex: 1; margin-left: 10px; }
+  .focus-banner, .shop-note-banner { font-size: 10px; letter-spacing: 0.03em; line-height: 1.55; }
 }
 
 /* Shop content area */
