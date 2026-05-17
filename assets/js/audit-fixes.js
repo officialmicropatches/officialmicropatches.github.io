@@ -61,7 +61,7 @@
     /* Also hide any orphaned file input outside our new form */
     document.querySelectorAll('input[type="file"]').forEach(function(inp){
       if (!inp.closest('.patch-form-wrap')) {
-        var wrap = inp.closest('section, .section, fieldset, .form-section') || inp.parentElement;
+        var wrap = inp.closest('#patch-photo-wrap, .patch-photo-wrap') || inp.parentElement;
         if (wrap) wrap.style.display = 'none';
       }
     });
