@@ -1,18 +1,10 @@
-/* MicroPatches — audit fixes runtime v2.2 (canonical/og + header + footer) */
+/* MicroPatches — audit fixes runtime v2.3 (header + og/icon fallback + footer) */
 (function () {
   "use strict";
 
-  document.querySelectorAll('link[rel="canonical"]').forEach(function (link) {
-    if (link.href.indexOf("officialmicropatches.github.io") !== -1) {
-      link.href = link.href.replace("officialmicropatches.github.io", "officialmicropatches.com");
-    }
-  });
-  document.querySelectorAll('meta[property="og:image"], meta[name="og:image"]').forEach(function (m) {
-    var c = m.getAttribute("content") || "";
-    if (c.indexOf("officialmicropatches.github.io") !== -1) {
-      m.setAttribute("content", c.replace("officialmicropatches.github.io", "officialmicropatches.com"));
-    }
-  });
+  // NOTE: the github.io -> .com canonical/og rewrite was removed; all page
+  // sources now use officialmicropatches.com directly (verified site-wide).
+
   if (!document.querySelector('link[rel="icon"], link[rel="shortcut icon"]')) {
     var ico = document.createElement("link");
     ico.rel = "icon"; ico.href = "/assets/img/favicon.svg";
