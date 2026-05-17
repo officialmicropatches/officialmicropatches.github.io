@@ -131,7 +131,7 @@ function adjustQty(d) {
           title: lp.title,
           body: lp.description,
           price: Number(v.price || 0) / 100,
-          qty: v.available ? 99 : 0,
+          inStock: !!v.available,
           variantId: v.id || null,
           images: ((lp.images || []).map(function (im) { return (im && im.src) || im; }).filter(Boolean))
         };
@@ -150,6 +150,9 @@ function adjustQty(d) {
   const p = await loadProduct();
   if (!p) { document.getElementById('pdp-title').textContent = 'Product not found'; return; }
 
+  // Real availability: live data gives a boolean; listings.json gives a count.
+  const inStock = (typeof p.inStock === 'boolean') ? p.inStock : (Number(p.qty || 0) > 0);
+
   const cleaned = (p.title || '').replace(/\s*\|\s*$/, '').trim();
   const main = cleaned.split(/\s*\|\s*/)[0] || cleaned;
   const stripHtml = (s) => (s || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -162,7 +165,7 @@ function adjustQty(d) {
   document.getElementById('pdp-title').textContent = main;
   document.getElementById('pdp-sub').textContent = 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
   document.getElementById('pdp-price').textContent = (p.price || 13.99).toFixed(2);
-  document.getElementById('pdp-stock').textContent = (p.qty || 0) > 0 ? (p.qty + ' in stock') : 'Sold out';
+  document.getElementById('pdp-stock').textContent = inStock ? 'In stock' : 'Sold out';
   document.getElementById('pdp-body').innerHTML = (p.body || '').replace(/<script[\s\S]*?<\/script>/g, '') || 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
 
   // Hero image + thumbs
