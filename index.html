@@ -18,9 +18,9 @@
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
 <link rel="dns-prefetch" href="https://micropatches.myshopify.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260518" />
-<link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260518">
-<script src="assets/js/audit-fixes.js?v=20260518" defer></script>
+<link rel="stylesheet" href="assets/css/style.css?v=20260519" />
+<link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260519">
+<script src="assets/js/audit-fixes.js?v=20260519" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -195,10 +195,10 @@
   <a href="custom.html"><span>Custom Order</span></a>
 </div>
 
-<script src="assets/js/image-slot.js?v=20260518"></script>
-<script src="assets/js/shopify-config.js?v=20260518"></script>
-<script src="assets/js/product-carousel.js?v=20260518"></script>
-<script src="assets/js/site.js?v=20260518"></script>
+<script src="assets/js/image-slot.js?v=20260519"></script>
+<script src="assets/js/shopify-config.js?v=20260519"></script>
+<script src="assets/js/product-carousel.js?v=20260519"></script>
+<script src="assets/js/site.js?v=20260519"></script>
 
 <script>
 /* ---- Featured grid + hero + texture, from live Shopify (listings.json fallback) ---- */
@@ -287,6 +287,7 @@
     art.innerHTML =
       '<a class="pcard__media" href="product.html?handle=' + encodeURIComponent(p.handle) + '" aria-label="' + esc(name) + '">' +
         '<span class="pcard__rts">Ready To Ship</span>' +
+        '<img class="pcard__img" src="' + esc(p.images[0] || '') + '" alt="' + esc(name) + '" loading="lazy" decoding="async">' +
       '</a>' +
       '<div class="pcard__body">' +
         '<h3 class="pcard__title"><a href="product.html?handle=' + encodeURIComponent(p.handle) + '">' + esc(name) + '</a></h3>' +
@@ -317,20 +318,12 @@
     if (!featured.length) { grid.innerHTML = '<p class="mgrid-loading">Catalog unavailable — visit the shop.</p>'; return; }
 
     grid.innerHTML = '';
-    featured.forEach(function (p, i) {
-      var card = buildCard(p);
-      grid.appendChild(card);
-      if (window.MPCarousel) {
-        window.MPCarousel.mount(
-          card.querySelector('.pcard__media'),
-          p.images.slice(0, 5),
-          { alt: shortTitle(p.title), priority: i < 2, interval: 3400 }
-        );
-      }
+    featured.forEach(function (p) {
+      grid.appendChild(buildCard(p));
     });
 
-    // Hero visual — best in-stock product photos, each labeled and
-    // linked to its own product page.
+    // Hero visual — the ONLY carousel on the site: best in-stock product
+    // photos, each labeled and linked to its own product page.
     var heroMedia = document.getElementById('hero-media');
     if (heroMedia && window.MPCarousel) {
       var heroItems = featured.slice(0, 6)
@@ -345,12 +338,15 @@
       window.MPCarousel.mount(heroMedia, heroItems, { alt: 'MicroKeychain', priority: true, interval: 3800 });
     }
 
-    // Texture macro visual — reuse a detail/macro shot from the catalog.
+    // Texture macro visual — single static detail shot (no carousel).
     var tex = document.getElementById('texture-media');
-    if (tex && window.MPCarousel) {
-      var withMany = featured.filter(function (p) { return p.images.length > 1; });
-      var src = withMany.length ? withMany[0].images : (featured[0] ? featured[0].images : []);
-      window.MPCarousel.mount(tex, src.slice(-3).reverse(), { alt: 'Raised UV-cured texture', interval: 4200 });
+    if (tex) {
+      var texSrc = (featured.find(function (p) { return p.images.length > 1; }) ||
+                    featured[0] || { images: [] }).images.slice(-1)[0];
+      if (texSrc) {
+        tex.innerHTML = '<img src="' + esc(texSrc) + '" alt="Raised UV-cured texture" ' +
+          'loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">';
+      }
     }
 
     wireFilters();

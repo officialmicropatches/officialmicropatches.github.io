@@ -107,12 +107,11 @@
       '</div>';
 
     var media = card.querySelector('.pcard__media');
-    if (window.MPCarousel && images.length) {
-      window.MPCarousel.mount(media, images.slice(0, 5), { alt: name, interval: 3600 });
-    } else if (image) {
+    if (image) {
       var img = document.createElement('img');
-      img.src = image; img.alt = name; img.loading = 'lazy';
-      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      img.className = 'pcard__img';
+      img.src = image; img.alt = name;
+      img.loading = 'lazy'; img.decoding = 'async';
       media.appendChild(img);
     }
 
