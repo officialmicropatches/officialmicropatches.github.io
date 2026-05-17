@@ -21,9 +21,9 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260522">
+<link rel="stylesheet" href="assets/css/style.css?v=20260525">
   <link rel="stylesheet" href="assets/css/audit-fixes.css">
-  <script src="assets/js/audit-fixes.js?v=20260523" defer></script>
+  <script src="assets/js/audit-fixes.js?v=20260525" defer></script>
 <style>
 /* ── Photo upload widget ─────────────────────────────────── */
 #patch-photo-wrap {
@@ -79,7 +79,6 @@ Referrer-Policy: strict-origin-when-cross-origin -->
   border: 1px solid var(--border);
 }
 </style>
-  <link rel="stylesheet" href="assets/css/shopify-forms-theme.css">
 </head>
 <body data-page="custom">
 
@@ -125,20 +124,33 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <p>We typically respond within 1 to 2 business days.</p>
 </div>
 
-<!-- Photo upload — fires immediately on file select; URL auto-fills into Shopify form -->
-<div id="patch-photo-wrap" style="margin-bottom:24px">
-  <span class="photo-label">Patch Photo <span style="color:#f87171">*</span></span>
-  <input type="file" id="co-reference" accept="image/*" aria-required="true">
-  <p class="form-note" style="margin-top:8px">
-    <strong style="color:#e2e8f0">How to take your photo:</strong> Lay the patch flat on a solid-colored surface. Hold your phone directly above and shoot straight down. No angles or shadows.<br><br>
-    <strong style="color:var(--gold)">Better photo = better result.</strong>
-  </p>
-  <div id="photo-status"></div>
-  <img id="photo-preview" alt="Patch photo preview">
-</div>
-
-<!-- Shopify Forms inline embed — Form ID 992535 -->
-<div id="shopify-form-992535"></div>
+<form class="patch-form" id="custom-order-form" novalidate>
+  <div class="patch-form-grid">
+    <label class="patch-field"><span>First name *</span><input type="text" name="firstName" required maxlength="80" autocomplete="given-name"></label>
+    <label class="patch-field"><span>Last name</span><input type="text" name="lastName" maxlength="80" autocomplete="family-name"></label>
+    <label class="patch-field"><span>Email *</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
+    <label class="patch-field"><span>Phone</span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
+    <label class="patch-field patch-field--full"><span>Agency / unit name *</span><input type="text" name="agency" required maxlength="160"></label>
+    <label class="patch-field patch-field--full"><span>Product type</span>
+      <select name="productType">
+        <option>MicroKeychain ($13.99)</option>
+        <option>MicroMagnet</option>
+        <option>MicroCharm</option>
+        <option>MicroPin</option>
+        <option>Not sure</option>
+      </select>
+    </label>
+    <label class="patch-field patch-field--full"><span>Quantity / notes</span><textarea name="message" rows="4" maxlength="2000"></textarea></label>
+    <label class="patch-field patch-field--full"><span>Patch photo *</span>
+      <input type="file" id="co-reference" name="photo" accept="image/*" capture="environment" required>
+      <small class="patch-hint">Lay the patch flat on a solid surface, phone directly above, no angles or shadows. Better photo = better keychain.</small>
+    </label>
+  </div>
+  <div id="photo-status" class="patch-status" role="status" aria-live="polite"></div>
+  <img id="photo-preview" alt="" style="display:none;max-width:160px;border-radius:8px;margin-top:10px">
+  <button type="submit" class="patch-submit">Send custom order request</button>
+  <p class="patch-fallback"><small>Trouble submitting? Email <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a> directly.</small></p>
+</form>
 
 </div>
 </section>
@@ -189,191 +201,136 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 </div>
 </footer>
 
-<!-- ===== CART DRAWER ===== -->
-<div class="cart-overlay" id="cart-overlay"></div>
-<aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
-<div class="cart-drawer-header">
-<h2>Your Cart</h2>
-<button class="cart-close-btn" id="cart-close" aria-label="Close cart">&times;</button>
-</div>
-<div class="cart-empty" id="cart-empty" style="display:flex">
-<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-<p>Your cart is empty.</p>
-<a href="shop.html" class="btn btn-outline btn-small">Browse Products</a>
-</div>
-<div class="cart-items" id="cart-items"></div>
-<div class="cart-footer" id="cart-footer" style="display:none">
-<div class="cart-subtotal">
-<span class="cart-subtotal-label">Subtotal</span>
-<span class="cart-subtotal-value" id="cart-total">$0.00</span>
-</div>
-<p class="cart-shipping-note">Shipping calculated at checkout</p>
-<button class="btn btn-gold cart-checkout-btn" id="cart-checkout-btn">Checkout</button>
-</div>
-</aside>
-
 <!-- ===== SCRIPTS ===== -->
-<script src="assets/js/shopify-config.js?v=20260524"></script>
-<script type="module" src="assets/js/main.js?v=1778500000"></script>
+<script src="assets/js/shopify-config.js?v=20260525"></script>
 
-<!-- Shopify Forms embed script -->
-<script src="https://cdn.shopify.com/shopifycloud/forms-ui/assets/v0.1/shopify-form.en.js"
-        data-id="992535" defer></script>
-
-<!-- Firebase photo upload → auto-populates Reference Image URL in Shopify form -->
+<!-- Custom-order form: Firebase photo upload + submit (endpoint or mailto) -->
 <script type="module">
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// Reuse the Firebase app already initialized by firebase.js (loaded via main.js).
-// Fall back to a fresh init if this page ever loads standalone.
+/* Paste a Formspree (https://formspree.io) or Zapier catch-hook URL here to
+   enable true in-page submission. While empty, the form opens the visitor's
+   email app pre-filled (always works, no backend needed). */
+const FORM_ENDPOINT = "";
+const NOTIFY_EMAIL  = "OfficialMicroPatches@gmail.com";
+
 let storage;
 try {
   storage = getStorage(getApp());
 } catch (_e) {
-  const app = initializeApp({
+  storage = getStorage(initializeApp({
     apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
     authDomain: "patch-559c8.firebaseapp.com",
     projectId: "patch-559c8",
     storageBucket: "patch-559c8.firebasestorage.app",
     messagingSenderId: "584233188985",
     appId: "1:584233188985:web:7be3979a2ad505bc711ea8"
-  });
-  storage = getStorage(app);
+  }));
 }
 
-// ── State ────────────────────────────────────────────────────────────────
-let uploadedURL     = null;   // Firebase Storage download URL, set after upload
-let uploadInFlight  = false;  // true while upload is running
+const form      = document.getElementById("custom-order-form");
+const fileInput = document.getElementById("co-reference");
+const statusEl  = document.getElementById("photo-status");
+const previewEl = document.getElementById("photo-preview");
+const submitBtn = form?.querySelector(".patch-submit");
 
-// ── DOM refs ─────────────────────────────────────────────────────────────
-const fileInput  = document.getElementById("co-reference");
-const statusEl   = document.getElementById("photo-status");
-const previewEl  = document.getElementById("photo-preview");
+let uploadedURL = null;
+let uploading   = false;
 
 function setStatus(msg, color) {
   if (!statusEl) return;
-  statusEl.textContent = msg;
-  statusEl.style.color  = color || "var(--text-muted)";
+  statusEl.textContent = msg || "";
+  statusEl.style.color = color || "";
   statusEl.style.display = msg ? "block" : "none";
 }
 
-// ── Upload on file select ────────────────────────────────────────────────
 fileInput?.addEventListener("change", async (e) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
-
-  if (!file.type.startsWith("image/")) {
-    setStatus("Only image files are accepted.", "#f87171"); return;
-  }
-  if (file.size > 10 * 1024 * 1024) {
-    setStatus("File must be under 10 MB.", "#f87171"); return;
-  }
-
-  uploadInFlight = true;
-  uploadedURL    = null;
+  const file = e.target.files && e.target.files[0];
+  uploadedURL = null;
   if (previewEl) previewEl.style.display = "none";
+  if (!file) return;
+  if (!file.type.startsWith("image/")) { setStatus("Only image files are accepted.", "#f08a8a"); fileInput.value = ""; return; }
+  if (file.size > 10 * 1024 * 1024)    { setStatus("File must be under 10 MB.", "#f08a8a"); fileInput.value = ""; return; }
+
+  uploading = true;
   setStatus("Uploading photo…");
-
   try {
-    const safeName   = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const storageRef = ref(storage, `submissions/${Date.now()}_custom_${safeName}`);
-    await uploadBytes(storageRef, file);
-    uploadedURL = await getDownloadURL(storageRef);
-
+    const safe = (file.name || "photo.jpg").replace(/[^a-zA-Z0-9._-]/g, "_");
+    const r = ref(storage, "submissions/" + Date.now() + "_custom_" + safe);
+    await uploadBytes(r, file);
+    uploadedURL = await getDownloadURL(r);
     if (previewEl) { previewEl.src = uploadedURL; previewEl.style.display = "block"; }
-    setStatus("✓ Photo uploaded", "#4ade80");
-    injectURL(uploadedURL);
+    setStatus("✓ Photo uploaded", "#6ad29a");
   } catch (err) {
-    setStatus("Upload failed — " + (err?.message || "please try again"), "#f87171");
+    setStatus("Upload failed — " + ((err && err.message) || "try again"), "#f08a8a");
   } finally {
-    uploadInFlight = false;
+    uploading = false;
   }
 });
 
-// ── Inject URL into Shopify form's Reference Image URL field ─────────────
-function injectURL(url) {
-  const container = document.getElementById("shopify-form-992535");
-  if (!container || !url) return;
+form?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!form.reportValidity()) return;
+  if (uploading) { setStatus("Please wait — photo is still uploading…", "#fbbf24"); return; }
 
-  // Strategy 1: find label whose text contains "Reference" and use its for attr
-  for (const label of container.querySelectorAll("label")) {
-    if (!/reference/i.test(label.textContent)) continue;
-    const input = label.htmlFor
-      ? document.getElementById(label.htmlFor)
-      : label.querySelector("input, textarea");
-    if (input) { setValue(input, url); return; }
-  }
+  submitBtn.disabled = true;
+  const fd = new FormData(form);
+  const payload = {
+    firstName: fd.get("firstName") || "",
+    lastName:  fd.get("lastName")  || "",
+    email:     fd.get("email")     || "",
+    phone:     fd.get("phone")     || "",
+    agency:    fd.get("agency")    || "",
+    productType: fd.get("productType") || "",
+    message:   fd.get("message")   || "",
+    photoUrl:  uploadedURL || "",
+    submittedAt: new Date().toISOString(),
+    source: "officialmicropatches.com/custom.html"
+  };
 
-  // Strategy 2: scan all text inputs for one associated with a Reference label
-  for (const input of container.querySelectorAll('input[type="text"], input:not([type]), textarea')) {
-    const label = container.querySelector('label[for="' + input.id + '"]');
-    if (label && /reference/i.test(label.textContent)) { setValue(input, url); return; }
-  }
-
-  // Strategy 3: match on placeholder / name / id containing reference or url
-  for (const input of container.querySelectorAll("input")) {
-    if (/reference|image.?url/i.test(input.placeholder + " " + input.name + " " + input.id)) {
-      setValue(input, url); return;
+  if (FORM_ENDPOINT) {
+    setStatus("Sending…");
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      setStatus("✓ Request sent. We typically respond within 1–2 business days.", "#6ad29a");
+      form.reset();
+      if (previewEl) previewEl.style.display = "none";
+    } catch (_err) {
+      setStatus("Couldn't submit automatically — opening your email app instead…", "#fbbf24");
+      mailtoFallback(payload);
+    } finally {
+      submitBtn.disabled = false;
     }
-  }
-}
-
-function setValue(el, value) {
-  const nativeSetter = Object.getOwnPropertyDescriptor(
-    el.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,
-    "value"
-  )?.set;
-  if (nativeSetter) nativeSetter.call(el, value);
-  else el.value = value;
-  el.dispatchEvent(new Event("input",  { bubbles: true }));
-  el.dispatchEvent(new Event("change", { bubbles: true }));
-}
-
-// ── Hide the Reference Image URL row once the Shopify form renders ────────
-function hideReferenceField(container) {
-  for (const label of container.querySelectorAll("label")) {
-    if (!/reference/i.test(label.textContent)) continue;
-    const group = label.closest("div, li, fieldset") || label.parentElement;
-    if (group) group.style.display = "none";
     return;
   }
-}
 
-// ── MutationObserver — act once Shopify Forms has rendered the form ────
-const sfContainer = document.getElementById("shopify-form-992535");
-if (sfContainer) {
-  const observer = new MutationObserver(() => {
-    const form = sfContainer.querySelector("form");
-    if (!form) return;
-    observer.disconnect();
+  mailtoFallback(payload);
+  submitBtn.disabled = false;
+});
 
-    hideReferenceField(sfContainer);
-    if (uploadedURL) injectURL(uploadedURL);
-
-    // Capture-phase submit guard
-    form.addEventListener("submit", (e) => {
-      if (uploadInFlight) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        setStatus("Please wait — photo is still uploading…", "#fbbf24");
-        return;
-      }
-      if (!uploadedURL && !fileInput?.files?.length) {
-        const confirmed = confirm(
-          "No patch photo attached. Continue without a photo?\n\n" +
-          "A photo helps us produce the best possible result."
-        );
-        if (!confirmed) { e.preventDefault(); e.stopImmediatePropagation(); return; }
-      }
-      if (uploadedURL) injectURL(uploadedURL);
-    }, true);
-  });
-
-  observer.observe(sfContainer, { childList: true, subtree: true });
+function mailtoFallback(p) {
+  const body =
+    "First name: " + p.firstName + "\n" +
+    "Last name: " + p.lastName + "\n" +
+    "Email: " + p.email + "\n" +
+    "Phone: " + p.phone + "\n" +
+    "Agency / unit: " + p.agency + "\n" +
+    "Product type: " + p.productType + "\n" +
+    "Quantity / notes: " + p.message + "\n" +
+    "Patch photo: " + (p.photoUrl || "(attach your photo to this email)") + "\n";
+  window.location.href = "mailto:" + NOTIFY_EMAIL +
+    "?subject=" + encodeURIComponent("Custom Order Request — " + (p.agency || p.firstName)) +
+    "&body=" + encodeURIComponent(body);
+  setStatus("Opening your email app — just hit send. (If nothing happens, email " + NOTIFY_EMAIL + ".)", "#fbbf24");
 }
 </script>
-  <script src="assets/js/site.js?v=20260524"></script>
+  <script src="assets/js/site.js?v=20260525"></script>
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 </body>
