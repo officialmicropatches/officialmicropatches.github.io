@@ -120,16 +120,34 @@ function adjustQty(d) {
   const handle = params.get('handle');
   if (!handle) { document.getElementById('pdp-title').textContent = 'Product not found'; return; }
 
-  let res, list;
-  try {
-    res = await fetch('listings.json');
-    list = await res.json();
-  } catch (e) {
-    document.getElementById('pdp-title').textContent = 'Catalog unavailable';
-    return;
+  async function loadProduct() {
+    try {
+      const liveRes = await fetch('https://' + (window.SHOPIFY && window.SHOPIFY.SHOP_DOMAIN ? window.SHOPIFY.SHOP_DOMAIN : 'micropatches.myshopify.com') + '/products/' + encodeURIComponent(handle) + '.js');
+      if (liveRes.ok) {
+        const lp = await liveRes.json();
+        const v = (lp.variants && lp.variants[0]) || {};
+        return {
+          handle: lp.handle,
+          title: lp.title,
+          body: lp.description,
+          price: Number(v.price || 0) / 100,
+          qty: v.available ? 99 : 0,
+          variantId: v.id || null,
+          images: ((lp.images || []).map(function (im) { return (im && im.src) || im; }).filter(Boolean))
+        };
+      }
+    } catch (e) {}
+
+    try {
+      const res = await fetch('listings.json');
+      const list = await res.json();
+      return list.find(x => x.handle === handle) || null;
+    } catch (e) {
+      return null;
+    }
   }
 
-  const p = list.find(x => x.handle === handle);
+  const p = await loadProduct();
   if (!p) { document.getElementById('pdp-title').textContent = 'Product not found'; return; }
 
   const cleaned = (p.title || '').replace(/\s*\|\s*$/, '').trim();
@@ -174,7 +192,7 @@ function adjustQty(d) {
     const qty = parseInt(document.getElementById('qty').value) || 1;
     window.MP.addToCart({
       id: p.handle, name: main, price: p.price || 13.99, qty,
-      handle: p.handle, image: imgs[0] || '', cat: 'MicroKeychain'
+      handle: p.handle, variantId: p.variantId || undefined, image: imgs[0] || '', cat: 'MicroKeychain'
     });
   });
 
