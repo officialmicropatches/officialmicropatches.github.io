@@ -1762,12 +1762,19 @@ input, select, textarea { border-radius: 8px; }
   .btn--lg { min-height: 48px; }
 }
 
-/* Homepage compact spacing */
+/* Homepage compact spacing — condensed to reduce scroll */
 body[data-page="home"] .hero {
-  padding: clamp(28px, 5vw, 54px) 0 clamp(28px, 5vw, 56px);
+  padding: clamp(18px, 4vw, 40px) 0 clamp(20px, 4vw, 36px);
 }
-body[data-page="home"] .hero__sub { max-width: 60ch; margin-bottom: 20px; }
-body[data-page="home"] .section { padding: clamp(40px, 6vw, 72px) 0; }
-body[data-page="home"] .paths { gap: 18px; }
-body[data-page="home"] .path ul { margin: 12px 0 16px; }
-body[data-page="home"] .notify { padding: clamp(18px, 3vw, 26px); }
+body[data-page="home"] .hero__sub { max-width: 58ch; margin-bottom: 14px; }
+body[data-page="home"] .hero .row.wrap { margin-top: 18px !important; }
+body[data-page="home"] .section { padding: clamp(22px, 4vw, 48px) 0; }
+body[data-page="home"] .section-head { margin-bottom: clamp(14px, 2.5vw, 24px); }
+body[data-page="home"] .section-head__lead { margin-top: 6px; }
+body[data-page="home"] .marquee { padding: 6px 0; }
+body[data-page="home"] .stats { padding: clamp(14px, 3vw, 22px) 0; }
+body[data-page="home"] .paths { gap: 14px; }
+body[data-page="home"] .path ul { margin: 8px 0 12px; }
+body[data-page="home"] .path ul li { margin: 4px 0; }
+body[data-page="home"] .story p + p { margin-top: 8px; }
+body[data-page="home"] .notify { padding: clamp(14px, 3vw, 22px); }

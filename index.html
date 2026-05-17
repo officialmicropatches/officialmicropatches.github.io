@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260527" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260528" />
   <link rel="stylesheet" href="assets/css/audit-fixes.css">
   <script src="assets/js/audit-fixes.js?v=20260526" defer></script>
 <script type="application/ld+json">
@@ -211,14 +211,9 @@
         <div class="eyebrow">§ 04 · Our Story</div>
         <h2 class="display h-l">Made by someone<br/>who wears the badge.</h2>
         <p>
-          MicroPatches is active law enforcement owned, based in Phoenix, Arizona.
-          We make premium miniature patch products inspired by law enforcement, fire,
-          EMS, military, and public safety patches.
-        </p>
-        <p>
-          Every MicroKeychain is built in Phoenix — a 3D-printed base finished with premium UV-cured ink for the design. We use the same care
-          for an order of one as we do for an order of fifty. That's why we don't enforce minimums
-          on custom orders — no agency, no unit, no department gets left out.
+          Active law enforcement owned, built in Phoenix, Arizona — a 3D-printed
+          base finished with premium UV-cured ink. Same care for an order of one
+          as for fifty, with no minimums on custom orders.
         </p>
         <div class="story__sig">
           <div class="brand__mark" style="width:36px;height:36px;font-size:20px;">M</div>
@@ -292,7 +287,7 @@
     const ready = fromSnapshot
       ? Promise.resolve(window.SHOPIFY_PRODUCTS
           .filter(p => (p.inventory ?? 1) > 0)
-          .slice(0, 6)
+          .slice(0, 4)
           .map(p => ({ title: p.title, handle: p.handle, variantId: p.variantId || '', image: p.image || '', price: +p.price || 13.99 })))
       : fetch('listings.json')
           .then(r => r.ok ? r.json() : [])
@@ -307,7 +302,7 @@
             return [...byTitle.values()]
               .filter(p => (p.qty || 0) > 0)
               .sort((a, b) => (b.qty || 0) - (a.qty || 0) || a.title.localeCompare(b.title))
-              .slice(0, 6)
+              .slice(0, 4)
               .map(p => ({ title: p.title, handle: p.handle, variantId: '', image: (p.images || [])[0] || '', price: +p.price || 13.99 }));
           })
           .catch(() => []);
