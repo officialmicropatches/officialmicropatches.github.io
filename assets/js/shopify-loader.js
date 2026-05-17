@@ -66,7 +66,6 @@
     var type      = getType(tags);
 
     var productUrl = STORE_URL + '/products/' + handle;
-    var cartUrl    = STORE_URL + '/cart/' + variantId + ':1';
 
     var name = String(title).split('|')[0].trim();
     for (var ci = 0; ci < 5; ci++) {
@@ -99,7 +98,14 @@
         '<div class="card__foot">' +
           '<span class="card__price"><span class="cur">$</span>' + escapeHtml(priceNum) + '</span>' +
           (inStock
-            ? '<a href="' + escapeAttr(cartUrl) + '" target="_blank" rel="noopener" class="card__add add-to-cart-btn"><span class="label">Add</span> +</a>'
+            ? '<button type="button" class="card__add add-to-cart-btn" data-add-to-cart' +
+                ' data-id="' + escapeAttr(handle) + '"' +
+                ' data-handle="' + escapeAttr(handle) + '"' +
+                ' data-name="' + escapeAttr(name) + '"' +
+                ' data-price="' + escapeAttr(priceNum) + '"' +
+                ' data-variant-id="' + escapeAttr(variantId || '') + '"' +
+                ' data-image="' + escapeAttr(image || '') + '"' +
+                ' data-cat="MicroKeychain"><span class="label">Add</span> +</button>'
             : '<span class="card__add out-of-stock-btn" aria-disabled="true">Sold out</span>') +
         '</div>' +
       '</div>';

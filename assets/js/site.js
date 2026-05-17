@@ -226,10 +226,7 @@
       if (!cfg.SHOP_DOMAIN) {
         note.innerHTML = '<span class="warn">⚠ Preview mode — set SHOP_DOMAIN in assets/js/shopify-config.js to enable real checkout.</span>';
       } else {
-        const hasVariants = cart.every(i => i.variantId);
-        note.textContent = hasVariants
-          ? 'Secure checkout via Shopify.'
-          : 'Each item opens on Shopify (variant IDs not yet linked — see launch checklist).';
+        note.textContent = 'Secure checkout via Shopify.';
       }
     }
 
@@ -267,16 +264,22 @@
       return;
     }
     // Prefer cart permalink with variant IDs (single-click checkout)
-    const url = cfg.cartUrl ? cfg.cartUrl(cart) : null;
-    if (url) {
-      window.location.href = url;
+    const first = cart[0];
+    const fallback = () => {
+      if (first && first.handle && cfg.productUrl) window.location.href = cfg.productUrl(first.handle);
+    };
+    // Resolve variant IDs from the live catalog so multi-item checkout works
+    // even when items were added without a variant ID.
+    if (cfg.buildCheckoutUrl) {
+      toast('Opening secure checkout…');
+      cfg.buildCheckoutUrl(cart)
+        .then((url) => { url ? (window.location.href = url) : fallback(); })
+        .catch(fallback);
       return;
     }
-    // Fallback: open the first product page on Shopify (one at a time)
-    const first = cart[0];
-    if (first.handle && cfg.productUrl) {
-      window.location.href = cfg.productUrl(first.handle);
-    }
+    const syncUrl = cfg.cartUrl ? cfg.cartUrl(cart) : null;
+    if (syncUrl) { window.location.href = syncUrl; return; }
+    fallback();
   }
 
   // ============================================================
@@ -353,14 +356,6 @@
       if (!btn) return;
       e.preventDefault();
       const d = btn.dataset;
-
-      const cfg = window.SHOPIFY || {};
-      // If Shopify is configured and we don't have a variant ID, the most reliable
-      // purchase path is the real Shopify product page. Skip the local cart entirely.
-      if (cfg.SHOP_DOMAIN && !d.variantId && d.handle) {
-        window.open(cfg.productUrl(d.handle), '_blank', 'noopener');
-        return;
-      }
 
       addToCart({
         id: d.id, name: d.name,
