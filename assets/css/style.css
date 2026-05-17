@@ -1382,10 +1382,19 @@ image-slot {
 /* Product grid (shop page) */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  padding-top: 8px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
 }
+.product-grid > .card {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.card__media { display: block; }
+@media (max-width: 1080px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 780px)  { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .product-grid { grid-template-columns: 1fr 1fr; } }
 
 /* Empty state */
 .shop-empty-state {

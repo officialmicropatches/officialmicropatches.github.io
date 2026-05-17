@@ -68,31 +68,40 @@
     var productUrl = STORE_URL + '/products/' + handle;
     var cartUrl    = STORE_URL + '/cart/' + variantId + ':1';
 
+    var name = String(title).split('|')[0].trim();
+    for (var ci = 0; ci < 5; ci++) {
+      name = name.replace(/[\s\-–—]*\b(Collector|Patch|Keychain|Magnet|Replica)\b\s*$/i, '').trim();
+    }
+    if (!name) name = String(title).split('|')[0].trim() || String(title);
+    var priceNum = parseFloat(price).toFixed(2);
+
     var card = document.createElement('div');
-    card.className = 'product-card';
+    card.className = 'product-card card anim';
     card.setAttribute('data-category', category);
     card.setAttribute('data-type',     type);
     card.setAttribute('data-state',    '');
 
-    var badgeHtml = inStock ? '' : '<span class="out-of-stock-badge">Out of Stock</span>';
+    var badgeHtml = inStock ? '' : '<span class="card__badge">Sold out</span>';
     var imgHtml   = image
-      ? '<img src="' + escapeAttr(image) + '" alt="' + escapeAttr(title) + '" loading="lazy" onerror="this.style.display=\'none\'">'
+      ? '<img src="' + escapeAttr(image) + '" alt="' + escapeAttr(name) + '" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">'
       : '<div class="no-image">No Image</div>';
 
     card.innerHTML =
-      '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener" class="product-image-link">' +
-        '<div class="product-image-container">' + imgHtml + badgeHtml + '</div>' +
-      '</a>' +
-      '<div class="product-info">' +
-        '<h3 class="product-title">' +
-          '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener">' +
-            escapeHtml(title) +
+      '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener" class="card__media">' + imgHtml + badgeHtml + '</a>' +
+      '<div class="card__body">' +
+        '<span class="card__cat">MicroKeychain</span>' +
+        '<h3 class="card__title product-title">' +
+          '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener" style="color:inherit;">' +
+            escapeHtml(name) +
           '</a>' +
         '</h3>' +
-        '<p class="product-price">$' + escapeHtml(String(parseFloat(price).toFixed(2))) + '</p>' +
-        (inStock
-          ? '<a href="' + escapeAttr(cartUrl) + '" target="_blank" rel="noopener" class="add-to-cart-btn">Add to Cart</a>'
-          : '<button class="add-to-cart-btn out-of-stock-btn" disabled>Out of Stock</button>') +
+        '<p class="card__desc">Premium UV ink. Raised texture you can see and feel.</p>' +
+        '<div class="card__foot">' +
+          '<span class="card__price"><span class="cur">$</span>' + escapeHtml(priceNum) + '</span>' +
+          (inStock
+            ? '<a href="' + escapeAttr(cartUrl) + '" target="_blank" rel="noopener" class="card__add add-to-cart-btn"><span class="label">Add</span> +</a>'
+            : '<span class="card__add out-of-stock-btn" aria-disabled="true">Sold out</span>') +
+        '</div>' +
       '</div>';
 
     return card;
