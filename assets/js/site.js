@@ -92,7 +92,7 @@
       </div>
     </div>
     <div class="footer-base">
-      <div>© <span data-year>2026</span> MicroPatches · officialmicropatches.com · Made in Phoenix, AZ · USA Made · Active Law Enforcement Owned</div>
+      <div>© <span data-year>2026</span> MicroPatches · Phoenix, AZ · USA Made · Active LE Owned</div>
       <div class="socials">
         <a href="mailto:OfficialMicroPatches@gmail.com" aria-label="Email">Email</a>
         <a href="https://instagram.com/micropatches" target="_blank" rel="noopener">IG</a>

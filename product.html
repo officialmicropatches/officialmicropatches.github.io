@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260528" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260517" />
 </head>
 <body data-page="shop">
 
@@ -105,9 +105,10 @@
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 
-<script src="assets/js/image-slot.js"></script>
-<script src="assets/js/shopify-config.js?v=20260526"></script>
-<script src="assets/js/site.js?v=20260526"></script>
+<script src="assets/js/image-slot.js?v=20260517"></script>
+<script src="assets/js/shopify-config.js?v=20260517"></script>
+<script src="assets/js/product-carousel.js?v=20260517"></script>
+<script src="assets/js/site.js?v=20260517"></script>
 <script id="pdp-jsonld" type="application/ld+json"></script>
 <script>
 function adjustQty(d) {
@@ -168,22 +169,22 @@ function adjustQty(d) {
   document.getElementById('pdp-stock').textContent = inStock ? 'In stock' : 'Sold out';
   document.getElementById('pdp-body').innerHTML = (p.body || '').replace(/<script[\s\S]*?<\/script>/g, '') || 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
 
-  // Hero image + thumbs
-  const imgs = (p.images || []).slice(0, 6);
+  // Gallery — auto-cycling carousel through all available photos
+  const imgs = (p.images || []).filter(Boolean);
   if (imgs.length) {
-    const hero = document.getElementById('hero-img');
-    hero.src = imgs[0];
-    hero.alt = main;
-    hero.style.display = 'block';
-    document.getElementById('thumbs').innerHTML = imgs.slice(0, 4).map((src, i) => `
-      <div class="pdp__thumb ${i===0?'active':''}" data-i="${i}">
-        <img src="${src}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" />
-      </div>`).join('');
-    document.querySelectorAll('.pdp__thumb').forEach(t => t.addEventListener('click', () => {
-      document.querySelectorAll('.pdp__thumb').forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-      hero.src = imgs[parseInt(t.dataset.i)];
-    }));
+    const mainEl = document.getElementById('gallery-main');
+    const lot = document.getElementById('pdp-lot');
+    const thumbs = document.getElementById('thumbs');
+    if (thumbs) thumbs.remove();
+    if (window.MPCarousel) {
+      window.MPCarousel.mount(mainEl, imgs, { alt: main, priority: true, interval: 4000 });
+      if (lot) mainEl.appendChild(lot);
+    } else {
+      const hero = document.getElementById('hero-img');
+      hero.src = imgs[0];
+      hero.alt = main;
+      hero.style.display = 'block';
+    }
   }
 
   // Lot number — deterministic from handle so it's stable per product
