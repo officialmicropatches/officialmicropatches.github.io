@@ -155,52 +155,6 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
-<footer class="site-footer">
-<div class="container">
-<div class="footer-grid">
-<div class="footer-brand">
-<div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
-<p>Handcrafted for those who serve. USA Made.</p>
-<div class="footer-social">
-<a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
-<a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
-<a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
-</div>
-</div>
-<div class="footer-col">
-<h4>Shop</h4>
-<ul>
-<li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
-<li><a href="shop.html#corrections">Corrections</a></li>
-<li><a href="shop.html#military">Military</a></li>
-<li><a href="shop.html#fire">Fire Departments</a></li>
-<li><a href="shop.html#ems">EMS</a></li>
-<li><a href="shop.html#pink-patch">Pink Patch</a></li>
-</ul>
-</div>
-<div class="footer-col">
-<h4>Services</h4>
-<ul>
-<li><a href="custom.html">Custom Orders</a></li>
-</ul>
-</div>
-<div class="footer-col">
-<h4>Connect</h4>
-<ul>
-<li><a href="contact.html">Contact Us</a></li>
-<li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
-<li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
-</ul>
-</div>
-</div>
-<div class="footer-bottom">
-<p>&copy; 2025 MicroPatches. All rights reserved.</p>
-<span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
-</div>
-</div>
-</footer>
-
 <!-- ===== SCRIPTS ===== -->
 <script src="assets/js/shopify-config.js?v=20260526"></script>
 
@@ -208,26 +162,27 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <script type="module">
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* Paste a Formspree (https://formspree.io) or Zapier catch-hook URL here to
-   enable true in-page submission. While empty, the form opens the visitor's
-   email app pre-filled (always works, no backend needed). */
+/* Submissions are saved to Firebase: the photo goes to Storage (submissions/)
+   and the order record to Firestore (submissions collection) — the same model
+   firebase.js / the queue already use. Optionally also POST to a Formspree or
+   Zapier URL by setting FORM_ENDPOINT. Email is the last-resort fallback. */
 const FORM_ENDPOINT = "";
 const NOTIFY_EMAIL  = "OfficialMicroPatches@gmail.com";
 
-let storage;
-try {
-  storage = getStorage(getApp());
-} catch (_e) {
-  storage = getStorage(initializeApp({
-    apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
-    authDomain: "patch-559c8.firebaseapp.com",
-    projectId: "patch-559c8",
-    storageBucket: "patch-559c8.firebasestorage.app",
-    messagingSenderId: "584233188985",
-    appId: "1:584233188985:web:7be3979a2ad505bc711ea8"
-  }));
-}
+const FB_CONFIG = {
+  apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
+  authDomain: "patch-559c8.firebaseapp.com",
+  projectId: "patch-559c8",
+  storageBucket: "patch-559c8.firebasestorage.app",
+  messagingSenderId: "584233188985",
+  appId: "1:584233188985:web:7be3979a2ad505bc711ea8"
+};
+let app;
+try { app = getApp(); } catch (_e) { app = initializeApp(FB_CONFIG); }
+const storage = getStorage(app);
+const db = getFirestore(app);
 
 const form      = document.getElementById("custom-order-form");
 const fileInput = document.getElementById("co-reference");
@@ -276,42 +231,47 @@ form?.addEventListener("submit", async (e) => {
 
   submitBtn.disabled = true;
   const fd = new FormData(form);
-  const payload = {
-    firstName: fd.get("firstName") || "",
-    lastName:  fd.get("lastName")  || "",
-    email:     fd.get("email")     || "",
-    phone:     fd.get("phone")     || "",
-    agency:    fd.get("agency")    || "",
+  const submission = {
+    type: "custom-order",
+    name: ((fd.get("firstName") || "") + " " + (fd.get("lastName") || "")).trim(),
+    email: fd.get("email") || "",
+    phone: fd.get("phone") || "",
+    agency: fd.get("agency") || "",
     productType: fd.get("productType") || "",
-    message:   fd.get("message")   || "",
-    photoUrl:  uploadedURL || "",
+    quantity: "",
+    description: fd.get("message") || "",
+    patchPhotoURL: uploadedURL || "",
+    patchPhotoPath: "",
     submittedAt: new Date().toISOString(),
     source: "officialmicropatches.com/custom.html"
   };
 
-  if (FORM_ENDPOINT) {
-    setStatus("Sending…");
-    try {
-      const res = await fetch(FORM_ENDPOINT, {
+  setStatus("Sending…");
+  try {
+    await addDoc(collection(db, "submissions"), submission);
+    if (FORM_ENDPOINT) {
+      // Best-effort secondary notification; never fails the submission.
+      fetch(FORM_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      setStatus("✓ Request sent. We typically respond within 1–2 business days.", "#6ad29a");
-      form.reset();
-      if (previewEl) previewEl.style.display = "none";
-    } catch (_err) {
-      setStatus("Couldn't submit automatically — opening your email app instead…", "#fbbf24");
-      mailtoFallback(payload);
-    } finally {
-      submitBtn.disabled = false;
+        body: JSON.stringify(submission)
+      }).catch(function () {});
     }
-    return;
+    setStatus("✓ Request received. We typically respond within 1–2 business days.", "#6ad29a");
+    form.reset();
+    if (previewEl) previewEl.style.display = "none";
+    uploadedURL = null;
+  } catch (_err) {
+    setStatus("Couldn't submit automatically — opening your email app as a backup…", "#fbbf24");
+    mailtoFallback({
+      firstName: fd.get("firstName") || "", lastName: fd.get("lastName") || "",
+      email: submission.email, phone: submission.phone, agency: submission.agency,
+      productType: submission.productType, message: submission.description,
+      photoUrl: submission.patchPhotoURL
+    });
+  } finally {
+    submitBtn.disabled = false;
   }
-
-  mailtoFallback(payload);
-  submitBtn.disabled = false;
 });
 
 function mailtoFallback(p) {
