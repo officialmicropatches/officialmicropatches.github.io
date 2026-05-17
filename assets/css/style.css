@@ -1706,3 +1706,15 @@ image-slot {
 @media (max-width: 600px) {
   .patch-form-grid { grid-template-columns: 1fr; }
 }
+
+/* Shop catalog loading placeholder (replaced live by shopify-loader.js) */
+.shop-loading {
+  grid-column: 1 / -1;
+  padding: 48px 0;
+  text-align: center;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
