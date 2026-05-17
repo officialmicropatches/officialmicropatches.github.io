@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260522" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260517" />
   <link rel="stylesheet" href="assets/css/audit-fixes.css">
   <script src="assets/js/audit-fixes.js?v=20260523" defer></script>
 <script type="application/ld+json">
@@ -93,51 +93,6 @@
   </div>
 </section>
 
-<!-- ============ MARQUEE ============ -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    <span>Your Patch. Now Micro.</span>
-    <span>USA Made</span>
-    <span>UV-Cured Ink</span>
-    <span>Active LE Owned</span>
-    <span>No Minimums on Customs</span>
-    <span>$25 Design Fee · One Time</span>
-    <span>Made in Phoenix, Arizona</span>
-    <!-- duplicate for loop -->
-    <span>Your Patch. Now Micro.</span>
-    <span>USA Made</span>
-    <span>UV-Cured Ink</span>
-    <span>Active LE Owned</span>
-    <span>No Minimums on Customs</span>
-    <span>$25 Design Fee · One Time</span>
-    <span>Made in Phoenix, Arizona</span>
-  </div>
-</div>
-
-<!-- ============ STAT STRIP ============ -->
-<section aria-label="By the numbers">
-  <div class="container">
-    <div class="stats">
-      <div class="stats__item">
-        <div class="stats__num">USA</div>
-        <div class="stats__label">Made in Phoenix, AZ</div>
-      </div>
-      <div class="stats__item">
-        <div class="stats__num">$25</div>
-        <div class="stats__label">One-Time Design Fee</div>
-      </div>
-      <div class="stats__item">
-        <div class="stats__num">0</div>
-        <div class="stats__label">Minimum Order Quantity</div>
-      </div>
-      <div class="stats__item">
-        <div class="stats__num">LE</div>
-        <div class="stats__label">Active Law Enforcement Owned</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ FEATURED PRODUCTS ============ -->
 <section class="section" data-screen-label="02 Home / Featured">
   <div class="container">
@@ -161,7 +116,7 @@
   <div class="container">
     <header class="section-head">
       <div>
-        <div class="eyebrow">§ 03 · Two ways to buy</div>
+        <div class="eyebrow">§ 02 · Two ways to buy</div>
         <h2 class="display h-l section-head__title">Find yours,<br/>or make yours.</h2>
       </div>
     </header>
@@ -203,41 +158,12 @@
   </div>
 </section>
 
-<!-- ============ STORY ============ -->
-<section class="section" data-screen-label="04 Home / Story">
-  <div class="container">
-    <div class="story">
-      <div class="story__copy">
-        <div class="eyebrow">§ 04 · Our Story</div>
-        <h2 class="display h-l">Made by someone<br/>who wears the badge.</h2>
-        <p>
-          MicroPatches is active law enforcement owned, based in Phoenix, Arizona.
-          We make premium miniature patch products inspired by law enforcement, fire,
-          EMS, military, and public safety patches.
-        </p>
-        <p>
-          Every MicroKeychain is built in Phoenix — a 3D-printed base finished with premium UV-cured ink for the design. We use the same care
-          for an order of one as we do for an order of fifty. That's why we don't enforce minimums
-          on custom orders — no agency, no unit, no department gets left out.
-        </p>
-        <div class="story__sig">
-          <div class="brand__mark" style="width:36px;height:36px;font-size:20px;">M</div>
-          <div>
-            <div class="story__sig__name">MicroPatches</div>
-            <div class="story__sig__role">Active LE Owned · Phoenix, AZ</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ CTA STRIP ============ -->
 <section class="section tight" data-screen-label="05 Home / CTA">
   <div class="container">
     <div class="notify">
       <div>
-        <div class="eyebrow">§ 05 · Ready when you are</div>
+        <div class="eyebrow">§ 03 · Ready when you are</div>
         <h3 class="display h-m" style="margin: 12px 0 10px;">Carry your patch.<br/>Anywhere.</h3>
         <p style="color:var(--ink-dim); max-width:48ch;">Browse what's in stock, or send us yours. We'll have your MicroPatch in hand within weeks.</p>
       </div>
@@ -292,7 +218,7 @@
     const ready = fromSnapshot
       ? Promise.resolve(window.SHOPIFY_PRODUCTS
           .filter(p => (p.inventory ?? 1) > 0)
-          .slice(0, 8)
+          .slice(0, 6)
           .map(p => ({ title: p.title, handle: p.handle, variantId: p.variantId || '', image: p.image || '', price: +p.price || 13.99 })))
       : fetch('listings.json')
           .then(r => r.ok ? r.json() : [])
@@ -307,7 +233,7 @@
             return [...byTitle.values()]
               .filter(p => (p.qty || 0) > 0)
               .sort((a, b) => (b.qty || 0) - (a.qty || 0) || a.title.localeCompare(b.title))
-              .slice(0, 8)
+              .slice(0, 6)
               .map(p => ({ title: p.title, handle: p.handle, variantId: '', image: (p.images || [])[0] || '', price: +p.price || 13.99 }));
           })
           .catch(() => []);
@@ -368,7 +294,7 @@
 
       var withImages = products.filter(function(p) {
         return p.images && p.images[0] && p.images[0].src;
-      }).slice(0, 8);  // show up to 8 products in carousel
+      }).slice(0, 6);  // show up to 6 products in carousel
 
       if (!withImages.length) return;
 

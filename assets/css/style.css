@@ -1644,3 +1644,115 @@ image-slot {
 @media (max-width: 380px) {
   #dynamic-products-container .product-card-body h3 { font-size: 12.5px; }
 }
+
+/* ---------- Professional polish pass (global) ---------- */
+:root {
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.24);
+  --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+main, section {
+  scroll-margin-top: 88px;
+}
+
+.site-header.is-scrolled {
+  border-bottom-color: var(--line-2);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+}
+
+.btn,
+button,
+input,
+select,
+textarea,
+a {
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.btn:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn--primary,
+.btn--ghost {
+  min-height: 46px;
+}
+
+.card {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--bg-3) 94%, black 6%), var(--bg-3));
+  overflow: clip;
+}
+
+.card:hover {
+  border-color: color-mix(in oklab, var(--accent) 36%, var(--line));
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.card__media img {
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card__media img {
+  transform: scale(1.02);
+}
+
+input,
+select,
+textarea {
+  border-radius: 8px;
+}
+
+.site-footer {
+  background: color-mix(in oklab, var(--bg) 86%, black 14%);
+  border-top: 1px solid var(--line-2);
+}
+
+@media (max-width: 640px) {
+  .site-header__inner {
+    height: 68px;
+  }
+
+  .container {
+    padding-left: clamp(16px, 5vw, 24px);
+    padding-right: clamp(16px, 5vw, 24px);
+  }
+
+  .btn--lg {
+    min-height: 48px;
+  }
+}
+
+/* ---------- Homepage compact mode ---------- */
+body[data-page="home"] .hero {
+  padding: clamp(28px, 5vw, 54px) 0 clamp(28px, 5vw, 56px);
+}
+
+body[data-page="home"] .hero__sub {
+  max-width: 60ch;
+  margin-bottom: 20px;
+}
+
+body[data-page="home"] .section {
+  padding: clamp(40px, 6vw, 72px) 0;
+}
+
+body[data-page="home"] .paths {
+  gap: 18px;
+}
+
+body[data-page="home"] .path ul {
+  margin: 12px 0 16px;
+}
+
+body[data-page="home"] .notify {
+  padding: clamp(18px, 3vw, 26px);
+}
