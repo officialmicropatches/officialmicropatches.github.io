@@ -61,44 +61,40 @@
     var title     = product.title  || '';
     var handle    = product.handle || '';
     var tags      = product.tags   || [];
-    var image     = (product.images && product.images[0]) ? product.images[0].src : null;
+    var images    = (product.images || []).map(function (im) { return im && im.src; }).filter(Boolean);
+    var image     = images[0] || null;
     var category  = getCategory(tags);
     var type      = getType(tags);
 
-    var productUrl = STORE_URL + '/products/' + handle;
+    var productUrl = 'product.html?handle=' + encodeURIComponent(handle);
 
     var name = String(title).split('|')[0].trim();
-    for (var ci = 0; ci < 5; ci++) {
-      name = name.replace(/[\s\-–—]*\b(Collector|Patch|Keychain|Magnet|Replica)\b\s*$/i, '').trim();
+    for (var ci = 0; ci < 6; ci++) {
+      name = name.replace(/[\s\-–—]*\b(Collector|Patch|Keychain|Magnet|Pin|Charm|Replica|3D Printed|45mm)\b\s*$/i, '').trim();
     }
     if (!name) name = String(title).split('|')[0].trim() || String(title);
     var priceNum = parseFloat(price).toFixed(2);
 
     var card = document.createElement('div');
-    card.className = 'product-card card anim';
+    card.className = 'product-card pcard anim';
     card.setAttribute('data-category', category);
     card.setAttribute('data-type',     type);
     card.setAttribute('data-state',    '');
 
-    var badgeHtml = inStock ? '' : '<span class="card__badge">Sold out</span>';
-    var imgHtml   = image
-      ? '<img src="' + escapeAttr(image) + '" alt="' + escapeAttr(name) + '" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">'
-      : '<div class="no-image">No Image</div>';
+    var badgeHtml = inStock
+      ? '<span class="pcard__rts">Ready To Ship</span>'
+      : '<span class="pcard__rts" style="background:var(--line-2);color:var(--ink-dim);">Sold Out</span>';
 
     card.innerHTML =
-      '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener" class="card__media">' + imgHtml + badgeHtml + '</a>' +
-      '<div class="card__body">' +
-        '<span class="card__cat">MicroKeychain</span>' +
-        '<h3 class="card__title product-title">' +
-          '<a href="' + escapeAttr(productUrl) + '" target="_blank" rel="noopener" style="color:inherit;">' +
-            escapeHtml(name) +
-          '</a>' +
+      '<a href="' + escapeAttr(productUrl) + '" class="pcard__media" aria-label="' + escapeAttr(name) + '">' + badgeHtml + '</a>' +
+      '<div class="pcard__body">' +
+        '<h3 class="pcard__title product-title">' +
+          '<a href="' + escapeAttr(productUrl) + '">' + escapeHtml(name) + '</a>' +
         '</h3>' +
-        '<p class="card__desc">Premium UV ink. Raised texture you can see and feel.</p>' +
-        '<div class="card__foot">' +
-          '<span class="card__price"><span class="cur">$</span>' + escapeHtml(priceNum) + '</span>' +
+        '<div class="pcard__foot">' +
+          '<span class="pcard__price"><span class="cur">$</span>' + escapeHtml(priceNum) + '</span>' +
           (inStock
-            ? '<button type="button" class="card__add add-to-cart-btn" data-add-to-cart' +
+            ? '<button type="button" class="pcard__add add-to-cart-btn" data-add-to-cart' +
                 ' data-id="' + escapeAttr(handle) + '"' +
                 ' data-handle="' + escapeAttr(handle) + '"' +
                 ' data-name="' + escapeAttr(name) + '"' +
@@ -106,9 +102,19 @@
                 ' data-variant-id="' + escapeAttr(variantId || '') + '"' +
                 ' data-image="' + escapeAttr(image || '') + '"' +
                 ' data-cat="MicroKeychain"><span class="label">Add</span> +</button>'
-            : '<span class="card__add out-of-stock-btn" aria-disabled="true">Sold out</span>') +
+            : '<span class="pcard__add out-of-stock-btn" aria-disabled="true" style="background:var(--line-2);color:var(--ink-dim);">Sold Out</span>') +
         '</div>' +
       '</div>';
+
+    var media = card.querySelector('.pcard__media');
+    if (window.MPCarousel && images.length) {
+      window.MPCarousel.mount(media, images.slice(0, 5), { alt: name, interval: 3600 });
+    } else if (image) {
+      var img = document.createElement('img');
+      img.src = image; img.alt = name; img.loading = 'lazy';
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      media.appendChild(img);
+    }
 
     return card;
   }
