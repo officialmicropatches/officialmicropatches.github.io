@@ -32,6 +32,41 @@
     { tags: ['search and rescue', 'sar'], value: 'search-rescue' }
   ];
 
+  var STATE_MAP = {
+    'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR',
+    'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE',
+    'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID',
+    'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS',
+    'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+    'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN',
+    'mississippi': 'MS', 'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE',
+    'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+    'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC',
+    'north dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK', 'oregon': 'OR',
+    'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+    'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT',
+    'vermont': 'VT', 'virginia': 'VA', 'washington': 'WA',
+    'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
+  };
+  // Longest names first so "west virginia" wins over "virginia", etc.
+  var STATE_NAMES = Object.keys(STATE_MAP).sort(function (a, b) {
+    return b.length - a.length;
+  });
+
+  function getState(title) {
+    var t = ' ' + String(title || '').toLowerCase().replace(/[^a-z\s]/g, ' ')
+      .replace(/\s+/g, ' ') + ' ';
+    for (var i = 0; i < STATE_NAMES.length; i++) {
+      if (t.indexOf(' ' + STATE_NAMES[i] + ' ') !== -1) return STATE_MAP[STATE_NAMES[i]];
+    }
+    // Standalone USPS code, e.g. "Killeen TX PD".
+    var m = String(title || '').match(/\b([A-Z]{2})\b/);
+    if (m) {
+      for (var k in STATE_MAP) { if (STATE_MAP[k] === m[1]) return m[1]; }
+    }
+    return '';
+  }
+
   function matchTags(productTags, mapEntry) {
     var lower = productTags.map(function (t) { return t.toLowerCase(); });
     return mapEntry.tags.some(function (keyword) {
@@ -79,7 +114,7 @@
     card.className = 'product-card pcard anim';
     card.setAttribute('data-category', category);
     card.setAttribute('data-type',     type);
-    card.setAttribute('data-state',    '');
+    card.setAttribute('data-state',    getState(title));
 
     var badgeHtml = inStock
       ? '<span class="pcard__rts">Ready To Ship</span>'
@@ -171,9 +206,10 @@
   }
 
   function setupFilters() {
-    var activeTab  = 'all';
-    var activeType = 'all';
-    var searchTerm = '';
+    var activeTab   = 'all';
+    var activeType  = 'all';
+    var activeState = 'all';
+    var searchTerm  = '';
 
     function applyFilters() {
       var cards   = document.querySelectorAll('.product-card');
@@ -181,14 +217,16 @@
       for (var i = 0; i < cards.length; i++) {
         var cat     = cards[i].getAttribute('data-category') || '';
         var type    = cards[i].getAttribute('data-type')     || '';
+        var state   = cards[i].getAttribute('data-state')    || '';
         var titleEl = cards[i].querySelector('.product-title');
         var title   = titleEl ? titleEl.textContent : '';
 
-        var tabMatch    = activeTab  === 'all' || cat  === activeTab;
-        var typeMatch   = activeType === 'all' || type === activeType;
-        var searchMatch = searchTerm === ''    || title.toLowerCase().indexOf(searchTerm) !== -1;
+        var tabMatch    = activeTab   === 'all' || cat  === activeTab;
+        var typeMatch   = activeType  === 'all' || type === activeType;
+        var stateMatch  = activeState === 'all' || state === activeState;
+        var searchMatch = searchTerm  === ''    || title.toLowerCase().indexOf(searchTerm) !== -1;
 
-        var show = tabMatch && typeMatch && searchMatch;
+        var show = tabMatch && typeMatch && stateMatch && searchMatch;
         cards[i].style.display = show ? '' : 'none';
         if (show) visible++;
       }
@@ -196,16 +234,30 @@
       if (countEl) countEl.textContent = visible + ' product' + (visible === 1 ? '' : 's');
     }
 
+    var stateSelects = document.querySelectorAll('select[data-shop-filter="state"]');
+    function syncStateSelects(val) {
+      stateSelects.forEach(function (s) { s.value = val; });
+    }
+    stateSelects.forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        activeState = sel.value || 'all';
+        syncStateSelects(activeState);
+        applyFilters();
+      });
+    });
+
     var tabBtns = document.querySelectorAll('[data-tab]');
     for (var t = 0; t < tabBtns.length; t++) {
       (function (btn) {
         btn.addEventListener('click', function () {
-          activeTab  = btn.getAttribute('data-tab') || 'all';
-          activeType = 'all';
+          activeTab   = btn.getAttribute('data-tab') || 'all';
+          activeType  = 'all';
+          activeState = 'all';
+          syncStateSelects('all');
           for (var j = 0; j < tabBtns.length; j++) {
             tabBtns[j].classList.toggle('active', tabBtns[j] === btn);
           }
-          document.querySelectorAll('[data-shop-filter]').forEach(function (b) {
+          document.querySelectorAll('button[data-shop-filter]').forEach(function (b) {
             b.classList.remove('active');
           });
           applyFilters();
@@ -213,7 +265,7 @@
       })(tabBtns[t]);
     }
 
-    var filterBtns = document.querySelectorAll('[data-shop-filter]');
+    var filterBtns = document.querySelectorAll('button[data-shop-filter]');
     for (var f = 0; f < filterBtns.length; f++) {
       (function (btn) {
         btn.addEventListener('click', function () {
