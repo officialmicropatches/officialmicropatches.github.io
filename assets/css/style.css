@@ -1546,11 +1546,24 @@ image-slot {
 @media (max-width: 560px) {
   /* Two-up product grids instead of a single tall column */
   .products { grid-template-columns: 1fr 1fr; }
-  .product-card-body { padding: 14px 14px; }
-  .product-card-footer { padding: 12px 14px 16px; }
-  .product-card-body h3 { font-size: 16px; }
-  .product-price { font-size: 17px; }
   .card__body { padding: 14px 14px; }
   .card__title { font-size: 17px; }
   .card__price { font-size: 18px; }
+
+  /* Denser shop catalog so more entries fit per screen */
+  #dynamic-products-container .product-card-body {
+    padding: 10px 11px;
+    gap: 4px;
+  }
+  #dynamic-products-container .product-card-body h3 { font-size: 13.5px; line-height: 1.15; }
+  #dynamic-products-container .product-price { font-size: 14px; }
+  #dynamic-products-container .product-card-footer { padding: 8px 11px 12px; }
+  #dynamic-products-container .product-card-footer .btn-gold {
+    min-height: 38px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+}
+@media (max-width: 380px) {
+  #dynamic-products-container .product-card-body h3 { font-size: 12.5px; }
 }
