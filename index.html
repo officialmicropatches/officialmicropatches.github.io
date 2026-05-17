@@ -270,7 +270,9 @@
     var byKey = new Map();
     list.forEach(function (p) {
       if (!p.images.length) return;
-      var k = normalize(p.title);
+      // Key on the visible short name so listings that differ only after
+      // the "|" (e.g. "… | Police Keychain |") collapse to one card.
+      var k = normalize(shortTitle(p.title));
       var ex = byKey.get(k);
       if (!ex || (p.images.length > ex.images.length)) byKey.set(k, p);
     });
