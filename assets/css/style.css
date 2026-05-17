@@ -674,11 +674,10 @@ img { max-width: 100%; display: block; }
 /* ---------- Story block ---------- */
 .story {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 1fr;
   gap: clamp(32px, 6vw, 80px);
   align-items: center;
 }
-@media (max-width: 880px) { .story { grid-template-columns: 1fr; } }
 .story__media {
   aspect-ratio: 4 / 5;
   background: var(--bg-2);
