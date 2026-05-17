@@ -45,6 +45,7 @@
       </a>
     </div>
   </div>
+  <div class="mobile-nav-backdrop" data-mobile-nav-backdrop hidden></div>
   <div class="mobile-nav" data-mobile-nav hidden>
     ${NAV_ITEMS.map(n => `<a href="${n.href}"${n.id === page ? ' aria-current="page"' : ''}>${n.label}</a>`).join('')}
   </div>
@@ -301,24 +302,32 @@
   function wireMobileMenu() {
     const toggle = document.querySelector('[data-menu-toggle]');
     const nav = document.querySelector('[data-mobile-nav]');
+    const backdrop = document.querySelector('[data-mobile-nav-backdrop]');
     if (!toggle || !nav) return;
 
-    const closeMenu = () => {
-      if (nav.hasAttribute('hidden')) return;
-      nav.setAttribute('hidden', '');
-      toggle.setAttribute('aria-expanded', 'false');
+    const isOpen = () => !nav.hasAttribute('hidden');
+
+    const openMenu = () => {
+      nav.removeAttribute('hidden');
+      backdrop?.removeAttribute('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.classList.add('is-open');
+      document.body.classList.add('nav-open');
     };
 
-    toggle.addEventListener('click', () => {
-      const open = nav.hasAttribute('hidden');
-      if (open) { nav.removeAttribute('hidden'); toggle.setAttribute('aria-expanded', 'true'); }
-      else      { closeMenu(); }
-    });
+    const closeMenu = () => {
+      if (!isOpen()) return;
+      nav.setAttribute('hidden', '');
+      backdrop?.setAttribute('hidden', '');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.classList.remove('is-open');
+      document.body.classList.remove('nav-open');
+    };
 
-    // Retract the menu when the page is scrolled.
+    toggle.addEventListener('click', () => { isOpen() ? closeMenu() : openMenu(); });
+    backdrop?.addEventListener('click', closeMenu);
     window.addEventListener('scroll', closeMenu, { passive: true });
-
-    // Close after picking a destination.
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
     nav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   }
 
