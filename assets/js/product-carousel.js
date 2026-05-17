@@ -6,13 +6,16 @@
  * - Smooth cross-fade between photos
  * - Auto-advance (default ~3.2s); pause on hover / touch
  * - Swipe on touch devices
- * - Minimal dot indicators (tap to jump)
+ * - Optional overlaid caption (product name) + per-slide link to the
+ *   product page
  * - No layout shift: media box owns a fixed aspect-ratio
  * - First image eager + preloaded; the rest lazy-loaded only once
  *   the card enters the viewport
  * - Cycling stops entirely while the card is off-screen
  *
- * Usage: MPCarousel.mount(mediaEl, imageUrls, { alt, interval, priority })
+ * Usage: MPCarousel.mount(mediaEl, items, { alt, interval, priority })
+ *   items: array of image URL strings, OR array of
+ *          { src, label, href } objects (label → caption, href → link)
  * ------------------------------------------------------------------ */
 (function () {
   'use strict';
@@ -20,19 +23,27 @@
   var REDUCED = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function mount(media, images, opts) {
+  function mount(media, items, opts) {
     opts = opts || {};
     if (!media) return;
-    images = (images || []).filter(Boolean);
-    // De-dupe while keeping order.
+
+    // Normalize to [{ src, label, href }]
+    var list = (items || [])
+      .map(function (it) {
+        return (typeof it === 'string') ? { src: it } : (it || {});
+      })
+      .filter(function (it) { return it && it.src; });
+
+    // De-dupe by src while keeping order.
     var seen = {};
-    images = images.filter(function (s) {
-      if (seen[s]) return false; seen[s] = 1; return true;
+    list = list.filter(function (it) {
+      if (seen[it.src]) return false; seen[it.src] = 1; return true;
     });
-    if (!images.length) return;
+    if (!list.length) return;
 
     var alt = opts.alt || '';
     var interval = opts.interval || 3200;
+    var mediaIsLink = media.tagName === 'A';
 
     media.classList.add('pcar');
     media.innerHTML = '';
@@ -42,18 +53,27 @@
     media.appendChild(track);
 
     var slides = [];
-    images.forEach(function (src, i) {
-      var slide = document.createElement('div');
+    list.forEach(function (it, i) {
+      // A per-slide link is only safe when the media element itself is
+      // not already an anchor (no nested <a>).
+      var slide;
+      if (it.href && !mediaIsLink) {
+        slide = document.createElement('a');
+        slide.href = it.href;
+        if (it.label) slide.setAttribute('aria-label', it.label);
+      } else {
+        slide = document.createElement('div');
+      }
       slide.className = 'pcar__slide' + (i === 0 ? ' is-active' : '');
       var img = document.createElement('img');
-      img.alt = alt;
+      img.alt = it.label || alt;
       img.decoding = 'async';
       if (i === 0) {
-        img.src = src;
+        img.src = it.src;
         img.loading = 'eager';
         if (opts.priority) img.setAttribute('fetchpriority', 'high');
       } else {
-        img.dataset.src = src;
+        img.dataset.src = it.src;
         img.loading = 'lazy';
       }
       img.addEventListener('error', function () { slide.style.display = 'none'; });
@@ -62,27 +82,18 @@
       slides.push(slide);
     });
 
-    var dots = null;
-    if (images.length > 1) {
-      dots = document.createElement('div');
-      dots.className = 'pcar__dots';
-      images.forEach(function (_, i) {
-        var d = document.createElement('button');
-        d.type = 'button';
-        d.className = 'pcar__dot' + (i === 0 ? ' is-active' : '');
-        d.setAttribute('aria-label', 'View image ' + (i + 1));
-        d.addEventListener('click', function (e) {
-          e.preventDefault(); e.stopPropagation();
-          go(i); restart();
-        });
-        dots.appendChild(d);
-      });
-      media.appendChild(dots);
+    var hasCaption = list.some(function (it) { return it.label; });
+    var cap = null;
+    if (hasCaption) {
+      cap = document.createElement('div');
+      cap.className = 'pcar__cap';
+      cap.textContent = list[0].label || '';
+      media.appendChild(cap);
     }
 
     var cur = 0, timer = null;
     var visible = false, hovered = false, touching = false;
-    var loadedRest = images.length <= 1;
+    var loadedRest = list.length <= 1;
 
     function loadRest() {
       if (loadedRest) return;
@@ -98,29 +109,33 @@
 
     function go(n) {
       slides[cur].classList.remove('is-active');
-      if (dots) dots.children[cur].classList.remove('is-active');
       cur = (n + slides.length) % slides.length;
       slides[cur].classList.add('is-active');
-      if (dots) dots.children[cur].classList.add('is-active');
+      if (cap) cap.textContent = list[cur].label || '';
     }
 
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function play() {
       stop();
-      if (REDUCED || images.length < 2) return;
+      if (REDUCED || list.length < 2) return;
       if (visible && !hovered && !touching) {
         timer = setInterval(function () { go(cur + 1); }, interval);
       }
     }
-    function restart() { play(); }
 
     media.addEventListener('mouseenter', function () { hovered = true; stop(); });
     media.addEventListener('mouseleave', function () { hovered = false; play(); });
 
-    var sx = 0, sy = 0, swiping = false;
+    var sx = 0, sy = 0, swiping = false, moved = false;
     media.addEventListener('touchstart', function (e) {
       touching = true; stop();
-      var t = e.touches[0]; sx = t.clientX; sy = t.clientY; swiping = true;
+      var t = e.touches[0]; sx = t.clientX; sy = t.clientY;
+      swiping = true; moved = false;
+    }, { passive: true });
+    media.addEventListener('touchmove', function (e) {
+      if (!swiping) return;
+      var t = e.touches[0];
+      if (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8) moved = true;
     }, { passive: true });
     media.addEventListener('touchend', function (e) {
       touching = false;
@@ -134,6 +149,10 @@
       swiping = false;
       setTimeout(play, 700);
     }, { passive: true });
+    // A swipe on a linked slide must not also navigate.
+    media.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
 
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {

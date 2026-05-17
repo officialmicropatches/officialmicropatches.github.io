@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260517" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260519" />
 </head>
 <body data-page="shop">
 
@@ -105,10 +105,9 @@
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 
-<script src="assets/js/image-slot.js?v=20260517"></script>
-<script src="assets/js/shopify-config.js?v=20260517"></script>
-<script src="assets/js/product-carousel.js?v=20260517"></script>
-<script src="assets/js/site.js?v=20260517"></script>
+<script src="assets/js/image-slot.js?v=20260519"></script>
+<script src="assets/js/shopify-config.js?v=20260519"></script>
+<script src="assets/js/site.js?v=20260519"></script>
 <script id="pdp-jsonld" type="application/ld+json"></script>
 <script>
 function adjustQty(d) {
@@ -169,22 +168,15 @@ function adjustQty(d) {
   document.getElementById('pdp-stock').textContent = inStock ? 'In stock' : 'Sold out';
   document.getElementById('pdp-body').innerHTML = (p.body || '').replace(/<script[\s\S]*?<\/script>/g, '') || 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
 
-  // Gallery — auto-cycling carousel through all available photos
+  // Gallery — single static product image (no carousel)
   const imgs = (p.images || []).filter(Boolean);
   if (imgs.length) {
-    const mainEl = document.getElementById('gallery-main');
-    const lot = document.getElementById('pdp-lot');
     const thumbs = document.getElementById('thumbs');
     if (thumbs) thumbs.remove();
-    if (window.MPCarousel) {
-      window.MPCarousel.mount(mainEl, imgs, { alt: main, priority: true, interval: 4000 });
-      if (lot) mainEl.appendChild(lot);
-    } else {
-      const hero = document.getElementById('hero-img');
-      hero.src = imgs[0];
-      hero.alt = main;
-      hero.style.display = 'block';
-    }
+    const hero = document.getElementById('hero-img');
+    hero.src = imgs[0];
+    hero.alt = main;
+    hero.style.display = 'block';
   }
 
   // Lot number — deterministic from handle so it's stable per product
