@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
 <link rel="dns-prefetch" href="https://micropatches.myshopify.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260520" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260521" />
 <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260520">
 <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 <script type="application/ld+json">
@@ -79,18 +79,8 @@
   <div class="container">
     <header class="msec__head">
       <h2 class="msec__title">New Additions.</h2>
-      <p class="msec__lead">Browse ready to ship MicroKeychains. Every in stock keychain is $13.99.</p>
+      <p class="msec__lead">The latest ready to ship MicroKeychains. Every in stock keychain is $13.99. <a href="shop.html">Browse &amp; filter the full catalog →</a></p>
     </header>
-
-    <div class="mfilters" id="featured-filters" role="tablist" aria-label="Filter by category">
-      <button class="mfilter active" data-cat="all" role="tab">All</button>
-      <button class="mfilter" data-cat="police" role="tab">Police</button>
-      <button class="mfilter" data-cat="sheriff" role="tab">Sheriff</button>
-      <button class="mfilter" data-cat="federal" role="tab">Federal</button>
-      <button class="mfilter" data-cat="fire" role="tab">Fire</button>
-      <button class="mfilter" data-cat="ems" role="tab">EMS</button>
-      <button class="mfilter" data-cat="military" role="tab">Military</button>
-    </div>
 
     <div class="pgrid" id="featured-grid">
       <p class="mgrid-loading">Loading the latest catalog…</p>
@@ -242,6 +232,7 @@
               variantId: v.id ? String(v.id) : '',
               price: parseFloat(v.price) || 13.99,
               available: v.available === true,
+              published: Date.parse(p.published_at || p.created_at || p.updated_at || '') || 0,
               images: (p.images || []).map(function (im) { return im && im.src; }).filter(Boolean)
             };
           });
@@ -259,6 +250,7 @@
             variantId: '',
             price: parseFloat(p.price) || 13.99,
             available: (p.qty || 0) > 0,
+            published: 0,
             images: (p.images || []).filter(Boolean)
           };
         });
@@ -269,12 +261,16 @@
   function dedupe(list) {
     var byKey = new Map();
     list.forEach(function (p) {
-      if (!p.images.length) return;
       // Key on the visible short name so listings that differ only after
       // the "|" (e.g. "… | Police Keychain |") collapse to one card.
       var k = normalize(shortTitle(p.title));
       var ex = byKey.get(k);
-      if (!ex || (p.images.length > ex.images.length)) byKey.set(k, p);
+      if (!ex) { byKey.set(k, p); return; }
+      // Prefer the photo-rich entry as the visible card, but keep the most
+      // recent publish date so freshly added listings still rank as new.
+      var rep = (p.images.length > ex.images.length) ? p : ex;
+      rep.published = Math.max(ex.published || 0, p.published || 0);
+      byKey.set(k, rep);
     });
     return [...byKey.values()];
   }
@@ -286,10 +282,13 @@
     var art = document.createElement('article');
     art.className = 'pcard';
     art.setAttribute('data-cat', cat);
+    var media = p.images[0]
+      ? '<img class="pcard__img" src="' + esc(p.images[0]) + '" alt="' + esc(name) + '" loading="lazy" decoding="async">'
+      : '<span class="pcard__ph"><span class="pcard__ph-mark">M</span><span class="pcard__ph-txt">Photo Coming Soon</span></span>';
     art.innerHTML =
       '<a class="pcard__media" href="product.html?handle=' + encodeURIComponent(p.handle) + '" aria-label="' + esc(name) + '">' +
         '<span class="pcard__rts">Ready To Ship</span>' +
-        '<img class="pcard__img" src="' + esc(p.images[0] || '') + '" alt="' + esc(name) + '" loading="lazy" decoding="async">' +
+        media +
       '</a>' +
       '<div class="pcard__body">' +
         '<h3 class="pcard__title"><a href="product.html?handle=' + encodeURIComponent(p.handle) + '">' + esc(name) + '</a></h3>' +
@@ -314,8 +313,12 @@
 
     var inStock = dedupe(products.filter(function (p) { return p.available; }));
     if (!inStock.length) inStock = dedupe(products);
-    inStock.sort(function (a, b) { return b.images.length - a.images.length; });
-    var featured = inStock.slice(0, 12);
+    // Newest additions first (by Shopify publish date); photo-rich entries
+    // break ties so the grid stays visually full.
+    inStock.sort(function (a, b) {
+      return (b.published - a.published) || (b.images.length - a.images.length);
+    });
+    var featured = inStock.slice(0, 6);
 
     if (!featured.length) { grid.innerHTML = '<p class="mgrid-loading">Catalog unavailable — visit the shop.</p>'; return; }
 
@@ -326,10 +329,10 @@
 
     // Hero visual — the ONLY carousel on the site: best in-stock product
     // photos, each labeled and linked to its own product page.
+    var withPhotos = inStock.filter(function (p) { return p.images[0]; });
     var heroMedia = document.getElementById('hero-media');
     if (heroMedia && window.MPCarousel) {
-      var heroItems = featured.slice(0, 6)
-        .filter(function (p) { return p.images[0]; })
+      var heroItems = withPhotos.slice(0, 6)
         .map(function (p) {
           return {
             src: p.images[0],
@@ -343,29 +346,13 @@
     // Texture macro visual — single static detail shot (no carousel).
     var tex = document.getElementById('texture-media');
     if (tex) {
-      var texSrc = (featured.find(function (p) { return p.images.length > 1; }) ||
-                    featured[0] || { images: [] }).images.slice(-1)[0];
+      var texSrc = (withPhotos.find(function (p) { return p.images.length > 1; }) ||
+                    withPhotos[0] || { images: [] }).images.slice(-1)[0];
       if (texSrc) {
         tex.innerHTML = '<img src="' + esc(texSrc) + '" alt="Raised UV-cured texture" ' +
           'loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">';
       }
     }
-
-    wireFilters();
-  }
-
-  function wireFilters() {
-    var btns = document.querySelectorAll('#featured-filters .mfilter');
-    var cards = document.querySelectorAll('#featured-grid .pcard');
-    btns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var cat = btn.getAttribute('data-cat');
-        btns.forEach(function (b) { b.classList.toggle('active', b === btn); });
-        cards.forEach(function (c) {
-          c.style.display = (cat === 'all' || c.getAttribute('data-cat') === cat) ? '' : 'none';
-        });
-      });
-    });
   }
 
   fromLive()
