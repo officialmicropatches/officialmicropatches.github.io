@@ -1502,6 +1502,34 @@ body[data-page="shop"] .shop-note-banner { margin-bottom: 22px; }
   body[data-page="shop"] .section { padding: 16px 0 48px; }
 }
 
+/* Custom Order page: same generic-.section void as the shop page, plus
+   .custom-pricing-summary and .section-header ship with no CSS (legacy
+   classes). Tighten spacing and style the bare elements. */
+body[data-page="custom"] .section {
+  padding: 28px 0 72px;
+  border-top: none;
+}
+.custom-pricing-summary {
+  text-align: center;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.custom-pricing-summary strong { color: var(--ink); }
+.faq-accordion { display: flex; flex-direction: column; gap: 0; }
+body[data-page="custom"] .section-header h2 { margin: 0 0 6px; }
+body[data-page="custom"] .section-header p { margin: 0; color: var(--ink-dim); }
+@media (max-width: 560px) {
+  body[data-page="custom"] .section { padding: 18px 0 48px; }
+  .custom-pricing-summary { font-size: 11px; padding: 12px 14px; }
+}
+
 /* ===== STORY LOGO FIX ===== */
 .story__media {
   display: flex;
