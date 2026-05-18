@@ -44,9 +44,9 @@
       if (/space force/.test(t)) return 'space-force';
       return 'army';
     }
-    if (category === 'corrections') {
-      return /detention/.test(t) ? 'detention' : 'corrections';
-    }
+    // Corrections is a single bucket — no Officers/Detention split.
+    // Only the State filter narrows it.
+    if (category === 'corrections') return '';
     if (category === 'fire') return 'department';
     if (category === 'ems') {
       if (/paramedic/.test(t)) return 'paramedic';
