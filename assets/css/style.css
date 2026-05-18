@@ -1484,6 +1484,24 @@ image-slot {
   margin-bottom: 16px;
 }
 
+/* Shop page layout: the generic .section padding is sized for marketing
+   pages and leaves a large empty gap under the filter bar. Tighten it
+   and give the info banners room to breathe. */
+body[data-page="shop"] .section {
+  padding: 22px 0 64px;
+  border-top: none;
+}
+body[data-page="shop"] .focus-banner,
+body[data-page="shop"] .shop-note-banner {
+  padding: 13px 18px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+body[data-page="shop"] .shop-note-banner { margin-bottom: 22px; }
+@media (max-width: 560px) {
+  body[data-page="shop"] .section { padding: 16px 0 48px; }
+}
+
 /* ===== STORY LOGO FIX ===== */
 .story__media {
   display: flex;
