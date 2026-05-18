@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(git --version)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__graphql_mutation"
     ]
   }
 }

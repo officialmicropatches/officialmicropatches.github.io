@@ -13,24 +13,65 @@
 
   var STORE_URL = 'https://micropatches.myshopify.com';
 
-  var CATEGORY_MAP = [
-    { tags: ['fire', 'fire department', 'fire dept', 'firefighter'], value: 'fire' },
-    { tags: ['military', 'army', 'navy', 'marines', 'air force', 'coast guard', 'national guard', 'usmc', 'usaf', 'usn'], value: 'military' },
-    { tags: ['ems', 'emergency medical', 'paramedic', 'medic', 'ambulance'], value: 'ems' },
-    { tags: ['corrections', 'correctional', 'jail', 'prison', 'detention'], value: 'corrections' },
-    { tags: ['search and rescue', 'sar', 'rescue'], value: 'search-rescue' },
-    { tags: ['law enforcement', 'police', 'sheriff', 'constable', 'marshal', 'trooper', 'highway patrol', 'state police'], value: 'law-enforcement' }
-  ];
+  /**
+   * Category / type are derived from the (standardized) product TITLE, not
+   * from Shopify tags. The catalog uses titles like
+   *   "Chandler Police Department, Arizona - MicroKeychain"
+   *   "82nd Airborne Division, U.S. Army - MicroKeychain"
+   *   "U.S. Border Patrol, Federal Agency - MicroKeychain"
+   *   "American Medical Response, EMS - EMT MicroKeychain"
+   * so every product (including brand-new ones) classifies correctly with no
+   * tag maintenance required.
+   */
+  function lc(s) { return String(s || '').toLowerCase(); }
 
-  var TYPE_MAP = [
-    { tags: ['sheriff'], value: 'sheriff' },
-    { tags: ['police'], value: 'police' },
-    { tags: ['fire', 'firefighter'], value: 'fire' },
-    { tags: ['corrections', 'correctional'], value: 'corrections' },
-    { tags: ['military'], value: 'military' },
-    { tags: ['ems', 'paramedic'], value: 'ems' },
-    { tags: ['search and rescue', 'sar'], value: 'search-rescue' }
-  ];
+  function getCategory(title) {
+    var t = lc(title);
+    if (t.indexOf('pink patch') !== -1) return 'pink-patch';
+    if (/, ems -|\bems\b|\bemt\b|paramedic|\bcct[\s-]?rn\b|emergency medical|ambulance/.test(t)) return 'ems';
+    if (/, u\.s\. (army|navy|marine|air force|space force|military)|airborne|ranger regiment|army ranger|mountain division|\bbattalion\b|\binfantry\b|\bpir\b|naval construction|seabee|\bmarines\b|air force|space force/.test(t)) return 'military';
+    if (/fire department|fire dept|firefighter|\bfire\b/.test(t)) return 'fire';
+    if (/department of corrections|correctional|corrections|detention|\bscore\b/.test(t)) return 'corrections';
+    return 'law-enforcement';
+  }
+
+  function getType(title, category) {
+    var t = lc(title);
+    if (category === 'military') {
+      if (/marine/.test(t)) return 'marines';
+      if (/navy|naval|seabee/.test(t)) return 'navy';
+      if (/air force/.test(t)) return 'air-force';
+      if (/space force/.test(t)) return 'space-force';
+      return 'army';
+    }
+    // Corrections is a single bucket — no Officers/Detention split.
+    // Only the State filter narrows it.
+    if (category === 'corrections') return '';
+    if (category === 'fire') return 'department';
+    if (category === 'ems') {
+      if (/paramedic/.test(t)) return 'paramedic';
+      if (/cct[\s-]?rn/.test(t)) return 'cct-rn';
+      if (/\bemt\b/.test(t)) return 'emt';
+      return '';
+    }
+    if (category === 'law-enforcement') {
+      if (/, federal agency -|border patrol|\bice\b|\bfbi\b|\bdea\b|\batf\b|\bcbp\b|marshal|customs|secret service|homeland/.test(t)) return 'federal';
+      if (/university/.test(t)) return 'university';
+      if (/indian police|tribal|gila river/.test(t)) return 'tribal';
+      if (/highway patrol|department of public safety|public safety|state trooper|state police|\bdps\b|\brangers\b/.test(t)) return 'state';
+      if (/sheriff|constable/.test(t)) return 'sheriff';
+      return 'police';
+    }
+    return '';
+  }
+
+  function getStateFromTags(tags) {
+    for (var i = 0; i < tags.length; i++) {
+      var m = String(tags[i]).match(/^state:\s*([A-Za-z]{2})$/);
+      if (m) return m[1].toUpperCase();
+    }
+    return '';
+  }
 
   var STATE_MAP = {
     'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR',
@@ -67,27 +108,6 @@
     return '';
   }
 
-  function matchTags(productTags, mapEntry) {
-    var lower = productTags.map(function (t) { return t.toLowerCase(); });
-    return mapEntry.tags.some(function (keyword) {
-      return lower.indexOf(keyword) !== -1;
-    });
-  }
-
-  function getCategory(tags) {
-    for (var i = 0; i < CATEGORY_MAP.length; i++) {
-      if (matchTags(tags, CATEGORY_MAP[i])) return CATEGORY_MAP[i].value;
-    }
-    return '';
-  }
-
-  function getType(tags) {
-    for (var i = 0; i < TYPE_MAP.length; i++) {
-      if (matchTags(tags, TYPE_MAP[i])) return TYPE_MAP[i].value;
-    }
-    return '';
-  }
-
   function buildCard(product) {
     var variant   = (product.variants && product.variants[0]) || {};
     var inStock   = variant.available === true;
@@ -98,8 +118,9 @@
     var tags      = product.tags   || [];
     var images    = (product.images || []).map(function (im) { return im && im.src; }).filter(Boolean);
     var image     = images[0] || null;
-    var category  = getCategory(tags);
-    var type      = getType(tags);
+    var category  = getCategory(title);
+    var type      = getType(title, category);
+    var state     = getStateFromTags(tags) || getState(title);
 
     var productUrl = 'product.html?handle=' + encodeURIComponent(handle);
 
@@ -114,7 +135,7 @@
     card.className = 'product-card pcard anim';
     card.setAttribute('data-category', category);
     card.setAttribute('data-type',     type);
-    card.setAttribute('data-state',    getState(title));
+    card.setAttribute('data-state',    state);
 
     var badgeHtml = inStock
       ? '<span class="pcard__rts">Ready To Ship</span>'
@@ -148,6 +169,12 @@
       img.src = image; img.alt = name;
       img.loading = 'lazy'; img.decoding = 'async';
       media.appendChild(img);
+    } else {
+      var ph = document.createElement('span');
+      ph.className = 'pcard__ph';
+      ph.innerHTML = '<span class="pcard__ph-mark">M</span>' +
+                     '<span class="pcard__ph-txt">Photo Coming Soon</span>';
+      media.appendChild(ph);
     }
 
     return card;
@@ -232,6 +259,8 @@
       }
       var countEl = document.querySelector('.product-count, #product-count, .results-count');
       if (countEl) countEl.textContent = visible + ' product' + (visible === 1 ? '' : 's');
+      var emptyEl = document.getElementById('shop-empty');
+      if (emptyEl) emptyEl.hidden = visible !== 0;
     }
 
     var stateSelects = document.querySelectorAll('select[data-shop-filter="state"]');
@@ -260,6 +289,12 @@
           document.querySelectorAll('button[data-shop-filter]').forEach(function (b) {
             b.classList.remove('active');
           });
+          var activeGroup = document.querySelector(
+            '.shop-filter-group[data-filter-for="' + activeTab + '"]');
+          if (activeGroup) {
+            var allPill = activeGroup.querySelector('button[data-filter-value="all"]');
+            if (allPill) allPill.classList.add('active');
+          }
           applyFilters();
         });
       })(tabBtns[t]);

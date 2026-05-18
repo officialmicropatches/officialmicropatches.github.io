@@ -1909,9 +1909,37 @@ a.pcar__slide { display: block; }
 }
 
 /* ---- 5 / 6 · Compact product cards ---- */
-.pgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-@media (min-width: 680px) { .pgrid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
-@media (min-width: 1024px) { .pgrid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+/* New Additions = exactly 6 items, 3 across / 2 rows at every width. */
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+@media (min-width: 680px) { .pgrid { gap: 14px; } }
+@media (min-width: 1024px) { .pgrid { gap: 16px; } }
+.pgrid .pcard__title { font-size: 11px; }
+.pgrid .pcard__body { padding: 8px 8px; gap: 6px; }
+.pgrid .pcard__add { padding: 7px 8px; font-size: 9px; }
+@media (min-width: 560px) {
+  .pgrid .pcard__title { font-size: 13px; }
+  .pgrid .pcard__body { padding: 12px 13px; gap: 8px; }
+  .pgrid .pcard__add { padding: 9px 13px; font-size: 11px; }
+}
+
+/* Placeholder tile for products with no photo yet (e.g. just added). */
+.pcard__ph {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(150deg, var(--bg-3), var(--bg-2));
+  color: var(--ink-dim); text-align: center; padding: 10px;
+}
+.pcard__ph-mark {
+  width: 38px; height: 38px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--on-accent);
+  font-family: var(--f-display); font-weight: 800; font-size: 20px;
+}
+.pcard__ph-txt {
+  font-family: var(--f-mono); font-size: 9px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
 
 .mgrid-loading {
   grid-column: 1 / -1; text-align: center; padding: 40px 0;
