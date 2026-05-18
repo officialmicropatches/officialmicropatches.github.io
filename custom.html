@@ -163,6 +163,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* Submissions are saved to Firebase: the photo goes to Storage (submissions/)
    and the order record to Firestore (submissions collection) — the same model
@@ -183,6 +184,13 @@ let app;
 try { app = getApp(); } catch (_e) { app = initializeApp(FB_CONFIG); }
 const storage = getStorage(app);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+/* Storage rules require an authenticated request; sign in anonymously
+   (same as the admin/queue flow) before any upload. */
+async function ensureAuth() {
+  if (!auth.currentUser) await signInAnonymously(auth);
+}
 
 const form      = document.getElementById("custom-order-form");
 const fileInput = document.getElementById("co-reference");
@@ -211,6 +219,7 @@ fileInput?.addEventListener("change", async (e) => {
   uploading = true;
   setStatus("Uploading photo…");
   try {
+    await ensureAuth();
     const safe = (file.name || "photo.jpg").replace(/[^a-zA-Z0-9._-]/g, "_");
     const r = ref(storage, "submissions/" + Date.now() + "_custom_" + safe);
     await uploadBytes(r, file);
