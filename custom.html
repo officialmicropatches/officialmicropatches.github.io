@@ -257,6 +257,7 @@ form?.addEventListener("submit", async (e) => {
 
   setStatus("Sending…");
   try {
+    await ensureAuth();
     await addDoc(collection(db, "submissions"), submission);
     if (FORM_ENDPOINT) {
       // Best-effort secondary notification; never fails the submission.

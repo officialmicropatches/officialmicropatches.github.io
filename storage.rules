@@ -8,7 +8,8 @@ service firebase.storage {
                    && request.resource.size < 10 * 1024 * 1024;
     }
     match /submissions/{file} {
-      allow create: if request.resource.contentType.matches('image/.*')
+      allow create: if request.auth != null
+                    && request.resource.contentType.matches('image/.*')
                     && request.resource.size < 10 * 1024 * 1024;
       allow read, delete: if request.auth != null;
     }
