@@ -124,12 +124,13 @@ function render(items){
         '<h3>' + esc(s.name || "(no name)") +
           (isCustom ? '<span class="badge">custom order</span>' : '') + '</h3>' +
         '<p class="sub">' + fmtDate(s.submittedAt) + (s.source ? " · " + esc(s.source) : "") + '</p>' +
-        row("Agency / unit", s.agency) +
         row("Email", s.email) +
         row("Phone", s.phone) +
         row("Product", s.productType) +
-        row("Qty / notes", s.description || s.quantity) +
-        row("Referral", s.referral) +
+        row("Quantity", s.quantity) +
+        row("Design description", s.description) +
+        row("Additional notes", s.notes) +
+        row("Agency / unit", s.agency) +
         row("Photo", s.patchPhotoURL, true) +
       '</div>' +
     '</div>';
@@ -140,7 +141,7 @@ function applyFilter(){
   const q = (qEl.value || "").trim().toLowerCase();
   if (!q){ render(all); return; }
   render(all.filter(function(s){
-    return [s.name, s.agency, s.email, s.phone, s.description, s.productType]
+    return [s.name, s.agency, s.email, s.phone, s.description, s.notes, s.productType]
       .filter(Boolean).join(" ").toLowerCase().indexOf(q) !== -1;
   }));
 }

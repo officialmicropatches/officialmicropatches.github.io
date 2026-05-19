@@ -136,28 +136,28 @@ Referrer-Policy: strict-origin-when-cross-origin -->
       <fieldset class="co-step">
         <legend><span class="co-step__n">01</span> Contact</legend>
         <div class="co-grid">
-          <label class="co-field"><span>First name</span><input type="text" name="firstName" required maxlength="80" autocomplete="given-name"></label>
-          <label class="co-field"><span>Last name</span><input type="text" name="lastName" maxlength="80" autocomplete="family-name"></label>
+          <label class="co-field co-field--full"><span>Full name</span><input type="text" name="fullName" required maxlength="120" autocomplete="name"></label>
           <label class="co-field"><span>Email</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
           <label class="co-field"><span>Phone <em>· optional</em></span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
-          <label class="co-field co-field--full"><span>Agency / unit name</span><input type="text" name="agency" required maxlength="160"></label>
         </div>
       </fieldset>
 
       <fieldset class="co-step">
         <legend><span class="co-step__n">02</span> Order details</legend>
         <div class="co-grid">
-          <label class="co-field co-field--full"><span>Product type</span>
-            <select name="productType">
-              <option>MicroKeychain — from $13.99</option>
-              <option>MicroMagnet — from $14.99</option>
-              <option>MicroCharm — from $9.99</option>
-              <option>MicroPin — from $9.99</option>
-              <option>Not sure — help me choose</option>
+          <label class="co-field"><span>Product type</span>
+            <select name="productType" required>
+              <option value="" selected disabled>Select a product…</option>
+              <option>Micro Keychain</option>
+              <option>Challenge Coin</option>
+              <option>Micro Magnet</option>
+              <option>Micro Pin</option>
+              <option>Micro Croc</option>
             </select>
           </label>
-          <label class="co-field co-field--full"><span>Estimated quantity</span><input type="text" name="quantity" maxlength="80" placeholder="e.g. 25, 100, or not sure yet"></label>
-          <label class="co-field co-field--full"><span>Notes / request details</span><textarea name="message" rows="4" maxlength="2000" placeholder="SWAT team keychains · Retirement gift · Memorial patch · Morale patch order · Bulk academy order"></textarea></label>
+          <label class="co-field"><span>Quantity</span><input type="number" name="quantity" required min="1" max="100000" inputmode="numeric" placeholder="e.g. 25"></label>
+          <label class="co-field co-field--full"><span>Design description</span><textarea name="designDescription" rows="4" required maxlength="2000" placeholder="Describe the patch / artwork you want made — agency or unit, colors, text, any changes."></textarea></label>
+          <label class="co-field co-field--full"><span>Additional notes <em>· optional</em></span><textarea name="notes" rows="3" maxlength="2000" placeholder="Deadlines, budget, bulk/team order details, anything else."></textarea></label>
         </div>
       </fieldset>
 
@@ -311,13 +311,13 @@ form?.addEventListener("submit", async (e) => {
   const fd = new FormData(form);
   const submission = {
     type: "custom-order",
-    name: ((fd.get("firstName") || "") + " " + (fd.get("lastName") || "")).trim(),
+    name: (fd.get("fullName") || "").trim(),
     email: fd.get("email") || "",
     phone: fd.get("phone") || "",
-    agency: fd.get("agency") || "",
     productType: fd.get("productType") || "",
     quantity: fd.get("quantity") || "",
-    description: fd.get("message") || "",
+    description: fd.get("designDescription") || "",
+    notes: fd.get("notes") || "",
     patchPhotoURL: uploadedURL || "",
     patchPhotoPath: "",
     submittedAt: new Date().toISOString(),
@@ -348,10 +348,11 @@ form?.addEventListener("submit", async (e) => {
   } catch (_err) {
     setStatus("Couldn't submit automatically — opening your email app as a backup…", "#fbbf24");
     mailtoFallback({
-      firstName: fd.get("firstName") || "", lastName: fd.get("lastName") || "",
-      email: submission.email, phone: submission.phone, agency: submission.agency,
+      name: submission.name,
+      email: submission.email, phone: submission.phone,
       productType: submission.productType, quantity: submission.quantity,
-      message: submission.description, photoUrl: submission.patchPhotoURL
+      description: submission.description, notes: submission.notes,
+      photoUrl: submission.patchPhotoURL
     });
   } finally {
     submitBtn.disabled = false;
@@ -360,17 +361,16 @@ form?.addEventListener("submit", async (e) => {
 
 function mailtoFallback(p) {
   const body =
-    "First name: " + p.firstName + "\n" +
-    "Last name: " + p.lastName + "\n" +
+    "Full name: " + p.name + "\n" +
     "Email: " + p.email + "\n" +
     "Phone: " + p.phone + "\n" +
-    "Agency / unit: " + p.agency + "\n" +
     "Product type: " + p.productType + "\n" +
-    "Estimated quantity: " + (p.quantity || "") + "\n" +
-    "Notes: " + p.message + "\n" +
-    "Patch photo: " + (p.photoUrl || "(attach your photo to this email)") + "\n";
+    "Quantity: " + (p.quantity || "") + "\n" +
+    "Design description: " + (p.description || "") + "\n" +
+    "Additional notes: " + (p.notes || "") + "\n" +
+    "Reference photo: " + (p.photoUrl || "(attach your photo to this email)") + "\n";
   window.location.href = "mailto:" + NOTIFY_EMAIL +
-    "?subject=" + encodeURIComponent("Custom Order Request — " + (p.agency || p.firstName)) +
+    "?subject=" + encodeURIComponent("Custom Order Request — " + (p.name || p.email)) +
     "&body=" + encodeURIComponent(body);
   setStatus("Opening your email app — just hit send. (If nothing happens, email " + NOTIFY_EMAIL + ".)", "#fbbf24");
 }
