@@ -76,17 +76,14 @@ jobs:
 
           if [ "$count" -gt "$prevCount" ] || [[ -n "$latest" && "$latest" > "$prevLatest" ]]; then
             [ "$new" -gt 1 ] && plural="s" || plural=""
+            who="${ASSIGNEE:-officialmicropatches}"
             title="New custom order received ($(date -u '+%Y-%m-%d %H:%M UTC'))"
-            body=$(printf '%s\n\n%s\n\n- New since last check: %s%s\n- Total orders on file: %s' \
+            body=$(printf '%s\n\n%s\n\n- New since last check: %s%s\n- Total orders on file: %s\n\ncc @%s' \
               "A new custom order just came in." \
               "Open the private dashboard for full details (name, photo, contact): ${DASH}" \
-              "${new:-1}" "${plural}" "${count}")
-            if [ -n "${ASSIGNEE:-}" ]; then
-              gh issue create --repo "$REPO" --title "$title" --body "$body" --assignee "$ASSIGNEE" || \
-              gh issue create --repo "$REPO" --title "$title" --body "$body"
-            else
-              gh issue create --repo "$REPO" --title "$title" --body "$body"
-            fi
+              "${new:-1}" "${plural}" "${count}" "${who}")
+            gh issue create --repo "$REPO" --title "$title" --body "$body" --assignee "$who" || \
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
             echo "Issue opened."
             commit_state "alerted ($count total)"
           else
