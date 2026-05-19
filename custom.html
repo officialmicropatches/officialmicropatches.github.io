@@ -21,135 +21,208 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260528">
+<link rel="stylesheet" href="assets/css/style.css?v=20260529">
   <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260521">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
-<style>
-/* Photo upload control — themed to match the site */
-#co-reference {
-  display: block;
-  width: 100%;
-  padding: 6px 0;
-  color: var(--ink-dim);
-  font-size: 13px;
-  cursor: pointer;
-}
-#co-reference::file-selector-button {
-  background: var(--bg-3);
-  border: 1px solid var(--line-2);
-  border-radius: 8px;
-  color: var(--ink);
-  cursor: pointer;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-right: 12px;
-  padding: 9px 14px;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-#co-reference::file-selector-button:hover {
-  border-color: var(--accent);
-  background: var(--bg-2);
-}
-#photo-status {
-  margin-top: 8px;
-  font-size: 13px;
-  display: none;
-}
-#photo-preview {
-  display: none;
-  margin-top: 12px;
-  max-width: 220px;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-}
-</style>
 </head>
 <body data-page="custom">
 
 <div data-site-header></div>
 
-<!-- ===== PAGE HERO ===== -->
-<section class="page-hero">
-<div class="container">
-<p class="eyebrow">Made to Order</p>
-<h1>CUSTOM ORDER REQUEST</h1>
-<p>Don't see your agency or unit? We can build it. Send a reference photo or your patch and we will make it happen.</p>
-</div>
+<!-- ===== 1 · HERO ===== -->
+<header class="co-hero">
+  <div class="co-hero__glow" aria-hidden="true"></div>
+  <div class="co-wrap">
+    <p class="co-eyebrow">MicroPatches · Phoenix, Arizona</p>
+    <h1 class="co-hero__title">Custom &amp; Bulk Orders</h1>
+    <p class="co-hero__lead">Turn your real patch into premium MicroPatch products.</p>
+    <p class="co-hero__sub">We create premium textured MicroKeychains, magnets, charms, and pins from agency patches, memorial designs, retirement gifts, morale patches, and custom artwork. <b>Made in Phoenix, Arizona.</b></p>
+    <a href="#request" class="co-btn co-btn--primary co-btn--lg">Start Your Request <span aria-hidden="true">→</span></a>
+  </div>
+</header>
+
+<!-- ===== 2 · TRUST BAR ===== -->
+<section class="co-trust" aria-label="Why MicroPatches">
+  <ul class="co-trust__row">
+    <li>No minimum orders</li>
+    <li>Made in USA</li>
+    <li>Active law enforcement owned</li>
+    <li>Bulk pricing available</li>
+    <li>We work from photos or vectors</li>
+  </ul>
 </section>
 
-<!-- ===== CUSTOM ORDER ===== -->
-<div class="custom-intro">
-<div class="container" style="max-width:720px">
-
-  <div class="custom-card">
-    <p class="eyebrow">What We Make</p>
-    <h2 class="custom-card__title">Any Patch. Made Micro.</h2>
-    <p class="custom-offer-lead">The shop currently sells <strong class="accent">MicroKeychains</strong> only — but a custom order can be any of these:</p>
-    <ul class="custom-offer-list">
-      <li>MicroKeychains</li>
-      <li>MicroMagnets</li>
-      <li>MicroCharms</li>
-      <li>MicroPins</li>
-    </ul>
-    <p class="custom-offer-price"><strong>$25 flat design fee</strong> <span>·</span> waived on qualifying bulk orders <span>·</span> units from $9.99</p>
+<!-- ===== 3 · PRODUCTS ===== -->
+<section class="co-section">
+  <div class="co-wrap">
+    <header class="co-head">
+      <p class="co-eyebrow">What We Make</p>
+      <h2 class="co-h2">Choose your product</h2>
+    </header>
   </div>
-
-  <div class="custom-card">
-    <p class="eyebrow">Send Your Request</p>
-    <p class="custom-card__sub">We typically respond within 1–2 business days</p>
-    <form class="patch-form" id="custom-order-form" novalidate>
-      <div class="patch-form-grid">
-        <label class="patch-field"><span>First name *</span><input type="text" name="firstName" required maxlength="80" autocomplete="given-name"></label>
-        <label class="patch-field"><span>Last name</span><input type="text" name="lastName" maxlength="80" autocomplete="family-name"></label>
-        <label class="patch-field"><span>Email *</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
-        <label class="patch-field"><span>Phone</span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
-        <label class="patch-field patch-field--full"><span>Agency / unit name *</span><input type="text" name="agency" required maxlength="160"></label>
-        <label class="patch-field patch-field--full"><span>Product type</span>
-          <select name="productType">
-            <option>MicroKeychain ($13.99)</option>
-            <option>MicroMagnet</option>
-            <option>MicroCharm</option>
-            <option>MicroPin</option>
-            <option>Not sure</option>
-          </select>
-        </label>
-        <label class="patch-field patch-field--full"><span>Quantity / notes</span><textarea name="message" rows="4" maxlength="2000"></textarea></label>
-        <label class="patch-field patch-field--full"><span>Patch photo *</span>
-          <input type="file" id="co-reference" name="photo" accept="image/*" required>
-          <small class="patch-hint">Lay the patch flat on a solid surface, phone directly above, no angles or shadows. Better photo = better keychain.</small>
-        </label>
+  <div class="co-scroller" role="list" aria-label="MicroPatch products">
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">M</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">MicroKeychain</h3>
+        <p class="co-card__desc">Our signature textured patch keychain.</p>
+        <p class="co-card__price">From <strong>$13.99</strong></p>
       </div>
-      <div id="photo-status" class="patch-status" role="status" aria-live="polite"></div>
-      <img id="photo-preview" alt="" style="display:none;max-width:160px;border-radius:8px;margin-top:10px">
-      <button type="submit" class="patch-submit">Send custom order request</button>
-      <p class="patch-fallback"><small>Trouble submitting? Email <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a> directly.</small></p>
+    </article>
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">M</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">MicroMagnet</h3>
+        <p class="co-card__desc">Premium display magnet for lockers, safes, and displays.</p>
+        <p class="co-card__price">From <strong>$14.99</strong></p>
+      </div>
+    </article>
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">M</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">MicroCharm</h3>
+        <p class="co-card__desc">Compact lightweight accessory attachment.</p>
+        <p class="co-card__price">From <strong>$9.99</strong></p>
+      </div>
+    </article>
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">M</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">MicroPin</h3>
+        <p class="co-card__desc">Collector-style wearable patch pin.</p>
+        <p class="co-card__price">From <strong>$9.99</strong></p>
+      </div>
+    </article>
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">?</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">Not sure?</h3>
+        <p class="co-card__desc">Tell us your project — we'll help you choose the best option.</p>
+        <p class="co-card__price"><a href="#request" style="color:var(--accent)">Start a request →</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===== 4 · PRICING ===== -->
+<section class="co-section">
+  <div class="co-wrap co-wrap--narrow">
+    <header class="co-head">
+      <p class="co-eyebrow">Pricing</p>
+      <h2 class="co-h2">Simple pricing</h2>
+    </header>
+    <div class="co-pricing">
+      <p class="co-pricing__note"><strong>$25 flat design / setup fee</strong> per individual patch design. Applies to all products — and may be waived on qualifying bulk orders.</p>
+      <ul class="co-pricing__list">
+        <li><span>MicroKeychains</span><span>from $13.99</span></li>
+        <li><span>MicroMagnets</span><span>from $14.99</span></li>
+        <li><span>MicroCharms</span><span>from $9.99</span></li>
+        <li><span>MicroPins</span><span>from $9.99</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5 · REQUEST FORM ===== -->
+<section class="co-section" id="request">
+  <div class="co-wrap co-wrap--narrow">
+    <header class="co-head">
+      <p class="co-eyebrow">Start Your Request</p>
+      <h2 class="co-h2">Custom &amp; bulk request</h2>
+      <p class="co-head__sub">A quick guided intake — most projects take about a minute to submit.</p>
+    </header>
+
+    <form class="co-form" id="custom-order-form" novalidate>
+      <fieldset class="co-step">
+        <legend><span class="co-step__n">01</span> Contact</legend>
+        <div class="co-grid">
+          <label class="co-field"><span>First name</span><input type="text" name="firstName" required maxlength="80" autocomplete="given-name"></label>
+          <label class="co-field"><span>Last name</span><input type="text" name="lastName" maxlength="80" autocomplete="family-name"></label>
+          <label class="co-field"><span>Email</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
+          <label class="co-field"><span>Phone <em>· optional</em></span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
+          <label class="co-field co-field--full"><span>Agency / unit name</span><input type="text" name="agency" required maxlength="160"></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="co-step">
+        <legend><span class="co-step__n">02</span> Order details</legend>
+        <div class="co-grid">
+          <label class="co-field co-field--full"><span>Product type</span>
+            <select name="productType">
+              <option>MicroKeychain — from $13.99</option>
+              <option>MicroMagnet — from $14.99</option>
+              <option>MicroCharm — from $9.99</option>
+              <option>MicroPin — from $9.99</option>
+              <option>Not sure — help me choose</option>
+            </select>
+          </label>
+          <label class="co-field co-field--full"><span>Estimated quantity</span><input type="text" name="quantity" maxlength="80" placeholder="e.g. 25, 100, or not sure yet"></label>
+          <label class="co-field co-field--full"><span>Notes / request details</span><textarea name="message" rows="4" maxlength="2000" placeholder="SWAT team keychains · Retirement gift · Memorial patch · Morale patch order · Bulk academy order"></textarea></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="co-step">
+        <legend><span class="co-step__n">03</span> Patch upload</legend>
+        <label class="co-upload" for="co-reference">
+          <input type="file" id="co-reference" name="photo" accept="image/*" required>
+          <span class="co-upload__hint">Patch photo, vector artwork, or logo file — up to 10&nbsp;MB.</span>
+        </label>
+        <ul class="co-tips">
+          <li>Lay the patch flat</li>
+          <li>Shoot directly overhead</li>
+          <li>Avoid shadows</li>
+          <li>Vector files preferred</li>
+        </ul>
+        <div id="photo-status" class="co-status" role="status" aria-live="polite"></div>
+        <img id="photo-preview" class="co-preview" alt="">
+      </fieldset>
+
+      <div class="co-submit">
+        <button type="submit" class="patch-submit co-btn co-btn--primary co-btn--lg co-btn--block">Send custom request</button>
+        <p class="co-submit__note">Typical response time: 1–2 business days</p>
+        <p class="co-submit__fallback">Trouble submitting? Email <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></p>
+      </div>
     </form>
   </div>
+</section>
 
-  <div class="custom-card">
-    <p class="eyebrow">Good To Know</p>
-    <div class="faq-accordion">
-      <details class="faq-item">
-        <summary>Need a brand new design?</summary>
-        <div class="faq-item-body">We're happy to create something entirely from scratch — memorial patches, retirement gifts, original designs. Pricing is negotiated case by case. Email <a href="mailto:officialmicropatches@gmail.com">officialmicropatches@gmail.com</a> to get started.</div>
+<!-- ===== 6 · FAQ ===== -->
+<section class="co-section">
+  <div class="co-wrap co-wrap--narrow">
+    <header class="co-head">
+      <p class="co-eyebrow">Questions</p>
+      <h2 class="co-h2">Good to know</h2>
+    </header>
+    <div class="co-faq">
+      <details class="co-faq__item">
+        <summary>Need a brand new design?<span class="co-faq__ico" aria-hidden="true"></span></summary>
+        <p class="co-faq__body">Absolutely. We create original work from scratch — memorial patches, retirement pieces, morale designs, or fresh artwork. Pricing is handled case by case; email <a href="mailto:officialmicropatches@gmail.com">officialmicropatches@gmail.com</a> or note it in your request.</p>
       </details>
-      <details class="faq-item">
-        <summary>Bulk order discount?</summary>
-        <div class="faq-item-body">The $25 design fee can be waived on qualifying bulk orders. Unit cost applies separately. Budget tight? Reach out — we'll always work something out.</div>
+      <details class="co-faq__item">
+        <summary>Bulk order discounts?<span class="co-faq__ico" aria-hidden="true"></span></summary>
+        <p class="co-faq__body">Yes. The $25 design fee can be waived on qualifying bulk orders, and unit pricing improves with volume. Tell us your estimated quantity and we'll send a tailored quote.</p>
       </details>
-      <details class="faq-item">
-        <summary>Photo tips — get the best result</summary>
-        <div class="faq-item-body">Lay your patch flat on a solid surface. Hold your phone directly overhead and shoot straight down. Avoid angles and shadows. A digital vector file is ideal if you have one. <strong>Better photo = better keychain.</strong></div>
+      <details class="co-faq__item">
+        <summary>What photo works best?<span class="co-faq__ico" aria-hidden="true"></span></summary>
+        <p class="co-faq__body">Lay the patch flat on a solid surface and shoot straight down from directly overhead with even lighting and no shadows. A vector or high-resolution digital file is ideal if you have one.</p>
+      </details>
+      <details class="co-faq__item">
+        <summary>How long does production take?<span class="co-faq__ico" aria-hidden="true"></span></summary>
+        <p class="co-faq__body">It depends on quantity and design complexity. We confirm a firm timeline with your quote, typically after the design is approved.</p>
+      </details>
+      <details class="co-faq__item">
+        <summary>Can you make PVC-style patches?<span class="co-faq__ico" aria-hidden="true"></span></summary>
+        <p class="co-faq__body">We don't produce traditional PVC or embroidered patches — our specialty is the MicroPatch line: 3D-printed bases finished with premium UV-cured ink for a raised, textured feel. We can recreate almost any patch design in that format.</p>
+      </details>
+      <details class="co-faq__item">
+        <summary>Can I submit multiple patch designs?<span class="co-faq__ico" aria-hidden="true"></span></summary>
+        <p class="co-faq__body">Yes. Submit one request and list each design in the notes, or email the rest. Each distinct design carries its own $25 setup fee, which can be waived on qualifying bulk orders.</p>
       </details>
     </div>
   </div>
+</section>
 
-</div>
-</div>
+<a href="#request" class="co-sticky">Start Your Request <span aria-hidden="true">→</span></a>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="assets/js/shopify-config.js?v=20260520"></script>
@@ -243,7 +316,7 @@ form?.addEventListener("submit", async (e) => {
     phone: fd.get("phone") || "",
     agency: fd.get("agency") || "",
     productType: fd.get("productType") || "",
-    quantity: "",
+    quantity: fd.get("quantity") || "",
     description: fd.get("message") || "",
     patchPhotoURL: uploadedURL || "",
     patchPhotoPath: "",
@@ -277,8 +350,8 @@ form?.addEventListener("submit", async (e) => {
     mailtoFallback({
       firstName: fd.get("firstName") || "", lastName: fd.get("lastName") || "",
       email: submission.email, phone: submission.phone, agency: submission.agency,
-      productType: submission.productType, message: submission.description,
-      photoUrl: submission.patchPhotoURL
+      productType: submission.productType, quantity: submission.quantity,
+      message: submission.description, photoUrl: submission.patchPhotoURL
     });
   } finally {
     submitBtn.disabled = false;
@@ -293,7 +366,8 @@ function mailtoFallback(p) {
     "Phone: " + p.phone + "\n" +
     "Agency / unit: " + p.agency + "\n" +
     "Product type: " + p.productType + "\n" +
-    "Quantity / notes: " + p.message + "\n" +
+    "Estimated quantity: " + (p.quantity || "") + "\n" +
+    "Notes: " + p.message + "\n" +
     "Patch photo: " + (p.photoUrl || "(attach your photo to this email)") + "\n";
   window.location.href = "mailto:" + NOTIFY_EMAIL +
     "?subject=" + encodeURIComponent("Custom Order Request — " + (p.agency || p.firstName)) +
