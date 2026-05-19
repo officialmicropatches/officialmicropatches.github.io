@@ -1370,6 +1370,7 @@ image-slot {
   background-position: right 11px center;
   cursor: pointer;
 }
+.shop-filter-select + .shop-filter-pills { margin-top: 16px; }
 .shop-filter-pills {
   display: flex;
   gap: 8px;
