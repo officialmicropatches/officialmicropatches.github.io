@@ -1502,88 +1502,65 @@ body[data-page="shop"] .shop-note-banner { margin-bottom: 22px; }
   body[data-page="shop"] .section { padding: 16px 0 48px; }
 }
 
-/* Custom Order page: same generic-.section void as the shop page, plus
-   .custom-pricing-summary and .section-header ship with no CSS (legacy
-   classes). Tighten spacing and style the bare elements. */
-body[data-page="custom"] .section {
-  padding: 28px 0 72px;
-  border-top: none;
-}
-.custom-pricing-summary {
-  text-align: center;
-  font-family: var(--f-mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: var(--ink-dim);
+/* ===== Custom Order page — unified card system ===== */
+.custom-intro { padding: 18px 0 66px; }
+@media (max-width: 560px) { .custom-intro { padding: 12px 0 48px; } }
+
+.custom-card {
   background: var(--bg-2);
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 14px 18px;
-  margin-bottom: 16px;
+  border-radius: 14px;
+  padding: 22px 22px 24px;
 }
-.custom-pricing-summary strong { color: var(--ink); }
-.faq-accordion { display: flex; flex-direction: column; gap: 0; }
-body[data-page="custom"] .section-header h2 { margin: 0 0 6px; }
-body[data-page="custom"] .section-header p { margin: 0; color: var(--ink-dim); }
-@media (max-width: 560px) {
-  body[data-page="custom"] .section { padding: 18px 0 48px; }
-  .custom-pricing-summary { font-size: 11px; padding: 12px 14px; }
+.custom-card + .custom-card { margin-top: 16px; }
+.custom-card > .eyebrow { margin: 0 0 4px; }
+.custom-card__title {
+  font-family: var(--f-display); font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.01em;
+  font-size: clamp(21px, 5.4vw, 28px); line-height: 1.05;
+  margin: 2px 0 4px;
+}
+.custom-card__sub {
+  margin: 0 0 18px; color: var(--ink-dim);
+  font-family: var(--f-mono); font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
 }
 
-/* Custom Order — redesigned intro (what we make + FAQ) */
-.custom-intro { padding: 20px 0 4px; }
-.custom-offer-card {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 18px 18px 20px;
-  margin-bottom: 26px;
-}
-.custom-offer-card .eyebrow { margin: 0 0 10px; }
 .custom-offer-lead {
-  margin: 0 0 16px;
-  color: var(--ink);
-  font-size: 16px;
-  line-height: 1.5;
+  margin: 8px 0 16px; color: var(--ink);
+  font-size: 16px; line-height: 1.5;
 }
 .custom-offer-list {
-  list-style: none; padding: 0;
-  margin: 0 0 18px;
+  list-style: none; padding: 0; margin: 0;
   display: flex; flex-wrap: wrap; gap: 8px;
 }
 .custom-offer-list li {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: var(--bg-3);
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
+  font-family: var(--f-mono); font-size: 12px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink); background: var(--bg-3);
+  border: 1px solid var(--line-2); border-radius: 999px;
   padding: 8px 14px;
 }
 .custom-offer-price {
-  margin: 16px 0 0;
-  padding-top: 14px;
+  margin: 18px 0 0; padding-top: 16px;
   border-top: 1px solid var(--line);
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  line-height: 1.7;
+  font-family: var(--f-mono); font-size: 11px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-dim); line-height: 1.7;
 }
 .custom-offer-price strong { color: var(--ink); }
 .custom-offer-price span { color: var(--accent); margin: 0 6px; }
-.custom-faq {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 18px 18px 6px;
-}
-.custom-faq .eyebrow { margin: 0 0 6px; }
-.custom-faq .faq-item:last-child { border-bottom: none; }
+
+.faq-accordion { display: flex; flex-direction: column; }
+.custom-card .faq-item:last-child { border-bottom: none; }
+.custom-card .faq-item:last-child .faq-item-body { padding-bottom: 0; }
+
+.custom-card .patch-form { margin: 4px 0 0; }
+.custom-card .patch-submit { margin-top: 18px; }
+.custom-card .patch-fallback { margin: 12px 0 0; color: var(--ink-dim); }
+
 @media (max-width: 560px) {
+  .custom-card { padding: 18px 16px 20px; }
   .custom-offer-lead { font-size: 15px; }
   .custom-offer-list li { font-size: 11px; padding: 7px 12px; }
 }
