@@ -154,6 +154,29 @@
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
     }, true);
 
+    // Manual prev/next arrows. go()'s modulo wrap makes this an infinite
+    // loop in both directions. stopPropagation keeps a tap from also
+    // triggering a linked slide / parent <a>; works for click and tap.
+    if (list.length > 1) {
+      var mkArrow = function (dir, label, pts) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pcar__nav pcar__nav--' + (dir < 0 ? 'prev' : 'next');
+        b.setAttribute('aria-label', label);
+        b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+          '<polyline points="' + pts + '"></polyline></svg>';
+        b.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          go(cur + dir);
+          play();
+        });
+        media.appendChild(b);
+      };
+      mkArrow(-1, 'Previous photo', '15 18 9 12 15 6');
+      mkArrow(1, 'Next photo', '9 18 15 12 9 6');
+    }
+
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         for (var i = 0; i < entries.length; i++) {

@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
 <link rel="dns-prefetch" href="https://micropatches.myshopify.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260523" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260524" />
 <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260521">
 <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 <script type="application/ld+json">
@@ -187,7 +187,7 @@
 
 <script src="assets/js/image-slot.js?v=20260520"></script>
 <script src="assets/js/shopify-config.js?v=20260520"></script>
-<script src="assets/js/product-carousel.js?v=20260520"></script>
+<script src="assets/js/product-carousel.js?v=20260524"></script>
 <script src="assets/js/site.js?v=20260520"></script>
 
 <script>
@@ -332,7 +332,7 @@
     var withPhotos = inStock.filter(function (p) { return p.images[0]; });
     var heroMedia = document.getElementById('hero-media');
     if (heroMedia && window.MPCarousel) {
-      var heroItems = withPhotos.slice(0, 6)
+      var heroItems = withPhotos
         .map(function (p) {
           return {
             src: p.images[0],
@@ -340,7 +340,7 @@
             href: 'product.html?handle=' + encodeURIComponent(p.handle)
           };
         });
-      window.MPCarousel.mount(heroMedia, heroItems, { alt: 'MicroKeychain', priority: true, interval: 3800 });
+      window.MPCarousel.mount(heroMedia, heroItems, { alt: 'MicroKeychain', priority: true, interval: 1800 });
     }
 
     // Texture macro visual — single static detail shot (no carousel).
