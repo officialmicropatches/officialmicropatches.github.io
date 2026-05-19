@@ -1530,6 +1530,54 @@ body[data-page="custom"] .section-header p { margin: 0; color: var(--ink-dim); }
   .custom-pricing-summary { font-size: 11px; padding: 12px 14px; }
 }
 
+/* Custom Order — redesigned intro (what we make + FAQ) */
+.custom-intro { padding: 20px 0 4px; }
+.custom-offer-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 18px 20px;
+  margin-bottom: 26px;
+}
+.custom-offer-card .eyebrow { margin: 0 0 10px; }
+.custom-offer-lead {
+  margin: 0 0 16px;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.custom-offer-list {
+  list-style: none; padding: 0;
+  margin: 0 0 18px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.custom-offer-list li {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--bg-3);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+.custom-offer-price {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}
+.custom-offer-price strong { color: var(--ink); }
+.custom-offer-price span { color: var(--accent); margin: 0 5px; }
+.custom-faq .eyebrow { margin: 0 0 12px; }
+@media (max-width: 560px) {
+  .custom-offer-lead { font-size: 15px; }
+  .custom-offer-list li { font-size: 11px; padding: 7px 12px; }
+}
+
 /* ===== STORY LOGO FIX ===== */
 .story__media {
   display: flex;
