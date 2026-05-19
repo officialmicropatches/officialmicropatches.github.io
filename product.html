@@ -112,7 +112,8 @@
 <script>
 function adjustQty(d) {
   const i = document.getElementById('qty');
-  i.value = Math.max(1, (parseInt(i.value)||1) + d);
+  const max = parseInt(i.dataset.max) || Infinity;
+  i.value = Math.min(max, Math.max(1, (parseInt(i.value)||1) + d));
 }
 
 (async function () {
@@ -132,6 +133,8 @@ function adjustQty(d) {
           body: lp.description,
           price: Number(v.price || 0) / 100,
           inStock: !!v.available,
+          qtyAvailable: (v.inventory_management && typeof v.inventory_quantity === 'number')
+            ? Math.max(0, v.inventory_quantity) : null,
           variantId: v.id || null,
           images: ((lp.images || []).map(function (im) { return (im && im.src) || im; }).filter(Boolean))
         };
@@ -151,7 +154,11 @@ function adjustQty(d) {
   if (!p) { document.getElementById('pdp-title').textContent = 'Product not found'; return; }
 
   // Real availability: live data gives a boolean; listings.json gives a count.
-  const inStock = (typeof p.inStock === 'boolean') ? p.inStock : (Number(p.qty || 0) > 0);
+  const maxQty = (typeof p.qtyAvailable === 'number') ? p.qtyAvailable
+                : (typeof p.qty === 'number' ? p.qty : null);
+  let inStock = (typeof p.inStock === 'boolean') ? p.inStock : (Number(p.qty || 0) > 0);
+  if (maxQty === 0) inStock = false;
+  const LOW_STOCK = 10;
 
   const cleaned = (p.title || '').replace(/\s*\|\s*$/, '').trim();
   const main = cleaned.split(/\s*\|\s*/)[0] || cleaned;
@@ -165,7 +172,30 @@ function adjustQty(d) {
   document.getElementById('pdp-title').textContent = main;
   document.getElementById('pdp-sub').textContent = 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
   document.getElementById('pdp-price').textContent = (p.price || 13.99).toFixed(2);
-  document.getElementById('pdp-stock').textContent = inStock ? 'In stock' : 'Sold out';
+  const stockEl = document.getElementById('pdp-stock');
+  if (!inStock) {
+    stockEl.textContent = 'Sold out';
+  } else if (maxQty != null && maxQty <= LOW_STOCK) {
+    stockEl.textContent = 'Only ' + maxQty + ' left';
+    stockEl.style.color = 'var(--accent)';
+    stockEl.style.fontWeight = '700';
+  } else {
+    stockEl.textContent = 'In stock';
+  }
+  // Cap the quantity stepper to live availability.
+  const qtyInput = document.getElementById('qty');
+  if (inStock && maxQty != null && maxQty > 0) {
+    qtyInput.dataset.max = String(maxQty);
+    qtyInput.addEventListener('input', function () {
+      const n = parseInt(qtyInput.value) || 1;
+      qtyInput.value = Math.min(maxQty, Math.max(1, n));
+    });
+  }
+  const addBtn = document.getElementById('add-btn');
+  if (!inStock && addBtn) {
+    addBtn.disabled = true;
+    addBtn.textContent = 'Sold out';
+  }
   document.getElementById('pdp-body').innerHTML = (p.body || '').replace(/<script[\s\S]*?<\/script>/g, '') || 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
 
   // Gallery — single static product image (no carousel)
@@ -185,7 +215,11 @@ function adjustQty(d) {
 
   // Add to cart
   document.getElementById('add-btn').addEventListener('click', () => {
-    const qty = parseInt(document.getElementById('qty').value) || 1;
+    if (!inStock) return;
+    let qty = parseInt(document.getElementById('qty').value) || 1;
+    qty = Math.max(1, qty);
+    if (maxQty != null && maxQty > 0) qty = Math.min(qty, maxQty);
+    document.getElementById('qty').value = qty;
     window.MP.addToCart({
       id: p.handle, name: main, price: p.price || 13.99, qty,
       handle: p.handle, variantId: p.variantId || undefined, image: imgs[0] || '', cat: 'MicroKeychain'
@@ -214,7 +248,7 @@ function adjustQty(d) {
       "url": "https://officialmicropatches.com/product.html?handle=" + p.handle,
       "priceCurrency": "USD",
       "price": (p.price || 13.99).toFixed(2),
-      "availability": (p.qty || 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+      "availability": inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
     }
   };
   document.getElementById('pdp-jsonld').textContent = JSON.stringify(ld);
