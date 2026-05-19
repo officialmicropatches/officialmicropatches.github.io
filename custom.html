@@ -21,52 +21,40 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260527">
+<link rel="stylesheet" href="assets/css/style.css?v=20260528">
   <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260521">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 <style>
-/* ── Photo upload widget ─────────────────────────────────── */
-#patch-photo-wrap {
-  margin-bottom: 0;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg-card);
-}
-#patch-photo-wrap .photo-label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-primary, #e2e8f0);
-}
+/* Photo upload control — themed to match the site */
 #co-reference {
   display: block;
   width: 100%;
-  padding: 8px 0;
-  color: var(--text-muted, #8a9bb0);
+  padding: 6px 0;
+  color: var(--ink-dim);
+  font-size: 13px;
   cursor: pointer;
 }
 #co-reference::file-selector-button {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-primary, #e2e8f0);
+  background: var(--bg-3);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  color: var(--ink);
   cursor: pointer;
-  font-family: inherit;
-  font-size: 0.875rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   margin-right: 12px;
-  padding: 6px 14px;
-  transition: border-color 0.15s;
+  padding: 9px 14px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 #co-reference::file-selector-button:hover {
-  border-color: var(--gold, #c9972a);
+  border-color: var(--accent);
+  background: var(--bg-2);
 }
 #photo-status {
   margin-top: 8px;
-  font-size: 0.875rem;
+  font-size: 13px;
   display: none;
 }
 #photo-preview {
@@ -75,8 +63,8 @@ Referrer-Policy: strict-origin-when-cross-origin -->
   max-width: 220px;
   max-height: 180px;
   object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid var(--border);
+  border-radius: 8px;
+  border: 1px solid var(--line);
 }
 </style>
 </head>
@@ -93,23 +81,56 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 </div>
 </section>
 
-<!-- ===== WHAT WE MAKE ===== -->
+<!-- ===== CUSTOM ORDER ===== -->
 <div class="custom-intro">
-<div class="container" style="max-width:760px">
+<div class="container" style="max-width:720px">
 
-  <div class="custom-offer-card">
+  <div class="custom-card">
     <p class="eyebrow">What We Make</p>
-    <p class="custom-offer-lead">The shop currently offers <strong class="accent">MicroKeychains</strong> only. For a custom order, we can make any of these:</p>
+    <h2 class="custom-card__title">Any Patch. Made Micro.</h2>
+    <p class="custom-offer-lead">The shop currently sells <strong class="accent">MicroKeychains</strong> only — but a custom order can be any of these:</p>
     <ul class="custom-offer-list">
       <li>MicroKeychains</li>
       <li>MicroMagnets</li>
       <li>MicroCharms</li>
       <li>MicroPins</li>
     </ul>
-    <p class="custom-offer-price"><strong>$25 flat design fee</strong> <span>·</span> waived on qualifying bulk orders <span>·</span> unit pricing from $9.99</p>
+    <p class="custom-offer-price"><strong>$25 flat design fee</strong> <span>·</span> waived on qualifying bulk orders <span>·</span> units from $9.99</p>
   </div>
 
-  <div class="custom-faq">
+  <div class="custom-card">
+    <p class="eyebrow">Send Your Request</p>
+    <p class="custom-card__sub">We typically respond within 1–2 business days</p>
+    <form class="patch-form" id="custom-order-form" novalidate>
+      <div class="patch-form-grid">
+        <label class="patch-field"><span>First name *</span><input type="text" name="firstName" required maxlength="80" autocomplete="given-name"></label>
+        <label class="patch-field"><span>Last name</span><input type="text" name="lastName" maxlength="80" autocomplete="family-name"></label>
+        <label class="patch-field"><span>Email *</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
+        <label class="patch-field"><span>Phone</span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
+        <label class="patch-field patch-field--full"><span>Agency / unit name *</span><input type="text" name="agency" required maxlength="160"></label>
+        <label class="patch-field patch-field--full"><span>Product type</span>
+          <select name="productType">
+            <option>MicroKeychain ($13.99)</option>
+            <option>MicroMagnet</option>
+            <option>MicroCharm</option>
+            <option>MicroPin</option>
+            <option>Not sure</option>
+          </select>
+        </label>
+        <label class="patch-field patch-field--full"><span>Quantity / notes</span><textarea name="message" rows="4" maxlength="2000"></textarea></label>
+        <label class="patch-field patch-field--full"><span>Patch photo *</span>
+          <input type="file" id="co-reference" name="photo" accept="image/*" required>
+          <small class="patch-hint">Lay the patch flat on a solid surface, phone directly above, no angles or shadows. Better photo = better keychain.</small>
+        </label>
+      </div>
+      <div id="photo-status" class="patch-status" role="status" aria-live="polite"></div>
+      <img id="photo-preview" alt="" style="display:none;max-width:160px;border-radius:8px;margin-top:10px">
+      <button type="submit" class="patch-submit">Send custom order request</button>
+      <p class="patch-fallback"><small>Trouble submitting? Email <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a> directly.</small></p>
+    </form>
+  </div>
+
+  <div class="custom-card">
     <p class="eyebrow">Good To Know</p>
     <div class="faq-accordion">
       <details class="faq-item">
@@ -129,45 +150,6 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 
 </div>
 </div>
-
-<!-- ===== FORM ===== -->
-<section class="section">
-<div class="container" style="max-width:760px">
-<div class="section-header" style="text-align:left;margin-bottom:32px">
-<h2>SEND YOUR REQUEST</h2>
-<p>We typically respond within 1 to 2 business days.</p>
-</div>
-
-<form class="patch-form" id="custom-order-form" novalidate>
-  <div class="patch-form-grid">
-    <label class="patch-field"><span>First name *</span><input type="text" name="firstName" required maxlength="80" autocomplete="given-name"></label>
-    <label class="patch-field"><span>Last name</span><input type="text" name="lastName" maxlength="80" autocomplete="family-name"></label>
-    <label class="patch-field"><span>Email *</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
-    <label class="patch-field"><span>Phone</span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
-    <label class="patch-field patch-field--full"><span>Agency / unit name *</span><input type="text" name="agency" required maxlength="160"></label>
-    <label class="patch-field patch-field--full"><span>Product type</span>
-      <select name="productType">
-        <option>MicroKeychain ($13.99)</option>
-        <option>MicroMagnet</option>
-        <option>MicroCharm</option>
-        <option>MicroPin</option>
-        <option>Not sure</option>
-      </select>
-    </label>
-    <label class="patch-field patch-field--full"><span>Quantity / notes</span><textarea name="message" rows="4" maxlength="2000"></textarea></label>
-    <label class="patch-field patch-field--full"><span>Patch photo *</span>
-      <input type="file" id="co-reference" name="photo" accept="image/*" required>
-      <small class="patch-hint">Lay the patch flat on a solid surface, phone directly above, no angles or shadows. Better photo = better keychain.</small>
-    </label>
-  </div>
-  <div id="photo-status" class="patch-status" role="status" aria-live="polite"></div>
-  <img id="photo-preview" alt="" style="display:none;max-width:160px;border-radius:8px;margin-top:10px">
-  <button type="submit" class="patch-submit">Send custom order request</button>
-  <p class="patch-fallback"><small>Trouble submitting? Email <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a> directly.</small></p>
-</form>
-
-</div>
-</section>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="assets/js/shopify-config.js?v=20260520"></script>
