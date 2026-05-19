@@ -1303,28 +1303,28 @@ image-slot {
 .shop-tabs-wrap {
   border-bottom: 1px solid var(--line);
   margin-bottom: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.shop-tabs-wrap::-webkit-scrollbar { display: none; }
 .shop-tabs {
   display: flex;
-  gap: 0;
-  padding: 0 var(--pad);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 6px;
+  padding: 6px var(--pad);
   max-width: var(--maxw);
   margin: 0 auto;
 }
 .shop-tab {
   font-family: var(--f-mono);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-dim);
-  padding: 14px 16px;
+  padding: 11px 13px;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
   transition: color 0.2s, border-color 0.2s;
 }
+@media (min-width: 760px) { .shop-tabs { flex-wrap: nowrap; } .shop-tab { padding: 14px 16px; } }
 .shop-tab:hover { color: var(--ink); }
 .shop-tab.active {
   color: var(--accent);

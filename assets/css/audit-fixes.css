@@ -25,7 +25,6 @@ body[data-active-tab="pink-patch"] .shop-filter-panel .shop-filter-group[data-fi
   display: block;
 }
 body[data-active-tab="all"] .shop-filter-panel,
-body[data-active-tab="fire"] .shop-filter-panel,
 body[data-active-tab="pink-patch"] .shop-filter-panel { display: none; }
 @media (max-width: 768px) {
   .new-additions-grid,
