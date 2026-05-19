@@ -151,19 +151,6 @@
   </div>
 </div>
 
-<!-- ============ 12 · TEXTURE ============ -->
-<section class="msection mtexture" data-screen-label="05 Home / Texture">
-  <div class="container">
-    <div class="mtexture__grid">
-      <div class="mtexture__media" id="texture-media" aria-hidden="true"></div>
-      <div class="mtexture__copy">
-        <h2 class="msec__title">Raised Texture<br/>You Can Feel.</h2>
-        <p>Premium UV cured ink gives every patch visible depth and raised detail.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ 13 · FINAL CTA ============ -->
 <section class="msection mfinal" data-screen-label="06 Home / Final CTA">
   <div class="container">
@@ -341,17 +328,6 @@
           };
         });
       window.MPCarousel.mount(heroMedia, heroItems, { alt: 'MicroKeychain', priority: true, interval: 1800 });
-    }
-
-    // Texture macro visual — single static detail shot (no carousel).
-    var tex = document.getElementById('texture-media');
-    if (tex) {
-      var texSrc = (withPhotos.find(function (p) { return p.images.length > 1; }) ||
-                    withPhotos[0] || { images: [] }).images.slice(-1)[0];
-      if (texSrc) {
-        tex.innerHTML = '<img src="' + esc(texSrc) + '" alt="Raised UV-cured texture" ' +
-          'loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">';
-      }
     }
   }
 
