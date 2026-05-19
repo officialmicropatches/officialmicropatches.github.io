@@ -137,17 +137,19 @@
     card.setAttribute('data-type',     type);
     card.setAttribute('data-state',    state);
 
-    var badgeHtml = inStock
-      ? '<span class="pcard__rts">Ready To Ship</span>'
-      : '<span class="pcard__rts" style="background:var(--line-2);color:var(--ink-dim);">Sold Out</span>';
-
     var inv = (window.__MP_INV || {})[handle];
     var invQ = inv && typeof inv.q === 'number' ? inv.q : null;
-    var lowHtml = (inStock && invQ !== null && invQ > 0 && invQ <= 10)
-      ? '<span class="pcard__low">Only ' + invQ + ' left</span>' : '';
+    var badgeHtml;
+    if (!inStock) {
+      badgeHtml = '<span class="pcard__rts" style="background:var(--line-2);color:var(--ink-dim);">Sold Out</span>';
+    } else if (invQ !== null && invQ > 0 && invQ <= 10) {
+      badgeHtml = '<span class="pcard__rts pcard__rts--low">Only ' + invQ + ' left</span>';
+    } else {
+      badgeHtml = '<span class="pcard__rts">Ready To Ship</span>';
+    }
 
     card.innerHTML =
-      '<a href="' + escapeAttr(productUrl) + '" class="pcard__media" aria-label="' + escapeAttr(name) + '">' + badgeHtml + lowHtml + '</a>' +
+      '<a href="' + escapeAttr(productUrl) + '" class="pcard__media" aria-label="' + escapeAttr(name) + '">' + badgeHtml + '</a>' +
       '<div class="pcard__body">' +
         '<h3 class="pcard__title product-title">' +
           '<a href="' + escapeAttr(productUrl) + '">' + escapeHtml(name) + '</a>' +
