@@ -1563,16 +1563,26 @@ body[data-page="custom"] .section-header p { margin: 0; color: var(--ink-dim); }
   padding: 8px 14px;
 }
 .custom-offer-price {
-  margin: 0;
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
   font-family: var(--f-mono);
-  font-size: 12px;
-  letter-spacing: 0.03em;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--ink-dim);
-  line-height: 1.6;
+  line-height: 1.7;
 }
 .custom-offer-price strong { color: var(--ink); }
-.custom-offer-price span { color: var(--accent); margin: 0 5px; }
-.custom-faq .eyebrow { margin: 0 0 12px; }
+.custom-offer-price span { color: var(--accent); margin: 0 6px; }
+.custom-faq {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 18px 6px;
+}
+.custom-faq .eyebrow { margin: 0 0 6px; }
+.custom-faq .faq-item:last-child { border-bottom: none; }
 @media (max-width: 560px) {
   .custom-offer-lead { font-size: 15px; }
   .custom-offer-list li { font-size: 11px; padding: 7px 12px; }
