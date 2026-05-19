@@ -1,0 +1,95 @@
+name: Custom order notifier
+
+# Checks Firebase for new custom-order submissions and, when one arrives,
+# opens a GitHub issue (which pushes to the repo owner via email + the
+# free GitHub mobile app). No third-party service, no paid plan, no
+# secrets: the Firebase web API key is the public client key and
+# anonymous read is allowed by the Firestore rules.
+#
+# Privacy: the issue contains NO customer data (no name/email/photo) —
+# only a count and a link to the private dashboard. This repo is public,
+# so customer PII must never be written here.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # every ~15 min (GitHub may delay slightly)
+  workflow_dispatch: {}
+
+concurrency:
+  group: order-notify
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for new orders
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ASSIGNEE: ${{ vars.ORDER_NOTIFY_ASSIGNEE }}
+        run: |
+          set -euo pipefail
+          API_KEY="AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4"
+          STATE=".github/orders-state.json"
+          DASH="https://officialmicropatches.com/internal/orders.html"
+
+          token=$(curl -s -m 30 -X POST \
+            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}" \
+            -H "Content-Type: application/json" -d '{"returnSecureToken":true}' \
+            | jq -r '.idToken // empty')
+          if [ -z "$token" ]; then echo "Auth failed; skipping this run."; exit 0; fi
+
+          resp=$(curl -s -m 30 \
+            "https://firestore.googleapis.com/v1/projects/patch-559c8/databases/(default)/documents/submissions?pageSize=300" \
+            -H "Authorization: Bearer ${token}")
+
+          count=$(echo "$resp" | jq '[.documents[]?] | length')
+          latest=$(echo "$resp" | jq -r '[.documents[]?.fields.submittedAt | (.timestampValue // .stringValue) // ""] | sort | last // ""')
+          echo "Live: count=$count latest=$latest"
+
+          commit_state () {
+            echo "{\"count\": $count, \"latest\": \"$latest\"}" > "$STATE"
+            git config user.name  "order-notify[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add "$STATE"
+            git commit -m "[skip ci] order-notify: $1" || true
+            git push || true
+          }
+
+          if [ ! -f "$STATE" ]; then
+            commit_state "baseline ($count orders)"
+            echo "Baseline set — no alert on first run."
+            exit 0
+          fi
+
+          prevCount=$(jq -r '.count // 0' "$STATE")
+          prevLatest=$(jq -r '.latest // ""' "$STATE")
+          new=$(( count - prevCount )); [ "$new" -lt 0 ] && new=0 || true
+
+          if [ "$count" -gt "$prevCount" ] || [[ -n "$latest" && "$latest" > "$prevLatest" ]]; then
+            [ "$new" -gt 1 ] && plural="s" || plural=""
+            title="New custom order received ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            body=$(printf '%s\n\n%s\n\n- New since last check: %s%s\n- Total orders on file: %s' \
+              "A new custom order just came in." \
+              "Open the private dashboard for full details (name, photo, contact): ${DASH}" \
+              "${new:-1}" "${plural}" "${count}")
+            if [ -n "${ASSIGNEE:-}" ]; then
+              gh issue create --repo "$REPO" --title "$title" --body "$body" --assignee "$ASSIGNEE" || \
+              gh issue create --repo "$REPO" --title "$title" --body "$body"
+            else
+              gh issue create --repo "$REPO" --title "$title" --body "$body"
+            fi
+            echo "Issue opened."
+            commit_state "alerted ($count total)"
+          else
+            echo "No new orders."
+          fi
+
