@@ -18,6 +18,9 @@
   input[type=password], input[type=search] { width:100%; padding:13px 14px; background:var(--bg2); border:1px solid var(--line); border-radius:10px; color:var(--ink); font-size:15px; }
   button { font:inherit; cursor:pointer; border-radius:10px; border:1px solid var(--line); background:var(--gold); color:#1a1407; font-weight:700; padding:12px 18px; letter-spacing:.04em; }
   button.ghost { background:transparent; color:var(--ink); }
+  .del-btn { margin-top:14px; background:transparent; border:1px solid var(--line); color:var(--dim); font-weight:600; font-size:12px; padding:9px 14px; letter-spacing:.06em; text-transform:uppercase; }
+  .del-btn:hover:not(:disabled) { border-color:var(--bad); color:var(--bad); }
+  .del-btn:disabled { opacity:.6; cursor:default; }
   .toolbar { display:flex; gap:10px; margin-bottom:14px; }
   .toolbar input { flex:1; }
   .count { font-size:12px; color:var(--dim); margin:0 0 12px; letter-spacing:.06em; text-transform:uppercase; }
@@ -64,7 +67,7 @@
 
 <script type="module">
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* Change this to rotate the access code. NOTE: this is a convenience gate
@@ -132,10 +135,29 @@ function render(items){
         row("Additional notes", s.notes) +
         row("Agency / unit", s.agency) +
         row("Photo", s.patchPhotoURL, true) +
+        '<button class="del-btn" data-id="' + esc(s._id) + '" type="button">Mark done &amp; remove</button>' +
       '</div>' +
     '</div>';
   }).join("");
 }
+
+listEl.addEventListener("click", async function(e){
+  const btn = e.target.closest(".del-btn");
+  if (!btn) return;
+  const id = btn.getAttribute("data-id");
+  if (!id) return;
+  if (!confirm("Remove this order from the dashboard? This permanently deletes the record and its photo reference. Do this only once the order is complete.")) return;
+  btn.disabled = true; btn.textContent = "Removing…";
+  try {
+    await deleteDoc(doc(db, "submissions", id));
+    all = all.filter(function(s){ return s._id !== id; });
+    applyFilter();
+    hdrMeta.textContent = all.length + " total";
+  } catch (err) {
+    btn.disabled = false; btn.textContent = "Mark done & remove";
+    alert("Could not remove: " + (err && err.message || err));
+  }
+});
 
 function applyFilter(){
   const q = (qEl.value || "").trim().toLowerCase();
@@ -151,7 +173,7 @@ async function load(){
   try {
     if (!auth.currentUser) await signInAnonymously(auth);
     const snap = await getDocs(collection(db, "submissions"));
-    all = snap.docs.map(d => d.data());
+    all = snap.docs.map(d => Object.assign({ _id: d.id }, d.data()));
     all.sort((a,b) => String(b.submittedAt || "").localeCompare(String(a.submittedAt || "")));
     hdrMeta.textContent = all.length + " total";
     applyFilter();
