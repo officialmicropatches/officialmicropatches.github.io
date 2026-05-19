@@ -2262,6 +2262,15 @@ a.pcar__slide { display: block; }
   letter-spacing: 0.1em; text-transform: uppercase;
   padding: 4px 7px; border-radius: 2px;
 }
+.pcard__low {
+  position: absolute; top: 8px; right: 8px; z-index: 4;
+  background: rgba(10,10,12,0.78); color: var(--accent);
+  border: 1px solid rgba(216,162,58,0.5);
+  font-family: var(--f-mono); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 7px; border-radius: 2px;
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
 .pcard__body {
   padding: 10px 11px;
   display: flex; flex-direction: column; gap: 8px; flex: 1;

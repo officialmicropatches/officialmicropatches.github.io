@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
 <link rel="dns-prefetch" href="https://micropatches.myshopify.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=20260532" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260533" />
 <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
 <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 <script type="application/ld+json">
@@ -232,9 +232,14 @@
     var media = p.images[0]
       ? '<img class="pcard__img" src="' + esc(p.images[0]) + '" alt="' + esc(name) + '" loading="lazy" decoding="async">'
       : '<span class="pcard__ph"><span class="pcard__ph-mark">M</span><span class="pcard__ph-txt">Photo Coming Soon</span></span>';
+    var inv = (window.__MP_INV || {})[p.handle];
+    var invQ = inv && typeof inv.q === 'number' ? inv.q : null;
+    var lowHtml = (invQ !== null && invQ > 0 && invQ <= 10)
+      ? '<span class="pcard__low">Only ' + invQ + ' left</span>' : '';
     art.innerHTML =
       '<a class="pcard__media" href="product.html?handle=' + encodeURIComponent(p.handle) + '" aria-label="' + esc(name) + '">' +
         '<span class="pcard__rts">Ready To Ship</span>' +
+        lowHtml +
         media +
       '</a>' +
       '<div class="pcard__body">' +
@@ -291,7 +296,11 @@
     }
   }
 
-  fromLive()
+  fetch('inventory.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .then(function (j) { window.__MP_INV = j || {}; })
+    .catch(function () { window.__MP_INV = {}; })
+    .then(fromLive)
     .then(function (live) {
       if (live && live.some(function (p) { return p.images.length; })) return live;
       return fromListings();
