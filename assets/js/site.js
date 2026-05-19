@@ -60,11 +60,6 @@
       <div class="footer-brand">
         <h3 class="display">MicroPatches</h3>
         <p>Your patch. Now micro. Carry your patch anywhere — made in Phoenix, Arizona.</p>
-        <div class="footer-stamps">
-          <span class="tag dot red">USA Made</span>
-          <span class="tag dot">Active LE Owned</span>
-          <span class="tag dot">No Minimums</span>
-        </div>
       </div>
       <div class="footer-col">
         <h4>Shop</h4>
