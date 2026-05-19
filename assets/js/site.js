@@ -60,6 +60,13 @@
       <div class="footer-brand">
         <h3 class="display">MicroPatches</h3>
         <p>Your patch. Now micro. Carry your patch anywhere — made in Phoenix, Arizona.</p>
+        <form data-newsletter style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;max-width:340px">
+          <input type="email" name="email" required placeholder="Email for new drops &amp; restocks" autocomplete="email"
+            style="flex:1 1 180px;min-width:0;background:var(--bg-2);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;color:var(--ink);font:inherit;font-size:14px">
+          <button type="submit"
+            style="background:var(--accent);color:var(--on-accent);border:0;border-radius:8px;padding:10px 16px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">Join</button>
+          <p data-newsletter-msg style="flex:1 1 100%;margin:2px 0 0;font-size:12px;color:var(--ink-dim);min-height:1em"></p>
+        </form>
       </div>
       <div class="footer-col">
         <h4>Shop</h4>
@@ -129,6 +136,53 @@
     if (c) renderCartDrawer(c);
     // Set year
     document.querySelectorAll('[data-year]').forEach(e => e.textContent = new Date().getFullYear());
+    try { wireNewsletter(); } catch (e) {}
+  }
+
+  // Footer email capture — writes to the same Firebase the custom form uses
+  // (submissions collection, type:"subscribe"). Self-contained REST, no SDK.
+  function wireNewsletter() {
+    var form = document.querySelector('form[data-newsletter]');
+    if (!form || form.dataset.wired) return;
+    form.dataset.wired = '1';
+    var KEY = 'AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4';
+    var PROJ = 'patch-559c8';
+    var msg = form.querySelector('[data-newsletter-msg]');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (form.email.value || '').trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email.'; return; }
+      var btn = form.querySelector('button');
+      btn.disabled = true; msg.textContent = 'Joining…';
+      fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + KEY, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ returnSecureToken: true })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (a) {
+          if (!a.idToken) throw new Error('auth');
+          return fetch('https://firestore.googleapis.com/v1/projects/' + PROJ + '/databases/(default)/documents/submissions', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + a.idToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: {
+              type: { stringValue: 'subscribe' },
+              email: { stringValue: email },
+              submittedAt: { stringValue: new Date().toISOString() },
+              source: { stringValue: location.host + location.pathname }
+            } })
+          });
+        })
+        .then(function (r) {
+          if (!r.ok) throw new Error('save');
+          msg.style.color = 'var(--accent)';
+          msg.textContent = '✓ You’re on the list — thanks!';
+          form.email.value = '';
+        })
+        .catch(function () {
+          msg.textContent = 'Could not sign up — email OfficialMicroPatches@gmail.com';
+        })
+        .then(function () { btn.disabled = false; });
+    });
   }
 
   // ============================================================

@@ -56,9 +56,14 @@
     <span class="meta" id="hdr-meta">—</span>
   </header>
   <div class="wrap">
+    <div class="toolbar" style="margin-bottom:10px">
+      <button class="ghost" id="tab-orders" type="button">Orders</button>
+      <button class="ghost" id="tab-subs" type="button">Subscribers</button>
+    </div>
     <div class="toolbar">
       <input type="search" id="q" placeholder="Filter by name, agency, email…">
       <button class="ghost" id="refresh">Refresh</button>
+      <button class="ghost" id="copy-subs" type="button" hidden>Copy all emails</button>
     </div>
     <p class="count" id="count"></p>
     <div id="list"><p class="msg">Loading…</p></div>
@@ -159,13 +164,29 @@ listEl.addEventListener("click", async function(e){
   }
 });
 
+let mode = "orders";
+
+function renderSubs(items){
+  countEl.textContent = items.length + " subscriber" + (items.length === 1 ? "" : "s");
+  if (!items.length){ listEl.innerHTML = '<p class="msg">No subscribers yet.</p>'; return; }
+  listEl.innerHTML = items.map(function(s){
+    return '<div class="card" style="grid-template-columns:1fr">' +
+      '<div><h3 style="font-size:15px">' + esc(s.email || "(no email)") + '</h3>' +
+      '<p class="sub">' + fmtDate(s.submittedAt) + (s.source ? " · " + esc(s.source) : "") + '</p>' +
+      '<button class="del-btn" data-id="' + esc(s._id) + '" type="button">Remove</button></div></div>';
+  }).join("");
+}
+
 function applyFilter(){
   const q = (qEl.value || "").trim().toLowerCase();
-  if (!q){ render(all); return; }
-  render(all.filter(function(s){
+  let base = all.filter(function(s){
+    return mode === "subs" ? s.type === "subscribe" : s.type !== "subscribe";
+  });
+  if (q) base = base.filter(function(s){
     return [s.name, s.agency, s.email, s.phone, s.description, s.notes, s.productType]
       .filter(Boolean).join(" ").toLowerCase().indexOf(q) !== -1;
-  }));
+  });
+  if (mode === "subs") renderSubs(base); else render(base);
 }
 
 async function load(){
@@ -196,6 +217,28 @@ gateForm.addEventListener("submit", function(e){
 
 qEl.addEventListener("input", applyFilter);
 document.getElementById("refresh").addEventListener("click", load);
+
+const tabOrders = document.getElementById("tab-orders");
+const tabSubs = document.getElementById("tab-subs");
+const copyBtn = document.getElementById("copy-subs");
+function setMode(m){
+  mode = m;
+  tabOrders.style.color = m === "orders" ? "var(--gold)" : "";
+  tabSubs.style.color = m === "subs" ? "var(--gold)" : "";
+  copyBtn.hidden = m !== "subs";
+  applyFilter();
+}
+tabOrders.addEventListener("click", function(){ setMode("orders"); });
+tabSubs.addEventListener("click", function(){ setMode("subs"); });
+copyBtn.addEventListener("click", function(){
+  const emails = all.filter(function(s){ return s.type === "subscribe" && s.email; })
+    .map(function(s){ return s.email; }).join("\n");
+  navigator.clipboard.writeText(emails).then(function(){
+    copyBtn.textContent = "Copied ✓";
+    setTimeout(function(){ copyBtn.textContent = "Copy all emails"; }, 1500);
+  }).catch(function(){ alert(emails); });
+});
+setMode("orders");
 
 try {
   if (sessionStorage.getItem("mp_orders_ok") === "1"){
