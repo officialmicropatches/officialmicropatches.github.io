@@ -141,8 +141,13 @@
       ? '<span class="pcard__rts">Ready To Ship</span>'
       : '<span class="pcard__rts" style="background:var(--line-2);color:var(--ink-dim);">Sold Out</span>';
 
+    var inv = (window.__MP_INV || {})[handle];
+    var invQ = inv && typeof inv.q === 'number' ? inv.q : null;
+    var lowHtml = (inStock && invQ !== null && invQ > 0 && invQ <= 10)
+      ? '<span class="pcard__low">Only ' + invQ + ' left</span>' : '';
+
     card.innerHTML =
-      '<a href="' + escapeAttr(productUrl) + '" class="pcard__media" aria-label="' + escapeAttr(name) + '">' + badgeHtml + '</a>' +
+      '<a href="' + escapeAttr(productUrl) + '" class="pcard__media" aria-label="' + escapeAttr(name) + '">' + badgeHtml + lowHtml + '</a>' +
       '<div class="pcard__body">' +
         '<h3 class="pcard__title product-title">' +
           '<a href="' + escapeAttr(productUrl) + '">' + escapeHtml(name) + '</a>' +
@@ -337,10 +342,20 @@
   }
   function escapeAttr(str) { return String(str).replace(/"/g, '&quot;'); }
 
+  function start() {
+    // Static inventory snapshot (built hourly by a GitHub Action) powers
+    // the "Only N left" scarcity badge. Best-effort: never blocks the grid.
+    fetch('inventory.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (j) { window.__MP_INV = j || {}; })
+      .catch(function () { window.__MP_INV = {}; })
+      .then(function () { fetchAllProducts(renderGrid); });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { fetchAllProducts(renderGrid); });
+    document.addEventListener('DOMContentLoaded', start);
   } else {
-    fetchAllProducts(renderGrid);
+    start();
   }
 
 })();

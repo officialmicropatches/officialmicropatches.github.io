@@ -1,0 +1,82 @@
+name: Inventory snapshot
+
+# Builds a static inventory.json (handle -> { q: qty|null, a: available })
+# from Shopify's PUBLIC per-product feed (/products/<handle>.js). No token
+# or secret required — these endpoints are public. The shop grid and
+# homepage read inventory.json to show "Only N left" scarcity badges.
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # hourly
+  workflow_dispatch: {}
+
+concurrency:
+  group: inventory-snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build inventory.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          STORE="https://micropatches.myshopify.com"
+          UA="Mozilla/5.0 (compatible; MicroPatchesInventoryBot/1.0)"
+
+          handles=""
+          page=1
+          while :; do
+            body=$(curl -s -m 30 -A "$UA" "$STORE/products.json?limit=250&page=$page")
+            n=$(echo "$body" | jq '.products | length')
+            [ "$n" = "0" ] || [ -z "$n" ] && break
+            handles="$handles"$'\n'$(echo "$body" | jq -r '.products[].handle')
+            [ "$n" -lt 250 ] && break
+            page=$((page+1))
+            [ "$page" -gt 10 ] && break
+          done
+          handles=$(echo "$handles" | sed '/^$/d' | sort -u)
+          count=$(echo "$handles" | grep -c . || true)
+          echo "Found $count product handles"
+          [ "$count" -eq 0 ] && { echo "No products; skipping."; exit 0; }
+
+          tmp=$(mktemp)
+          echo "{" > "$tmp"
+          first=1
+          while IFS= read -r h; do
+            [ -z "$h" ] && continue
+            pj=$(curl -s -m 20 -A "$UA" "$STORE/products/$h.js" || true)
+            row=$(echo "$pj" | jq -c '
+              (.variants[0] // {}) as $v
+              | { a: ($v.available == true),
+                  q: ( if ($v.inventory_management != null) and ($v.inventory_quantity | type == "number")
+                       then ( if $v.inventory_quantity < 0 then 0 else $v.inventory_quantity end)
+                       else null end ) }' 2>/dev/null || echo '')
+            [ -z "$row" ] && continue
+            [ $first -eq 0 ] && echo "," >> "$tmp"
+            first=0
+            printf '%s: %s' "$(echo "$h" | jq -R .)" "$row" >> "$tmp"
+          done <<< "$handles"
+          [ $first -eq 0 ] && echo "," >> "$tmp"
+          printf '%s: %s\n}\n' '"_updatedAt"' "$(date -u +%Y-%m-%dT%H:%M:%SZ | jq -R .)" >> "$tmp"
+
+          jq . "$tmp" > inventory.json
+          rm -f "$tmp"
+          echo "Wrote inventory.json ($(jq 'keys|length' inventory.json) keys)"
+
+          if ! git diff --quiet -- inventory.json; then
+            git config user.name  "inventory-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add inventory.json
+            git commit -m "[skip ci] inventory snapshot"
+            git push
+            echo "Committed updated inventory.json"
+          else
+            echo "No inventory change."
+          fi
