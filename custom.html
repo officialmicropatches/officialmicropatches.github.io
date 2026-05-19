@@ -133,6 +133,9 @@ Referrer-Policy: strict-origin-when-cross-origin -->
     </header>
 
     <form class="co-form" id="custom-order-form" novalidate>
+      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+        <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+      </div>
       <fieldset class="co-step">
         <legend><span class="co-step__n">01</span> Contact</legend>
         <div class="co-grid">
@@ -302,8 +305,16 @@ fileInput?.addEventListener("change", async (e) => {
   }
 });
 
+const PAGE_LOADED_AT = Date.now();
+
 form?.addEventListener("submit", async (e) => {
   e.preventDefault();
+  // Bot traps: honeypot must stay empty; humans take >3s to fill the form.
+  if ((form.company && form.company.value) || (Date.now() - PAGE_LOADED_AT) < 3000) {
+    setStatus("✓ Request received. We typically respond within 1–2 business days.", "#6ad29a");
+    form.reset();
+    return;
+  }
   if (!form.reportValidity()) return;
   if (uploading) { setStatus("Please wait — photo is still uploading…", "#fbbf24"); return; }
 
@@ -375,7 +386,7 @@ function mailtoFallback(p) {
   setStatus("Opening your email app — just hit send. (If nothing happens, email " + NOTIFY_EMAIL + ".)", "#fbbf24");
 }
 </script>
-  <script src="assets/js/site.js?v=20260524"></script>
+  <script src="assets/js/site.js?v=20260535"></script>
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 </body>
