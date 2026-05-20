@@ -26,31 +26,31 @@ jobs:
       - name: Build inventory.json
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
           STORE="https://micropatches.myshopify.com"
           UA="Mozilla/5.0 (compatible; MicroPatchesInventoryBot/1.0)"
 
           handles=""
           page=1
           while :; do
-            body=$(curl -s -m 30 -A "$UA" "$STORE/products.json?limit=250&page=$page")
-            n=$(echo "$body" | jq '.products | length')
-            [ "$n" = "0" ] || [ -z "$n" ] && break
+            body=$(curl -s -m 30 -A "$UA" "$STORE/products.json?limit=250&page=$page" || echo '{"products":[]}')
+            n=$(echo "$body" | jq '.products | length' 2>/dev/null || echo 0)
+            if [ -z "$n" ] || [ "$n" = "0" ]; then break; fi
             handles="$handles"$'\n'$(echo "$body" | jq -r '.products[].handle')
-            [ "$n" -lt 250 ] && break
+            if [ "$n" -lt 250 ]; then break; fi
             page=$((page+1))
-            [ "$page" -gt 10 ] && break
+            if [ "$page" -gt 10 ]; then break; fi
           done
           handles=$(echo "$handles" | sed '/^$/d' | sort -u)
           count=$(echo "$handles" | grep -c . || true)
           echo "Found $count product handles"
-          [ "$count" -eq 0 ] && { echo "No products; skipping."; exit 0; }
+          if [ "$count" -eq 0 ]; then echo "No products; skipping."; exit 0; fi
 
           tmp=$(mktemp)
           echo "{" > "$tmp"
           first=1
           while IFS= read -r h; do
-            [ -z "$h" ] && continue
+            if [ -z "$h" ]; then continue; fi
             pj=$(curl -s -m 20 -A "$UA" "$STORE/products/$h.js" || true)
             row=$(echo "$pj" | jq -c '
               (.variants[0] // {}) as $v
@@ -58,15 +58,20 @@ jobs:
                   q: ( if ($v.inventory_management != null) and ($v.inventory_quantity | type == "number")
                        then ( if $v.inventory_quantity < 0 then 0 else $v.inventory_quantity end)
                        else null end ) }' 2>/dev/null || echo '')
-            [ -z "$row" ] && continue
-            [ $first -eq 0 ] && echo "," >> "$tmp"
+            if [ -z "$row" ]; then continue; fi
+            if [ "$first" -eq 0 ]; then echo "," >> "$tmp"; fi
             first=0
             printf '%s: %s' "$(echo "$h" | jq -R .)" "$row" >> "$tmp"
           done <<< "$handles"
-          [ $first -eq 0 ] && echo "," >> "$tmp"
+          if [ "$first" -eq 0 ]; then echo "," >> "$tmp"; fi
           printf '%s: %s\n}\n' '"_updatedAt"' "$(date -u +%Y-%m-%dT%H:%M:%SZ | jq -R .)" >> "$tmp"
 
-          jq . "$tmp" > inventory.json
+          if ! jq . "$tmp" > inventory.json; then
+            echo "Invalid JSON assembled; aborting."
+            cat "$tmp" | head -40
+            rm -f "$tmp"
+            exit 1
+          fi
           rm -f "$tmp"
           echo "Wrote inventory.json ($(jq 'keys|length' inventory.json) keys)"
 
