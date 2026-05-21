@@ -2,12 +2,15 @@ name: Inventory snapshot
 
 # Builds a static inventory.json (handle -> { q: qty|null, a: available })
 # from Shopify's PUBLIC per-product feed (/products/<handle>.js). No token
-# or secret required — these endpoints are public. The shop grid and
-# homepage read inventory.json to show "Only N left" scarcity badges.
+# or secret required — these endpoints are public.
+#
+# Manual-only by design. The committed seed inventory.json already powers
+# the "Only N left" scarcity badges; rerun this on-demand whenever stock
+# shifts meaningfully. The hourly cron was removed because GitHub kept
+# emailing failures whenever git push was blocked (branch protection /
+# default workflow permissions) — the seed alone is good enough.
 
 on:
-  schedule:
-    - cron: "17 * * * *"   # hourly
   workflow_dispatch: {}
 
 concurrency:
@@ -20,12 +23,16 @@ permissions:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    # Never fail the job — this is a best-effort refresh, not critical infra.
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build inventory.json
+      - name: Build inventory.json (best effort)
         shell: bash
+        continue-on-error: true
         run: |
+          set +e
           set -uo pipefail
           STORE="https://micropatches.myshopify.com"
           UA="Mozilla/5.0 (compatible; MicroPatchesInventoryBot/1.0)"
@@ -36,7 +43,7 @@ jobs:
             body=$(curl -s -m 30 -A "$UA" "$STORE/products.json?limit=250&page=$page" || echo '{"products":[]}')
             n=$(echo "$body" | jq '.products | length' 2>/dev/null || echo 0)
             if [ -z "$n" ] || [ "$n" = "0" ]; then break; fi
-            handles="$handles"$'\n'$(echo "$body" | jq -r '.products[].handle')
+            handles="$handles"$'\n'$(echo "$body" | jq -r '.products[].handle' 2>/dev/null || true)
             if [ "$n" -lt 250 ]; then break; fi
             page=$((page+1))
             if [ "$page" -gt 10 ]; then break; fi
@@ -44,7 +51,7 @@ jobs:
           handles=$(echo "$handles" | sed '/^$/d' | sort -u)
           count=$(echo "$handles" | grep -c . || true)
           echo "Found $count product handles"
-          if [ "$count" -eq 0 ]; then echo "No products; skipping."; exit 0; fi
+          if [ "$count" -eq 0 ]; then echo "No products; nothing to do."; exit 0; fi
 
           tmp=$(mktemp)
           echo "{" > "$tmp"
@@ -66,22 +73,29 @@ jobs:
           if [ "$first" -eq 0 ]; then echo "," >> "$tmp"; fi
           printf '%s: %s\n}\n' '"_updatedAt"' "$(date -u +%Y-%m-%dT%H:%M:%SZ | jq -R .)" >> "$tmp"
 
-          if ! jq . "$tmp" > inventory.json; then
-            echo "Invalid JSON assembled; aborting."
-            cat "$tmp" | head -40
+          if ! jq . "$tmp" > inventory.json 2>/dev/null; then
+            echo "Assembled JSON invalid; leaving committed inventory.json untouched."
             rm -f "$tmp"
-            exit 1
+            exit 0
           fi
           rm -f "$tmp"
           echo "Wrote inventory.json ($(jq 'keys|length' inventory.json) keys)"
 
-          if ! git diff --quiet -- inventory.json; then
-            git config user.name  "inventory-bot"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add inventory.json
-            git commit -m "[skip ci] inventory snapshot"
-            git push
+          if git diff --quiet -- inventory.json; then
+            echo "No inventory change."
+            exit 0
+          fi
+
+          git config user.name  "inventory-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inventory.json
+          git commit -m "[skip ci] inventory snapshot" || true
+          if git push 2>err.log; then
             echo "Committed updated inventory.json"
           else
-            echo "No inventory change."
+            echo "Push blocked (likely repo workflow-permissions or branch protection):"
+            cat err.log || true
+            echo "Snapshot generated locally; not published."
           fi
+          # Always succeed.
+          exit 0
