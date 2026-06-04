@@ -37,6 +37,16 @@ Referrer-Policy: strict-origin-when-cross-origin -->
     .co-success h3 { margin: 0 0 8px; font-size: 1.25rem; }
     .co-success p { margin: 0; color: var(--ink-dim, #aaa); line-height: 1.55; }
     .co-success a { color: var(--accent, #c9a227); }
+
+    /* Product-card dimension line + flexible-patch size table (page-scoped) */
+    .co-card__dim { display: block; margin-top: 2px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-dim, #aaa); }
+    .co-pricing__list small { display: block; margin-top: 3px; font-family: var(--f-mono); font-weight: 400; font-size: 11.5px; letter-spacing: 0.04em; text-transform: none; color: var(--ink-dim, #aaa); }
+    .co-flex-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+    .co-flex-table th, .co-flex-table td { text-align: left; padding: 0.6rem 0.6rem 0.6rem 0; vertical-align: top; }
+    .co-flex-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.2); }
+    .co-flex-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .co-flex-table tbody tr:last-child { border-bottom: 0; }
+    .co-flex-table .co-flex-price { color: var(--accent, #c9a227); font-family: var(--f-mono); white-space: nowrap; }
   </style>
 </head>
 <body data-page="custom">
@@ -79,7 +89,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
       <div class="co-card__media"><span class="co-card__mark">M</span></div>
       <div class="co-card__body">
         <h3 class="co-card__title">MicroKeychain</h3>
-        <p class="co-card__desc">Our signature textured patch keychain.</p>
+        <p class="co-card__desc">Our signature premium raised-texture patch keychain.<span class="co-card__dim">≈ 45 × 45 mm (1.77 in)</span></p>
         <p class="co-card__price">From <strong>$13.99</strong></p>
       </div>
     </article>
@@ -87,7 +97,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
       <div class="co-card__media"><span class="co-card__mark">M</span></div>
       <div class="co-card__body">
         <h3 class="co-card__title">MicroMagnet</h3>
-        <p class="co-card__desc">Premium display magnet for lockers, safes, and displays.</p>
+        <p class="co-card__desc">Premium display magnet for lockers, safes, and displays.<span class="co-card__dim">≈ 65 × 65 mm (2.56 in)</span></p>
         <p class="co-card__price">From <strong>$14.99</strong></p>
       </div>
     </article>
@@ -95,7 +105,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
       <div class="co-card__media"><span class="co-card__mark">M</span></div>
       <div class="co-card__body">
         <h3 class="co-card__title">MicroCharm</h3>
-        <p class="co-card__desc">Compact lightweight accessory attachment.</p>
+        <p class="co-card__desc">Mini charm designed for Croc-style clogs and similar vented footwear.<span class="co-card__dim">≈ 25 mm (0.98 in)</span></p>
         <p class="co-card__price">From <strong>$9.99</strong></p>
       </div>
     </article>
@@ -103,8 +113,24 @@ Referrer-Policy: strict-origin-when-cross-origin -->
       <div class="co-card__media"><span class="co-card__mark">M</span></div>
       <div class="co-card__body">
         <h3 class="co-card__title">MicroPin</h3>
-        <p class="co-card__desc">Collector-style wearable patch pin.</p>
+        <p class="co-card__desc">Lapel / clothes pin with our raised-texture finish.<span class="co-card__dim">≈ 25 mm (0.98 in)</span></p>
         <p class="co-card__price">From <strong>$9.99</strong></p>
+      </div>
+    </article>
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">F</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">Flexible Patch</h3>
+        <p class="co-card__desc">Flexible patch in three sizes — for hats, vests, and bags, or a 1:1 replica of your patch.<span class="co-card__dim">55 mm · 65 mm · Large / Replica</span></p>
+        <p class="co-card__price">From <strong>$13.99</strong></p>
+      </div>
+    </article>
+    <article class="co-card" role="listitem">
+      <div class="co-card__media"><span class="co-card__mark">C</span></div>
+      <div class="co-card__body">
+        <h3 class="co-card__title">Challenge Coin</h3>
+        <p class="co-card__desc">Challenge coin style product based on your patch or badge artwork. Silver finish — other colors on request.<span class="co-card__dim">≈ 45 mm diameter</span></p>
+        <p class="co-card__price"><strong>Custom quote</strong></p>
       </div>
     </article>
     <article class="co-card" role="listitem">
@@ -128,43 +154,44 @@ Referrer-Policy: strict-origin-when-cross-origin -->
     <div class="co-pricing">
       <p class="co-pricing__note"><strong>$25 flat design / setup fee</strong> per individual patch design. Applies to all products — and may be waived on qualifying bulk orders.</p>
       <ul class="co-pricing__list">
-        <li><span>MicroKeychains</span><span>from $13.99</span></li>
-        <li><span>MicroMagnets</span><span>from $14.99</span></li>
-        <li><span>MicroCharms</span><span>from $9.99</span></li>
-        <li><span>MicroPins</span><span>from $9.99</span></li>
+        <li><span>MicroKeychains <small>≈ 45 × 45 mm (1.77 in)</small></span><span>from $13.99</span></li>
+        <li><span>MicroMagnets <small>≈ 65 × 65 mm (2.56 in)</small></span><span>from $14.99</span></li>
+        <li><span>MicroCharms <small>≈ 25 mm (0.98 in) · Croc-style clogs &amp; vented footwear</small></span><span>from $9.99</span></li>
+        <li><span>MicroPins <small>≈ 25 mm (0.98 in) · lapel / clothes pins</small></span><span>from $9.99</span></li>
+        <li><span>Challenge Coins <small>≈ 45 mm diameter · silver, other colors on request</small></span><span>custom quote</span></li>
       </ul>
       <h3 style="margin-top: 2rem; font-size: 1rem; font-weight: 600;">Flexible Patch Pricing</h3>
-      <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem;">
+      <table class="co-flex-table">
         <thead>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
-            <th style="text-align: left; padding: 0.5rem 0;">Size</th>
-            <th style="text-align: left; padding: 0.5rem 0;">Qty 1</th>
-            <th style="text-align: left; padding: 0.5rem 0;">Qty 2-10</th>
-            <th style="text-align: left; padding: 0.5rem 0;">Qty 50+</th>
+          <tr>
+            <th>Size</th>
+            <th>Dimensions</th>
+            <th>Best for</th>
+            <th>Price</th>
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <td style="padding: 0.5rem 0;"><strong>Small (~2")</strong></td>
-            <td style="padding: 0.5rem 0;">$15.00</td>
-            <td style="padding: 0.5rem 0;">$13.50</td>
-            <td style="padding: 0.5rem 0;">$8.99 *</td>
-          </tr>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <td style="padding: 0.5rem 0;"><strong>Medium (~2.5")</strong></td>
-            <td style="padding: 0.5rem 0;">$20.00</td>
-            <td style="padding: 0.5rem 0;">$18.50</td>
-            <td style="padding: 0.5rem 0;">$13.50 *</td>
+          <tr>
+            <td><strong>Small</strong></td>
+            <td>55 × 55 mm</td>
+            <td>Hats, duty bags, range bags</td>
+            <td class="co-flex-price">$13.99</td>
           </tr>
           <tr>
-            <td style="padding: 0.5rem 0;"><strong>Full Size (varies)</strong></td>
-            <td style="padding: 0.5rem 0;">$25.00</td>
-            <td style="padding: 0.5rem 0;">$23.50</td>
-            <td style="padding: 0.5rem 0;">$18.50 *</td>
+            <td><strong>Medium</strong></td>
+            <td>65 × 65 mm</td>
+            <td>External vests, duty bags, rifle bags, gym bags, some uniform shirts</td>
+            <td class="co-flex-price">$14.99</td>
+          </tr>
+          <tr>
+            <td><strong>Large / Replica</strong></td>
+            <td>Matches your patch</td>
+            <td>1:1 replacement for the actual patch</td>
+            <td class="co-flex-price">$19.99</td>
           </tr>
         </tbody>
       </table>
-      <p style="font-size: 0.85rem; margin-top: 0.75rem; color: rgba(255,255,255,0.7);">* Design fee waived on orders of 50+. Larger quantities receive additional discounts — email for a custom quote.</p>
+      <p style="font-size: 0.85rem; margin-top: 0.75rem; color: rgba(255,255,255,0.7);">The $25 design fee may be waived on qualifying bulk orders. Larger quantities receive additional discounts — email for a custom quote.</p>
     </div>
   </div>
 </section>
@@ -201,11 +228,13 @@ Referrer-Policy: strict-origin-when-cross-origin -->
           <label class="co-field"><span>Product type</span>
             <select name="Product Type" required>
               <option value="" selected disabled>Select a product…</option>
-              <option>Micro Keychain</option>
+              <option>MicroKeychain</option>
+              <option>MicroMagnet</option>
+              <option>MicroCharm</option>
+              <option>MicroPin</option>
+              <option>Flexible Patch</option>
               <option>Challenge Coin</option>
-              <option>Micro Magnet</option>
-              <option>Micro Pin</option>
-              <option>Micro Croc</option>
+              <option>Not sure / other</option>
             </select>
           </label>
           <label class="co-field"><span>Quantity</span><input type="number" name="Quantity" required min="1" max="100000" inputmode="numeric" placeholder="e.g. 25"></label>
