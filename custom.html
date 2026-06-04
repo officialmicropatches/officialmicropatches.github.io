@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://officialmicropatches.com/custom.html">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <!-- SECURITY NOTE: Add a _headers file to repo root or use Cloudflare (free) to apply:
-Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.shopify.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://firestore.googleapis.com https://storage.googleapis.com https://firebasestorage.googleapis.com https://cdn.shopify.com; img-src 'self' data: https://storage.googleapis.com https://firebasestorage.googleapis.com https://cdn.shopify.com;
+Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.shopify.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://api.cloudinary.com https://api.web3forms.com https://cdn.shopify.com; img-src 'self' data: blob: https://res.cloudinary.com https://cdn.shopify.com;
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin -->
@@ -24,6 +24,20 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <link rel="stylesheet" href="assets/css/style.css?v=20260534">
   <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
+  <style>
+    /* Custom-order success panel (scoped here to avoid a site-wide style.css cache bump) */
+    .co-success {
+      margin-top: 8px;
+      padding: 28px 24px;
+      border: 1px solid var(--accent, #c9a227);
+      border-radius: 14px;
+      background: rgba(201, 162, 39, 0.08);
+      text-align: center;
+    }
+    .co-success h3 { margin: 0 0 8px; font-size: 1.25rem; }
+    .co-success p { margin: 0; color: var(--ink-dim, #aaa); line-height: 1.55; }
+    .co-success a { color: var(--accent, #c9a227); }
+  </style>
 </head>
 <body data-page="custom">
 
@@ -165,15 +179,19 @@ Referrer-Policy: strict-origin-when-cross-origin -->
     </header>
 
     <form class="co-form" id="custom-order-form" novalidate>
-      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
-        <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
-      </div>
+      <!-- Web3Forms config (public-safe values) -->
+      <input type="hidden" name="access_key" value="9ac9af5f-c015-4eb0-a4e5-62fa3c855b44">
+      <input type="hidden" name="subject" value="New MicroPatches Custom Order Request">
+      <input type="hidden" name="from_name" value="MicroPatches Website">
+      <!-- Honeypot: must stay empty (bots tend to fill it) -->
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
       <fieldset class="co-step">
         <legend><span class="co-step__n">01</span> Contact</legend>
         <div class="co-grid">
-          <label class="co-field co-field--full"><span>Full name</span><input type="text" name="fullName" required maxlength="120" autocomplete="name"></label>
+          <label class="co-field co-field--full"><span>Full name</span><input type="text" name="Full Name" required maxlength="120" autocomplete="name"></label>
           <label class="co-field"><span>Email</span><input type="email" name="email" required maxlength="120" autocomplete="email"></label>
-          <label class="co-field"><span>Phone <em>· optional</em></span><input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
+          <label class="co-field"><span>Phone <em>· optional</em></span><input type="tel" name="Phone" maxlength="40" autocomplete="tel"></label>
         </div>
       </fieldset>
 
@@ -181,7 +199,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
         <legend><span class="co-step__n">02</span> Order details</legend>
         <div class="co-grid">
           <label class="co-field"><span>Product type</span>
-            <select name="productType" required>
+            <select name="Product Type" required>
               <option value="" selected disabled>Select a product…</option>
               <option>Micro Keychain</option>
               <option>Challenge Coin</option>
@@ -190,17 +208,21 @@ Referrer-Policy: strict-origin-when-cross-origin -->
               <option>Micro Croc</option>
             </select>
           </label>
-          <label class="co-field"><span>Quantity</span><input type="number" name="quantity" required min="1" max="100000" inputmode="numeric" placeholder="e.g. 25"></label>
-          <label class="co-field co-field--full"><span>Design description</span><textarea name="designDescription" rows="4" required maxlength="2000" placeholder="Describe the patch / artwork you want made — agency or unit, colors, text, any changes."></textarea></label>
-          <label class="co-field co-field--full"><span>Additional notes <em>· optional</em></span><textarea name="notes" rows="3" maxlength="2000" placeholder="Deadlines, budget, bulk/team order details, anything else."></textarea></label>
+          <label class="co-field"><span>Quantity</span><input type="number" name="Quantity" required min="1" max="100000" inputmode="numeric" placeholder="e.g. 25"></label>
+          <label class="co-field co-field--full"><span>Design description</span><textarea name="Design Description" rows="4" required maxlength="2000" placeholder="Describe the patch / artwork you want made — agency or unit, colors, text, any changes."></textarea></label>
+          <label class="co-field co-field--full"><span>Additional notes <em>· optional</em></span><textarea name="Additional Notes" rows="3" maxlength="2000" placeholder="Deadlines, budget, bulk/team order details, anything else."></textarea></label>
         </div>
       </fieldset>
 
       <fieldset class="co-step">
-        <legend><span class="co-step__n">03</span> Patch upload</legend>
+        <legend><span class="co-step__n">03</span> Patch upload <em>· optional</em></legend>
+        <!-- NOTE: the file input has NO name attribute on purpose — the file is
+             uploaded to Cloudinary via JS only, and its returned URL is placed in
+             the hidden "Reference Photo" field below. Giving it a name would send
+             the raw file to Web3Forms, whose free tier rejects file uploads. -->
         <label class="co-upload" for="co-reference">
-          <input type="file" id="co-reference" name="photo" accept="image/*" required>
-          <span class="co-upload__hint">Patch photo, vector artwork, or logo file — up to 10&nbsp;MB.</span>
+          <input type="file" id="co-reference" accept="image/png,image/jpeg,image/webp,image/heic,image/heif">
+          <span class="co-upload__hint">Patch photo, vector artwork, or logo file — up to 10&nbsp;MB. Optional, but it helps us quote faster.</span>
         </label>
         <ul class="co-tips">
           <li>Lay the patch flat</li>
@@ -210,14 +232,22 @@ Referrer-Policy: strict-origin-when-cross-origin -->
         </ul>
         <div id="photo-status" class="co-status" role="status" aria-live="polite"></div>
         <img id="photo-preview" class="co-preview" alt="">
+        <!-- Cloudinary URL lands here and gets emailed by Web3Forms -->
+        <input type="hidden" name="Reference Photo" id="referenceImageUrl">
       </fieldset>
 
       <div class="co-submit">
         <button type="submit" class="patch-submit co-btn co-btn--primary co-btn--lg co-btn--block">Send custom request</button>
+        <div id="form-status" class="co-status" role="status" aria-live="polite"></div>
         <p class="co-submit__note">Typical response time: 1–2 business days</p>
         <p class="co-submit__fallback">Trouble submitting? Email <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></p>
       </div>
     </form>
+
+    <div id="form-success" class="co-success" style="display:none" role="status" aria-live="polite">
+      <h3>Thanks! We got your request.</h3>
+      <p>We'll review the details and follow up by email — typically within 1–2 business days. If you have anything to add, just reply to that email or write us at <a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a>.</p>
+    </div>
   </div>
 </section>
 
@@ -262,161 +292,140 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <!-- ===== SCRIPTS ===== -->
 <script src="assets/js/shopify-config.js?v=20260520"></script>
 
-<!-- Custom-order form: Firebase photo upload + submit (endpoint or mailto) -->
-<script type="module">
-import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<!-- Custom-order form: Cloudinary photo upload + Web3Forms AJAX submit.
+     The optional patch photo uploads to Cloudinary the moment it's picked
+     (Web3Forms' free tier can't accept files); the returned URL rides along
+     in the hidden "Reference Photo" field. All values are public-safe. -->
+<script>
+(function () {
+  "use strict";
 
-/* Submissions are saved to Firebase: the photo goes to Storage (submissions/)
-   and the order record to Firestore (submissions collection) — the same model
-   firebase.js / the queue already use. Optionally also POST to a Formspree or
-   Zapier URL by setting FORM_ENDPOINT. Email is the last-resort fallback. */
-const FORM_ENDPOINT = "";
-const NOTIFY_EMAIL  = "OfficialMicroPatches@gmail.com";
+  var WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+  var CLOUDINARY_CLOUD   = "dj6h6xmwh";
+  var CLOUDINARY_PRESET  = "micropatches_quotes";   // unsigned upload preset — no API key/secret needed
+  var MAX_IMAGE_BYTES    = 10 * 1024 * 1024;        // 10 MB
+  var NOTIFY_EMAIL       = "OfficialMicroPatches@gmail.com";
 
-const FB_CONFIG = {
-  apiKey: "AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4",
-  authDomain: "patch-559c8.firebaseapp.com",
-  projectId: "patch-559c8",
-  storageBucket: "patch-559c8.firebasestorage.app",
-  messagingSenderId: "584233188985",
-  appId: "1:584233188985:web:7be3979a2ad505bc711ea8"
-};
-let app;
-try { app = getApp(); } catch (_e) { app = initializeApp(FB_CONFIG); }
-const storage = getStorage(app);
-const db = getFirestore(app);
-const auth = getAuth(app);
+  var form         = document.getElementById("custom-order-form");
+  if (!form) return;
+  var fileInput    = document.getElementById("co-reference");
+  var photoUrlInput= document.getElementById("referenceImageUrl");
+  var uploadStatus = document.getElementById("photo-status");
+  var previewEl    = document.getElementById("photo-preview");
+  var formStatus   = document.getElementById("form-status");
+  var successEl    = document.getElementById("form-success");
+  var submitBtn    = form.querySelector(".patch-submit");
 
-/* Storage rules require an authenticated request; sign in anonymously
-   (same as the admin/queue flow) before any upload. */
-async function ensureAuth() {
-  if (!auth.currentUser) await signInAnonymously(auth);
-}
+  var uploadInFlight = null;   // Promise while a Cloudinary upload is running
 
-const form      = document.getElementById("custom-order-form");
-const fileInput = document.getElementById("co-reference");
-const statusEl  = document.getElementById("photo-status");
-const previewEl = document.getElementById("photo-preview");
-const submitBtn = form?.querySelector(".patch-submit");
-
-let uploadedURL = null;
-let uploading   = false;
-
-function setStatus(msg, color) {
-  if (!statusEl) return;
-  statusEl.textContent = msg || "";
-  statusEl.style.color = color || "";
-  statusEl.style.display = msg ? "block" : "none";
-}
-
-fileInput?.addEventListener("change", async (e) => {
-  const file = e.target.files && e.target.files[0];
-  uploadedURL = null;
-  if (previewEl) previewEl.style.display = "none";
-  if (!file) return;
-  if (!file.type.startsWith("image/")) { setStatus("Only image files are accepted.", "#f08a8a"); fileInput.value = ""; return; }
-  if (file.size > 10 * 1024 * 1024)    { setStatus("File must be under 10 MB.", "#f08a8a"); fileInput.value = ""; return; }
-
-  uploading = true;
-  setStatus("Uploading photo…");
-  try {
-    await ensureAuth();
-    const safe = (file.name || "photo.jpg").replace(/[^a-zA-Z0-9._-]/g, "_");
-    const r = ref(storage, "submissions/" + Date.now() + "_custom_" + safe);
-    await uploadBytes(r, file);
-    uploadedURL = await getDownloadURL(r);
-    if (previewEl) { previewEl.src = uploadedURL; previewEl.style.display = "block"; }
-    setStatus("✓ Photo uploaded", "#6ad29a");
-  } catch (err) {
-    setStatus("Upload failed — " + ((err && err.message) || "try again"), "#f08a8a");
-  } finally {
-    uploading = false;
+  function setUploadStatus(msg, color) {
+    if (!uploadStatus) return;
+    uploadStatus.textContent = msg || "";
+    uploadStatus.style.color = color || "";
+    uploadStatus.style.display = msg ? "block" : "none";
   }
-});
-
-const PAGE_LOADED_AT = Date.now();
-
-form?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  // Bot traps: honeypot must stay empty; humans take >3s to fill the form.
-  if ((form.company && form.company.value) || (Date.now() - PAGE_LOADED_AT) < 3000) {
-    setStatus("✓ Request received. We typically respond within 1–2 business days.", "#6ad29a");
-    form.reset();
-    return;
+  function setFormStatus(msg, color) {
+    if (!formStatus) return;
+    formStatus.textContent = msg || "";
+    formStatus.style.color = color || "";
+    formStatus.style.display = msg ? "block" : "none";
   }
-  if (!form.reportValidity()) return;
-  if (uploading) { setStatus("Please wait — photo is still uploading…", "#fbbf24"); return; }
+  function showError(msg) {
+    setFormStatus(msg || ("Something went wrong. Please email " + NOTIFY_EMAIL + " and we'll help you directly."), "#f08a8a");
+    if (submitBtn) submitBtn.disabled = false;
+  }
 
-  submitBtn.disabled = true;
-  const fd = new FormData(form);
-  const submission = {
-    type: "custom-order",
-    name: (fd.get("fullName") || "").trim(),
-    email: fd.get("email") || "",
-    phone: fd.get("phone") || "",
-    productType: fd.get("productType") || "",
-    quantity: fd.get("quantity") || "",
-    description: fd.get("designDescription") || "",
-    notes: fd.get("notes") || "",
-    patchPhotoURL: uploadedURL || "",
-    patchPhotoPath: "",
-    submittedAt: new Date().toISOString(),
-    source: "officialmicropatches.com/custom.html"
-  };
+  function uploadToCloudinary(file) {
+    var data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", CLOUDINARY_PRESET);
+    return fetch("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD + "/image/upload", { method: "POST", body: data })
+      .then(function (r) { return r.json(); })
+      .then(function (result) {
+        if (result && result.secure_url) {
+          if (photoUrlInput) photoUrlInput.value = result.secure_url;
+          setUploadStatus("✓ Photo attached", "#6ad29a");
+          return true;
+        }
+        throw new Error("upload failed");
+      });
+  }
 
-  setStatus("Sending…");
-  try {
-    await ensureAuth();
-    await addDoc(collection(db, "submissions"), submission);
-    if (FORM_ENDPOINT) {
-      // Best-effort secondary notification; never fails the submission.
-      // text/plain keeps this a CORS "simple request" (no preflight) so it
-      // reliably reaches a Zapier Catch Hook, which parses the JSON body
-      // regardless of content type. keepalive lets it complete if the
-      // page navigates right after submit.
-      fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify(submission),
-        keepalive: true
-      }).catch(function () {});
-    }
-    setStatus("✓ Request received. We typically respond within 1–2 business days.", "#6ad29a");
-    form.reset();
-    if (previewEl) previewEl.style.display = "none";
-    uploadedURL = null;
-  } catch (_err) {
-    setStatus("Couldn't submit automatically — opening your email app as a backup…", "#fbbf24");
-    mailtoFallback({
-      name: submission.name,
-      email: submission.email, phone: submission.phone,
-      productType: submission.productType, quantity: submission.quantity,
-      description: submission.description, notes: submission.notes,
-      photoUrl: submission.patchPhotoURL
+  if (fileInput) {
+    fileInput.addEventListener("change", function () {
+      if (photoUrlInput) photoUrlInput.value = "";
+      uploadInFlight = null;
+      if (previewEl) previewEl.style.display = "none";
+
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) { setUploadStatus("", null); return; }
+      if (file.size > MAX_IMAGE_BYTES) {
+        // Oversized: don't block submission — just skip the attachment.
+        setUploadStatus("That image is over 10 MB — please choose a smaller one, or submit without it and we'll request it by email.", "#fbbf24");
+        fileInput.value = "";
+        return;
+      }
+
+      // Local preview straight away (independent of the upload succeeding).
+      if (previewEl) {
+        try {
+          previewEl.src = URL.createObjectURL(file);
+          previewEl.style.display = "block";
+        } catch (_e) { /* ignore preview failures */ }
+      }
+
+      setUploadStatus("Uploading photo…", "#9aa");
+      uploadInFlight = uploadToCloudinary(file).catch(function () {
+        // Graceful degrade: let them submit anyway; we'll ask for the photo by email.
+        setUploadStatus("Couldn't upload that photo — you can still submit and we'll request it by email.", "#fbbf24");
+        if (photoUrlInput) photoUrlInput.value = "";
+        uploadInFlight = null;
+      });
     });
-  } finally {
-    submitBtn.disabled = false;
   }
-});
 
-function mailtoFallback(p) {
-  const body =
-    "Full name: " + p.name + "\n" +
-    "Email: " + p.email + "\n" +
-    "Phone: " + p.phone + "\n" +
-    "Product type: " + p.productType + "\n" +
-    "Quantity: " + (p.quantity || "") + "\n" +
-    "Design description: " + (p.description || "") + "\n" +
-    "Additional notes: " + (p.notes || "") + "\n" +
-    "Reference photo: " + (p.photoUrl || "(attach your photo to this email)") + "\n";
-  window.location.href = "mailto:" + NOTIFY_EMAIL +
-    "?subject=" + encodeURIComponent("Custom Order Request — " + (p.name || p.email)) +
-    "&body=" + encodeURIComponent(body);
-  setStatus("Opening your email app — just hit send. (If nothing happens, email " + NOTIFY_EMAIL + ".)", "#fbbf24");
-}
+  function submitForm() {
+    setFormStatus("Submitting your request…", "#9aa");
+    if (submitBtn) submitBtn.disabled = true;
+    fetch(WEB3FORMS_ENDPOINT, {
+      method: "POST",
+      body: new FormData(form),
+      headers: { Accept: "application/json" }
+    })
+      .then(function (r) {
+        return r.json().then(function (data) {
+          if (r.ok && data && data.success) {
+            form.style.display = "none";
+            if (successEl) successEl.style.display = "block";
+            setFormStatus("", null);
+            if (successEl && successEl.scrollIntoView) successEl.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+          }
+          showError(data && data.message ? data.message : "");
+        });
+      })
+      .catch(function () { showError(); });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      var bad = form.querySelector(":invalid");
+      setFormStatus("Please complete the required fields before submitting.", "#fbbf24");
+      if (bad && bad.focus) bad.focus();
+      form.reportValidity();
+      return;
+    }
+    // Wait for an in-flight photo upload so its link is always included.
+    if (uploadInFlight) {
+      setFormStatus("Finishing photo upload…", "#9aa");
+      if (submitBtn) submitBtn.disabled = true;
+      uploadInFlight.then(function () { submitForm(); });
+      return;
+    }
+    submitForm();
+  });
+})();
 </script>
   <script src="assets/js/site.js?v=20260535"></script>
 <div data-site-footer></div>
