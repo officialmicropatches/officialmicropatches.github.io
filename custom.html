@@ -38,15 +38,33 @@ Referrer-Policy: strict-origin-when-cross-origin -->
     .co-success p { margin: 0; color: var(--ink-dim, #aaa); line-height: 1.55; }
     .co-success a { color: var(--accent, #c9a227); }
 
-    /* Product-card dimension line + flexible-patch size table (page-scoped) */
+    /* Product-card dimension line (page-scoped) */
     .co-card__dim { display: block; margin-top: 2px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-dim, #aaa); }
-    .co-pricing__list small { display: block; margin-top: 3px; font-family: var(--f-mono); font-weight: 400; font-size: 11.5px; letter-spacing: 0.04em; text-transform: none; color: var(--ink-dim, #aaa); }
-    .co-flex-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
-    .co-flex-table th, .co-flex-table td { text-align: left; padding: 0.6rem 0.6rem 0.6rem 0; vertical-align: top; }
-    .co-flex-table thead tr { border-bottom: 1px solid rgba(255,255,255,0.2); }
-    .co-flex-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .co-flex-table tbody tr:last-child { border-bottom: 0; }
-    .co-flex-table .co-flex-price { color: var(--accent, #c9a227); font-family: var(--f-mono); white-space: nowrap; }
+
+    /* Clickable pricing accordion (page-scoped) */
+    .co-price-hint { margin: 0 0 6px; font-size: 12px; color: var(--ink-dim, #aaa); }
+    .co-price-acc { margin: 0; }
+    .co-price-item { border-bottom: 1px solid var(--line, rgba(255,255,255,0.12)); }
+    .co-price-item:last-child { border-bottom: 0; }
+    .co-price-item > summary {
+      list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+      padding: 15px 0;
+    }
+    .co-price-item > summary::-webkit-details-marker { display: none; }
+    .co-price-item > summary:focus-visible { outline: 2px solid var(--accent, #c9a227); outline-offset: 3px; border-radius: 6px; }
+    .co-price-name { font-family: var(--f-display); font-weight: 600; font-size: 17px; color: var(--ink, #fff); }
+    .co-price-amt { margin-left: auto; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent, #c9a227); white-space: nowrap; }
+    .co-price-ico { flex: 0 0 auto; width: 9px; height: 9px; margin: 0 2px; border-right: 2px solid var(--ink-dim, #aaa); border-bottom: 2px solid var(--ink-dim, #aaa); transform: rotate(45deg); transition: transform 0.2s ease; }
+    .co-price-item[open] > summary .co-price-ico { transform: rotate(-135deg); }
+    .co-price-detail { padding: 2px 0 16px; color: var(--ink-dim, #aaa); font-size: 14px; line-height: 1.55; }
+    .co-price-detail p { margin: 0 0 8px; }
+    .co-price-detail p:last-child { margin-bottom: 0; }
+    .co-price-detail strong { color: var(--ink, #fff); }
+    .co-price-dim { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--ink, #fff); }
+    .co-price-sizes { list-style: none; margin: 0 0 8px; padding: 0; }
+    .co-price-sizes li { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .co-price-sizes li:last-child { border-bottom: 0; }
+    .co-price-sizes .amt { color: var(--accent, #c9a227); font-family: var(--f-mono); white-space: nowrap; }
   </style>
 </head>
 <body data-page="custom">
@@ -146,45 +164,93 @@ Referrer-Policy: strict-origin-when-cross-origin -->
     </header>
     <div class="co-pricing">
       <p class="co-pricing__note"><strong>$25 flat design / setup fee</strong> per individual patch design. Applies to all products — and may be waived on qualifying bulk orders.</p>
-      <ul class="co-pricing__list">
-        <li><span>MicroKeychains <small>≈ 45 × 45 mm (1.77 in)</small></span><span>from $13.99</span></li>
-        <li><span>MicroMagnets <small>≈ 65 × 65 mm (2.56 in)</small></span><span>from $14.99</span></li>
-        <li><span>MicroCharms <small>≈ 25 mm (0.98 in) · Croc-style clogs &amp; vented footwear</small></span><span>from $9.99</span></li>
-        <li><span>MicroPins <small>≈ 25 mm (0.98 in) · lapel / clothes pins</small></span><span>from $9.99</span></li>
-        <li><span>Challenge Coins <small>≈ 45 mm diameter · silver, other colors on request</small></span><span>custom quote</span></li>
-      </ul>
-      <h3 style="margin-top: 2rem; font-size: 1rem; font-weight: 600;">Flexible Patch Pricing</h3>
-      <table class="co-flex-table">
-        <thead>
-          <tr>
-            <th>Size</th>
-            <th>Dimensions</th>
-            <th>Best for</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Small</strong></td>
-            <td>55 × 55 mm</td>
-            <td>Hats, duty bags, range bags</td>
-            <td class="co-flex-price">$13.99</td>
-          </tr>
-          <tr>
-            <td><strong>Medium</strong></td>
-            <td>65 × 65 mm</td>
-            <td>External vests, duty bags, rifle bags, gym bags, some uniform shirts</td>
-            <td class="co-flex-price">$14.99</td>
-          </tr>
-          <tr>
-            <td><strong>Large / Replica</strong></td>
-            <td>Matches your patch</td>
-            <td>1:1 replacement for the actual patch</td>
-            <td class="co-flex-price">$19.99</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="font-size: 0.85rem; margin-top: 0.75rem; color: rgba(255,255,255,0.7);">The $25 design fee may be waived on qualifying bulk orders. Larger quantities receive additional discounts — email for a custom quote.</p>
+      <p class="co-price-hint">Tap any product for sizes and common uses.</p>
+
+      <div class="co-price-acc">
+        <details class="co-price-item">
+          <summary>
+            <span class="co-price-name">MicroCharms</span>
+            <span class="co-price-amt">from $9.99</span>
+            <span class="co-price-ico" aria-hidden="true"></span>
+          </summary>
+          <div class="co-price-detail">
+            <p class="co-price-dim">≈ 25 mm (0.98 in)</p>
+            <p>Designed for Croc-style clogs and similar vented footwear.</p>
+            <p><strong>Great as:</strong> a fun, affordable add-on or stocking stuffer — perfect for kids, Croc wearers around the station, and team giveaways.</p>
+          </div>
+        </details>
+
+        <details class="co-price-item">
+          <summary>
+            <span class="co-price-name">MicroPins</span>
+            <span class="co-price-amt">from $9.99</span>
+            <span class="co-price-ico" aria-hidden="true"></span>
+          </summary>
+          <div class="co-price-detail">
+            <p class="co-price-dim">≈ 25 mm (0.98 in)</p>
+            <p>Lapel / clothes pins with our raised-texture finish — wear on uniforms, jackets, lanyards, or bags.</p>
+            <p><strong>Great as:</strong> retirement and recognition gifts, award pins, or collectible morale pieces.</p>
+          </div>
+        </details>
+
+        <details class="co-price-item">
+          <summary>
+            <span class="co-price-name">MicroKeychains</span>
+            <span class="co-price-amt">from $13.99</span>
+            <span class="co-price-ico" aria-hidden="true"></span>
+          </summary>
+          <div class="co-price-detail">
+            <p class="co-price-dim">≈ 45 × 45 mm (1.77 in)</p>
+            <p>Our signature premium raised-texture keychain — everyday carry on keys, duty bags, or backpacks.</p>
+            <p><strong>Great as:</strong> academy graduation gifts, agency swag, memorial keepsakes, and retirement gifts.</p>
+          </div>
+        </details>
+
+        <details class="co-price-item">
+          <summary>
+            <span class="co-price-name">Flexible Patch</span>
+            <span class="co-price-amt">from $13.99</span>
+            <span class="co-price-ico" aria-hidden="true"></span>
+          </summary>
+          <div class="co-price-detail">
+            <p>Hook-and-loop friendly flexible patch in three sizes — similar to PVC, with immaculate detail and durability.</p>
+            <ul class="co-price-sizes">
+              <li><span><strong>Small</strong> · 55 × 55 mm — hats, duty bags, range bags</span><span class="amt">$13.99</span></li>
+              <li><span><strong>Medium</strong> · 65 × 65 mm — external vests; duty, rifle &amp; gym bags; some uniform shirts</span><span class="amt">$14.99</span></li>
+              <li><span><strong>Large / Replica</strong> · matches your patch — 1:1 replacement for the actual patch</span><span class="amt">$19.99</span></li>
+            </ul>
+            <p><strong>Great as:</strong> team kits, range-bag patches, or a fresh replacement for a worn original.</p>
+          </div>
+        </details>
+
+        <details class="co-price-item">
+          <summary>
+            <span class="co-price-name">MicroMagnets</span>
+            <span class="co-price-amt">from $14.99</span>
+            <span class="co-price-ico" aria-hidden="true"></span>
+          </summary>
+          <div class="co-price-detail">
+            <p class="co-price-dim">≈ 65 × 65 mm (2.56 in)</p>
+            <p>Premium display magnet for lockers, safes, refrigerators, tool boxes, and display boards.</p>
+            <p><strong>Great as:</strong> a desk or locker gift and memorial keepsake.</p>
+          </div>
+        </details>
+
+        <details class="co-price-item">
+          <summary>
+            <span class="co-price-name">Challenge Coins</span>
+            <span class="co-price-amt">custom quote</span>
+            <span class="co-price-ico" aria-hidden="true"></span>
+          </summary>
+          <div class="co-price-detail">
+            <p class="co-price-dim">≈ 45 mm diameter · silver finish (other colors on request)</p>
+            <p>Challenge coin style product based on your patch or badge artwork.</p>
+            <p><strong>Great as:</strong> awards and recognition, unit or department coins, and commemorative gifts. Email us for a quote on your design and quantity.</p>
+          </div>
+        </details>
+      </div>
+
+      <p style="font-size: 0.85rem; margin-top: 0.9rem; color: rgba(255,255,255,0.7);">The $25 design fee may be waived on qualifying bulk orders. Larger quantities receive additional discounts — email for a custom quote.</p>
     </div>
   </div>
 </section>
