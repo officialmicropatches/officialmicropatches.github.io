@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Super Bueno!</title>
+<style>
+  :root{
+    --sky1:#7ec8ff; --sky2:#fdf3c8;
+    --ui:#1b2a41; --gold:#ffc83d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI", system-ui, -apple-system, sans-serif;
+    background:#1b2a41;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100vh; gap:10px; padding:10px;
+    touch-action:none; overflow:hidden;
+  }
+  h1{
+    color:var(--gold);
+    font-size:clamp(22px, 5vw, 38px);
+    letter-spacing:2px;
+    text-shadow:3px 3px 0 #c0392b, 6px 6px 0 rgba(0,0,0,.35);
+    user-select:none;
+  }
+  h1 .green{color:#2ecc71;} h1 .white{color:#fff;} h1 .red{color:#e74c3c;}
+  #wrap{
+    position:relative;
+    width:min(960px, 100%);
+  }
+  canvas{
+    display:block; width:100%; height:auto;
+    background:linear-gradient(var(--sky1), var(--sky2));
+    border:4px solid #0e1726; border-radius:12px;
+    box-shadow:0 12px 40px rgba(0,0,0,.5);
+    image-rendering:pixelated;
+  }
+  #hud{
+    color:#fff; font-weight:600; font-size:14px;
+    display:flex; gap:18px; user-select:none;
+  }
+  /* touch controls */
+  #touch{
+    display:none;
+    width:min(960px,100%);
+    justify-content:space-between;
+    user-select:none; -webkit-user-select:none;
+  }
+  #touch .pad{display:flex; gap:12px;}
+  #touch button{
+    width:64px; height:64px; border-radius:50%;
+    border:3px solid rgba(255,255,255,.6);
+    background:rgba(255,255,255,.15);
+    color:#fff; font-size:26px; font-weight:bold;
+    touch-action:none;
+  }
+  #touch button:active{background:rgba(255,200,61,.5);}
+  @media (pointer:coarse){ #touch{display:flex;} }
+  #help{color:#9db4d0; font-size:12px; text-align:center; user-select:none;}
+</style>
+</head>
+<body>
+  <h1><span class="green">SUPER</span> <span class="white">BUE</span><span class="red">NO!</span></h1>
+  <div id="hud">
+    <span>🌮 Tacos: <span id="score">0</span></span>
+    <span>❤️ Lives: <span id="lives">3</span></span>
+  </div>
+  <div id="wrap"><canvas id="game" width="960" height="540"></canvas></div>
+  <div id="touch">
+    <div class="pad">
+      <button id="btnL">◀</button>
+      <button id="btnR">▶</button>
+    </div>
+    <div class="pad">
+      <button id="btnJ">▲</button>
+    </div>
+  </div>
+  <div id="help">← → / A D to run &nbsp;•&nbsp; Space / W / ↑ to jump &nbsp;•&nbsp; Stomp the cacti, grab the tacos, reach the flag!</div>
+
+<script>
+(() => {
+"use strict";
+const cv = document.getElementById("game");
+const cx = cv.getContext("2d");
+const W = cv.width, H = cv.height;
+const TILE = 48;
+const GRAV = 0.62;
+
+// ---------- catchphrases ----------
+const PHRASES = {
+  jump:   ["¡Ándale!", "¡Arriba arriba!", "¡Órale!", "Let's gooo!", "¡Épale!"],
+  taco:   ["¡Qué bueno!", "Mmm, taco Tuesday!", "¡Sabroso!", "Heck yeah, amigo!", "¡Delicioso!"],
+  stomp:  ["¡Tómala!", "Adiós, cactus!", "¡No manches!", "Boom, baby!", "¡Así se hace!"],
+  hurt:   ["¡Ay caramba!", "¡Híjole!", "Aww man...", "¡Ay ay ay!"],
+  win:    ["¡SÍ SE PUEDE!", "¡VIVA!", "WE DID IT, AMIGOS!"],
+  start:  ["¡Vámonos!"],
+};
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+// floating text bubbles
+let bubbles = [];
+function say(txt, x, y, big=false){
+  bubbles.push({txt, x, y, t:0, life:90, big});
+}
+
+// ---------- level ----------
+// legend: X ground, B brick, T taco, E enemy, P player start, F flag, C chili (extra life)
+const MAP = [
+"                                                                                                ",
+"                                                                                                ",
+"                                                                                          F     ",
+"                 T                          T  T                 C                       BBB    ",
+"               BBBBB          T          BBBBBBBB             BBBBB                             ",
+"                          BBBBBB                                            T   T               ",
+"        T  T                                       E                     BBBBBBBBB     E        ",
+"      BBBBBB         E              E         BBBBBBBB        E                                 ",
+"  P                                                         BBBBB    E                          ",
+"XXXXXXXXXXXXXXX  XXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX  XXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXX",
+];
+const LEVEL_W = MAP[0].length * TILE;
+const LEVEL_H = MAP.length * TILE;
+
+let solids = [], tacos = [], chilis = [], enemies = [], flag = null;
+let player, camX, score, lives, state, stateT, phraseCool;
+
+function buildLevel(){
+  solids = []; tacos = []; chilis = []; enemies = []; flag = null;
+  let startX = 100, startY = 100;
+  for (let r = 0; r < MAP.length; r++){
+    for (let c = 0; c < MAP[r].length; c++){
+      const ch = MAP[r][c], x = c*TILE, y = r*TILE;
+      if (ch === "X" || ch === "B") solids.push({x, y, w:TILE, h:TILE, brick: ch==="B"});
+      else if (ch === "T") tacos.push({x:x+8, y:y+8, w:32, h:32, got:false});
+      else if (ch === "C") chilis.push({x:x+8, y:y+8, w:32, h:32, got:false});
+      else if (ch === "E") enemies.push({x, y:y+10, w:40, h:38, vx:-1.3, dead:false, sq:0});
+      else if (ch === "F") flag = {x:x+10, y:y-TILE*3, w:12, h:TILE*4};
+      else if (ch === "P"){ startX = x; startY = y; }
+    }
+  }
+  player = {
+    x:startX, y:startY, w:34, h:46,
+    vx:0, vy:0, onGround:false, face:1,
+    inv:0, startX, startY,
+  };
+  camX = 0;
+}
+
+function resetRun(){
+  score = 0; lives = 3;
+  buildLevel();
+  state = "title"; stateT = 0; phraseCool = 0;
+  bubbles = [];
+  updateHud();
+}
+
+function updateHud(){
+  document.getElementById("score").textContent = score;
+  document.getElementById("lives").textContent = lives;
+}
+
+// ---------- input ----------
+const keys = {left:false, right:false, jump:false};
+let jumpHeld = false;
+const KEYMAP = {
+  ArrowLeft:"left", KeyA:"left",
+  ArrowRight:"right", KeyD:"right",
+  ArrowUp:"jump", KeyW:"jump", Space:"jump",
+};
+addEventListener("keydown", e => {
+  const k = KEYMAP[e.code];
+  if (k){ keys[k] = true; e.preventDefault(); }
+  if (state !== "play" && (e.code === "Space" || e.code === "Enter")) advance();
+});
+addEventListener("keyup", e => { const k = KEYMAP[e.code]; if (k) keys[k] = false; });
+
+function bindBtn(id, key){
+  const el = document.getElementById(id);
+  const on  = e => { e.preventDefault(); keys[key] = true; if (state !== "play" && key === "jump") advance(); };
+  const off = e => { e.preventDefault(); keys[key] = false; };
+  el.addEventListener("pointerdown", on);
+  el.addEventListener("pointerup", off);
+  el.addEventListener("pointercancel", off);
+  el.addEventListener("pointerleave", off);
+}
+bindBtn("btnL","left"); bindBtn("btnR","right"); bindBtn("btnJ","jump");
+cv.addEventListener("pointerdown", () => { if (state !== "play") advance(); });
+
+function advance(){
+  if (state === "title"){ state = "play"; say(pick(PHRASES.start), player.x, player.y-20); }
+  else if (state === "win" || state === "gameover"){ resetRun(); state = "play"; }
+}
+
+// ---------- physics ----------
+const hit = (a,b) => a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
+
+function moveAndCollide(o){
+  o.onGround = false;
+  // horizontal
+  o.x += o.vx;
+  for (const s of solids){
+    if (hit(o,s)){
+      if (o.vx > 0) o.x = s.x - o.w;
+      else if (o.vx < 0) o.x = s.x + s.w;
+      o.hitWall = true;
+    }
+  }
+  // vertical
+  o.y += o.vy;
+  for (const s of solids){
+    if (hit(o,s)){
+      if (o.vy > 0){ o.y = s.y - o.h; o.vy = 0; o.onGround = true; }
+      else if (o.vy < 0){ o.y = s.y + s.h; o.vy = 0; }
+    }
+  }
+}
+
+function hurtPlayer(){
+  if (player.inv > 0) return;
+  lives--;
+  updateHud();
+  say(pick(PHRASES.hurt), player.x, player.y - 20);
+  if (lives <= 0){ state = "gameover"; stateT = 0; return; }
+  player.inv = 90;
+  player.vy = -8; player.vx = -player.face * 4;
+}
+
+function respawn(){
+  player.x = player.startX; player.y = player.startY;
+  player.vx = 0; player.vy = 0; player.inv = 60;
+}
+
+// ---------- update ----------
+function update(){
+  stateT++;
+  if (state !== "play"){ bubblesTick(); return; }
+
+  const p = player;
+  const SPEED = 3.4, JUMP = 13.2;
+
+  // run
+  if (keys.left)  { p.vx = Math.max(p.vx - 0.5, -SPEED); p.face = -1; }
+  else if (keys.right){ p.vx = Math.min(p.vx + 0.5, SPEED); p.face = 1; }
+  else p.vx *= 0.78;
+
+  // jump
+  if (keys.jump && p.onGround && !jumpHeld){
+    p.vy = -JUMP; jumpHeld = true;
+    if (phraseCool <= 0 && Math.random() < 0.45){
+      say(pick(PHRASES.jump), p.x, p.y - 16);
+      phraseCool = 50;
+    }
+  }
+  if (!keys.jump) jumpHeld = false;
+  // variable jump height
+  if (!keys.jump && p.vy < -4) p.vy = -4;
+
+  p.vy = Math.min(p.vy + GRAV, 16);
+  moveAndCollide(p);
+  p.x = Math.max(0, Math.min(p.x, LEVEL_W - p.w));
+  if (p.inv > 0) p.inv--;
+  if (phraseCool > 0) phraseCool--;
+
+  // fell in a pit
+  if (p.y > LEVEL_H + 100){
+    hurtPlayer();
+    if (state === "play") respawn();
+  }
+
+  // tacos
+  for (const t of tacos){
+    if (!t.got && hit(p,t)){
+      t.got = true; score++; updateHud();
+      say(pick(PHRASES.taco), t.x, t.y - 10);
+    }
+  }
+  // chilis = extra life
+  for (const ch of chilis){
+    if (!ch.got && hit(p,ch)){
+      ch.got = true; lives++; updateHud();
+      say("¡Más picante! +1 UP", ch.x, ch.y - 10, true);
+    }
+  }
+
+  // enemies
+  for (const e of enemies){
+    if (e.dead){ e.sq++; continue; }
+    e.hitWall = false;
+    e.vy = (e.vy || 0) + GRAV;
+    e.vx = e.vx;
+    const ox = e.x;
+    moveAndCollide(e);
+    if (e.hitWall || e.x === ox) e.vx *= -1;
+    // ledge turn-around
+    const ahead = {x: e.x + (e.vx > 0 ? e.w + 2 : -2), y: e.y + e.h + 4, w:2, h:2};
+    if (e.onGround && !solids.some(s => hit(ahead, s))) e.vx *= -1;
+
+    if (hit(p, e)){
+      if (p.vy > 0 && p.y + p.h - e.y < 22){
+        e.dead = true; p.vy = -9;
+        score += 0; // stomps are their own reward
+        say(pick(PHRASES.stomp), e.x, e.y - 14);
+      } else hurtPlayer();
+    }
+  }
+  enemies = enemies.filter(e => !e.dead || e.sq < 30);
+
+  // flag
+  if (flag && hit(p, flag)){
+    state = "win"; stateT = 0;
+    say(pick(PHRASES.win), flag.x - 40, flag.y - 10, true);
+  }
+
+  // camera
+  camX = Math.max(0, Math.min(p.x - W/2 + p.w/2, LEVEL_W - W));
+
+  bubblesTick();
+}
+
+function bubblesTick(){
+  for (const b of bubbles){ b.t++; b.y -= 0.5; }
+  bubbles = bubbles.filter(b => b.t < b.life);
+}
+
+// ---------- drawing ----------
+function drawBg(){
+  // sun
+  cx.fillStyle = "#ffd84d";
+  cx.beginPath(); cx.arc(W-110, 80, 44, 0, 7); cx.fill();
+  // far hills (parallax)
+  cx.fillStyle = "rgba(118,93,60,.35)";
+  for (let i = 0; i < 10; i++){
+    const hx = ((i*420) - camX*0.3) % (LEVEL_W) ;
+    cx.beginPath();
+    cx.arc(hx, H-60, 150, Math.PI, 0); cx.fill();
+  }
+  // clouds
+  cx.fillStyle = "rgba(255,255,255,.85)";
+  for (let i = 0; i < 8; i++){
+    const cxp = ((i*530 + 100) - camX*0.5) % (LEVEL_W);
+    const cy = 60 + (i%3)*45;
+    cx.beginPath();
+    cx.arc(cxp, cy, 22, 0, 7); cx.arc(cxp+24, cy+6, 18, 0, 7); cx.arc(cxp-22, cy+8, 16, 0, 7);
+    cx.fill();
+  }
+}
+
+function drawTile(s){
+  const x = s.x - camX, y = s.y;
+  if (x + TILE < 0 || x > W) return;
+  if (s.brick){
+    cx.fillStyle = "#c1633c";
+    cx.fillRect(x, y, TILE, TILE);
+    cx.strokeStyle = "#8e4527"; cx.lineWidth = 2;
+    cx.strokeRect(x+1, y+1, TILE-2, TILE-2);
+    cx.beginPath();
+    cx.moveTo(x, y+TILE/2); cx.lineTo(x+TILE, y+TILE/2);
+    cx.moveTo(x+TILE/2, y); cx.lineTo(x+TILE/2, y+TILE/2);
+    cx.moveTo(x+TILE/4, y+TILE/2); cx.lineTo(x+TILE/4, y+TILE);
+    cx.moveTo(x+3*TILE/4, y+TILE/2); cx.lineTo(x+3*TILE/4, y+TILE);
+    cx.stroke();
+  } else {
+    cx.fillStyle = "#9b6a3f";
+    cx.fillRect(x, y, TILE, TILE);
+    cx.fillStyle = "#5fae4c";
+    cx.fillRect(x, y, TILE, 10);
+  }
+}
+
+function drawPlayer(){
+  const p = player;
+  if (p.inv > 0 && Math.floor(p.inv/5) % 2) return; // blink when invincible
+  const x = p.x - camX, y = p.y;
+  cx.save();
+  cx.translate(x + p.w/2, y);
+  cx.scale(p.face, 1);
+  const run = p.onGround && Math.abs(p.vx) > 0.5 ? Math.sin(Date.now()/70) * 4 : 0;
+
+  // legs (blue jeans)
+  cx.fillStyle = "#2c5f9e";
+  cx.fillRect(-13, 30, 10, 16 + run);
+  cx.fillRect(3, 30, 10, 16 - run);
+  // boots
+  cx.fillStyle = "#5b3a1e";
+  cx.fillRect(-15, 42 + run, 13, 5);
+  cx.fillRect(2, 42 - run, 13, 5);
+  // body (green serape shirt)
+  cx.fillStyle = "#2e9e52";
+  cx.fillRect(-15, 12, 30, 20);
+  cx.fillStyle = "#e74c3c"; cx.fillRect(-15, 18, 30, 4); // red stripe
+  cx.fillStyle = "#f5f5f5"; cx.fillRect(-15, 25, 30, 3); // white stripe
+  // arms
+  cx.fillStyle = "#2e9e52";
+  cx.fillRect(-19, 14, 5, 14);
+  cx.fillRect(14, 14, 5, 14);
+  // head
+  cx.fillStyle = "#c68642";
+  cx.fillRect(-10, -4, 20, 17);
+  // mustache (magnífico)
+  cx.fillStyle = "#231406";
+  cx.fillRect(-8, 7, 16, 4);
+  cx.fillRect(-10, 8, 4, 3);
+  cx.fillRect(6, 8, 4, 3);
+  // eyes
+  cx.fillStyle = "#fff"; cx.fillRect(1, 0, 5, 5);
+  cx.fillStyle = "#222"; cx.fillRect(3, 1, 3, 3);
+  // sombrero
+  cx.fillStyle = "#e8b04b";
+  cx.beginPath(); cx.ellipse(0, -4, 22, 7, 0, 0, 7); cx.fill();
+  cx.fillRect(-9, -16, 18, 12);
+  cx.fillStyle = "#c0392b";
+  cx.fillRect(-9, -8, 18, 3);
+  cx.restore();
+}
+
+function drawEnemy(e){
+  const x = e.x - camX, y = e.y;
+  if (x + e.w < 0 || x > W) return;
+  cx.save();
+  cx.translate(x + e.w/2, y + e.h);
+  if (e.dead){ cx.scale(1, Math.max(0.15, 1 - e.sq/30)); }
+  // cactus body
+  cx.fillStyle = "#3d8b40";
+  cx.fillRect(-8, -e.h, 16, e.h);
+  cx.fillRect(-20, -e.h+10, 8, 14); cx.fillRect(-20, -e.h+18, 12, 6);
+  cx.fillRect(12, -e.h+6, 8, 14);  cx.fillRect(8, -e.h+14, 12, 6);
+  // angry face
+  cx.fillStyle = "#fff";
+  cx.fillRect(-6, -e.h+8, 4, 4); cx.fillRect(2, -e.h+8, 4, 4);
+  cx.fillStyle = "#222";
+  cx.fillRect(-5, -e.h+9, 2, 2); cx.fillRect(3, -e.h+9, 2, 2);
+  cx.fillRect(-4, -e.h+16, 8, 2);
+  // spikes
+  cx.strokeStyle = "#1e5c20"; cx.lineWidth = 1.5;
+  for (let i = 0; i < 4; i++){
+    cx.beginPath();
+    cx.moveTo(-8, -e.h + 6 + i*8); cx.lineTo(-12, -e.h + 4 + i*8);
+    cx.moveTo(8, -e.h + 6 + i*8);  cx.lineTo(12, -e.h + 4 + i*8);
+    cx.stroke();
+  }
+  cx.restore();
+}
+
+function drawEmoji(o, emoji){
+  if (o.got) return;
+  const x = o.x - camX;
+  if (x + o.w < 0 || x > W) return;
+  const bob = Math.sin(Date.now()/300 + o.x) * 4;
+  cx.font = "30px serif";
+  cx.textAlign = "left"; cx.textBaseline = "top";
+  cx.fillText(emoji, x, o.y + bob);
+}
+
+function drawFlag(){
+  if (!flag) return;
+  const x = flag.x - camX;
+  cx.fillStyle = "#888";
+  cx.fillRect(x, flag.y, 6, flag.h);
+  // green/white/red flag
+  cx.fillStyle = "#2e9e52"; cx.fillRect(x+6, flag.y, 18, 30);
+  cx.fillStyle = "#fff";    cx.fillRect(x+24, flag.y, 18, 30);
+  cx.fillStyle = "#e74c3c"; cx.fillRect(x+42, flag.y, 18, 30);
+  cx.fillStyle = "#ffd84d";
+  cx.beginPath(); cx.arc(x+3, flag.y-4, 7, 0, 7); cx.fill();
+}
+
+function drawBubbles(){
+  for (const b of bubbles){
+    const x = b.x - camX, alpha = 1 - b.t/b.life;
+    cx.save();
+    cx.globalAlpha = Math.max(0, alpha);
+    cx.font = (b.big ? "bold 30px" : "bold 19px") + " 'Segoe UI', sans-serif";
+    cx.textAlign = "center";
+    cx.lineWidth = 4; cx.strokeStyle = "#1b2a41";
+    cx.strokeText(b.txt, x, b.y);
+    cx.fillStyle = b.big ? "#ffc83d" : "#fff";
+    cx.fillText(b.txt, x, b.y);
+    cx.restore();
+  }
+}
+
+function overlay(title, sub, sub2){
+  cx.fillStyle = "rgba(14,23,38,.78)";
+  cx.fillRect(0, 0, W, H);
+  cx.textAlign = "center";
+  cx.fillStyle = "#ffc83d";
+  cx.font = "bold 52px 'Segoe UI', sans-serif";
+  cx.fillText(title, W/2, H/2 - 40);
+  cx.fillStyle = "#fff";
+  cx.font = "22px 'Segoe UI', sans-serif";
+  cx.fillText(sub, W/2, H/2 + 8);
+  if (sub2){ cx.fillStyle = "#9db4d0"; cx.font = "17px 'Segoe UI', sans-serif"; cx.fillText(sub2, W/2, H/2 + 44); }
+  if (Math.floor(Date.now()/500) % 2){
+    cx.fillStyle = "#2ecc71";
+    cx.font = "bold 20px 'Segoe UI', sans-serif";
+    cx.fillText("— press JUMP to play —", W/2, H/2 + 95);
+  }
+}
+
+function draw(){
+  cx.clearRect(0, 0, W, H);
+  drawBg();
+  for (const s of solids) drawTile(s);
+  for (const t of tacos) drawEmoji(t, "🌮");
+  for (const c of chilis) drawEmoji(c, "🌶️");
+  drawFlag();
+  for (const e of enemies) drawEnemy(e);
+  drawPlayer();
+  drawBubbles();
+
+  if (state === "title"){
+    overlay("SUPER BUENO!", "Meet Bueno: 4'3\" of pure Phoenix hustle.", "Stomp the cacti, eat the tacos, reach the flag. ¡Vámonos!");
+  } else if (state === "win"){
+    overlay("¡SÍ SE PUEDE! 🎉", `You grabbed ${score} taco${score===1?"":"s"}. Qué bueno, amigo!`, "Bueno rides into the sunset... for now.");
+  } else if (state === "gameover"){
+    overlay("¡AY CARAMBA!", "The cacti got the best of Bueno this time.", "No worries — there's always mañana.");
+  }
+}
+
+// ---------- loop ----------
+function loop(){
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+resetRun();
+loop();
+})();
+</script>
+</body>
+</html>
