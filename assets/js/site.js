@@ -27,6 +27,13 @@
   function renderHeader(target) {
     const page = currentPage();
     target.outerHTML = `
+<div class="announce-bar">
+  <span>Free U.S. shipping over $70</span>
+  <span class="announce-bar__sep">·</span>
+  <span>10% off 3+ keychains, automatic at checkout</span>
+  <span class="announce-bar__sep">·</span>
+  <a href="custom.html">Custom orders open →</a>
+</div>
 <header class="site-header">
   <div class="container site-header__inner">
     <a class="brand" href="index.html" aria-label="MicroPatches home">

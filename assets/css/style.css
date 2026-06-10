@@ -110,6 +110,34 @@ img { max-width: 100%; display: block; }
   .grid-12 { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ---------- Announcement bar ---------- */
+.announce-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.4;
+}
+.announce-bar a {
+  color: var(--on-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+@media (max-width: 560px) {
+  .announce-bar { font-size: 10px; gap: 6px 8px; padding: 7px 12px; }
+  .announce-bar__sep { display: none; }
+}
+
 /* ---------- Header ---------- */
 .site-header {
   position: sticky;
