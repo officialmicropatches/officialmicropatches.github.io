@@ -60,6 +60,13 @@
   #touch button:active{background:rgba(255,200,61,.5);}
   @media (pointer:coarse){ #touch{display:flex;} }
   #help{color:#9db4d0; font-size:12px; text-align:center; user-select:none;}
+  #btnFace{
+    background:var(--gold); border:none; border-radius:999px;
+    padding:6px 14px; font-weight:700; color:#1b2a41; cursor:pointer;
+    font-size:13px; box-shadow:0 3px 0 #b8860b;
+    font-family:inherit;
+  }
+  #btnFace:active{transform:translateY(2px); box-shadow:none;}
 </style>
 </head>
 <body>
@@ -67,6 +74,7 @@
   <div id="hud">
     <span>🌮 Tacos: <span id="score">0</span></span>
     <span>❤️ Lives: <span id="lives">3</span></span>
+    <button id="btnFace">⭐ Bueno Cam</button>
   </div>
   <div id="wrap"><canvas id="game" width="960" height="540"></canvas></div>
   <div id="touch">
@@ -187,6 +195,16 @@ function bindBtn(id, key){
   el.addEventListener("pointerleave", off);
 }
 bindBtn("btnL","left"); bindBtn("btnR","right"); bindBtn("btnJ","jump");
+
+// ---------- Bueno Cam ----------
+const FACE_DUR = 200;
+let faceCam = 0;
+document.getElementById("btnFace").addEventListener("click", e => {
+  e.currentTarget.blur();
+  if (faceCam > 0) return;
+  faceCam = FACE_DUR;
+  say("Andrew Mann is the best!", player.x + player.w/2, player.y - 24, true);
+});
 cv.addEventListener("pointerdown", () => { if (state !== "play") advance(); });
 
 function advance(){
@@ -236,6 +254,7 @@ function respawn(){
 // ---------- update ----------
 function update(){
   stateT++;
+  if (faceCam > 0) faceCam--;
   if (state !== "play"){ bubblesTick(); return; }
 
   const p = player;
@@ -502,6 +521,23 @@ function overlay(title, sub, sub2){
 
 function draw(){
   cx.clearRect(0, 0, W, H);
+
+  // Bueno Cam zoom: smoothstep in/out around the face
+  let k = 0;
+  if (faceCam > 0){
+    const t = FACE_DUR - faceCam, ramp = 30;
+    k = Math.min(1, t/ramp, faceCam/ramp);
+    k = k*k*(3 - 2*k);
+  }
+  cx.save();
+  if (k > 0){
+    const z = 1 + 2.8*k;
+    const fx = player.x - camX + player.w/2;
+    const fy = player.y + 4;
+    cx.translate(W/2, H*0.45);
+    cx.scale(z, z);
+    cx.translate(-fx, -fy);
+  }
   drawBg();
   for (const s of solids) drawTile(s);
   for (const t of tacos) drawEmoji(t, "🌮");
@@ -510,6 +546,19 @@ function draw(){
   for (const e of enemies) drawEnemy(e);
   drawPlayer();
   drawBubbles();
+  cx.restore();
+
+  if (k > 0){
+    cx.save();
+    cx.globalAlpha = k;
+    cx.textAlign = "center";
+    cx.font = "bold 40px 'Segoe UI', sans-serif";
+    cx.lineWidth = 6; cx.strokeStyle = "#1b2a41";
+    cx.strokeText("“Andrew Mann is the best”", W/2, H - 60);
+    cx.fillStyle = "#ffc83d";
+    cx.fillText("“Andrew Mann is the best”", W/2, H - 60);
+    cx.restore();
+  }
 
   if (state === "title"){
     overlay("SUPER BUENO!", "Meet Bueno: 4'3\" of pure Phoenix hustle.", "Stomp the cacti, eat the tacos, reach the flag. ¡Vámonos!");
