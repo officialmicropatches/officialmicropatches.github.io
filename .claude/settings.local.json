@@ -4,7 +4,9 @@
       "Bash(git --version)",
       "Bash(git config:*)",
       "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__graphql_mutation",
-      "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__create-collection"
+      "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__create-collection",
+      "Bash(mkdir -p assets/img/products)",
+      "Bash(cp \"/root/.claude/uploads/126f0627-2bc1-5610-8109-18cdff3d055a/e02da1e6-3FCD7ED8AA3643FBA7DD231A498CFA21.png\" assets/img/products/3rd-anglico-patch.png)"
     ]
   }
 }
