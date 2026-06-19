@@ -1,0 +1,277 @@
+{%- comment -%}
+  mp-department-rail.liquid
+  Always-visible left "Departments" sidebar + a "Shop" toggle injected into the header nav.
+  Rendered site-wide from the footer section group (custom-liquid -> {% render %}).
+  To change departments, edit the <a> list in the .mp-rail__scroll block below.
+{%- endcomment -%}
+
+<style>
+  :root{ --mp-rail-w: 272px; }
+
+  /* ===== Rail panel ===== */
+  .mp-rail{
+    position: fixed;
+    top: var(--header-group-height, 64px);
+    left: 0; bottom: 0;
+    width: var(--mp-rail-w); max-width: 86vw;
+    background: #15171c; color: #e8e9ec;
+    border-right: 1px solid rgba(200,162,75,.30);
+    box-shadow: 4px 0 26px rgba(0,0,0,.20);
+    display: flex; flex-direction: column;
+    z-index: 1001;
+    transform: translateX(-102%);
+    transition: transform .28s cubic-bezier(.22,.61,.36,1);
+    overscroll-behavior: contain; will-change: transform;
+  }
+  body.mp-rail-open .mp-rail{ transform: none; }
+
+  .mp-rail__head{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:14px 14px 11px; flex:0 0 auto; border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .mp-rail__brand{ display:flex; align-items:center; gap:9px; font-weight:800;
+    letter-spacing:.05em; text-transform:uppercase; font-size:.8rem; color:#fff; }
+  .mp-rail__brand svg{ width:18px; height:18px; color:#c8a24b; }
+  .mp-rail__close{ appearance:none; border:0; background:transparent; color:#9aa0aa;
+    cursor:pointer; width:34px; height:34px; border-radius:8px; display:grid; place-items:center; }
+  .mp-rail__close:hover{ background:rgba(255,255,255,.08); color:#fff; }
+  .mp-rail__close svg{ width:18px; height:18px; }
+
+  .mp-rail__scroll{ flex:1 1 auto; overflow-y:auto; padding:8px 8px 4px; }
+  .mp-rail__list{ list-style:none; margin:0; padding:0; }
+  .mp-rail__item{ margin:2px 0; }
+  .mp-rail__row{ display:flex; align-items:stretch; gap:2px; }
+  .mp-rail__link{ flex:1 1 auto; display:flex; align-items:center; gap:11px;
+    padding:10px; border-radius:9px; color:#e8e9ec; text-decoration:none;
+    font-weight:600; font-size:.95rem; line-height:1.1; min-height:44px;
+    transition:background .15s ease,color .15s ease; }
+  .mp-rail__link:hover,.mp-rail__link:focus-visible{ background:rgba(200,162,75,.15); color:#fff; outline:none; }
+  .mp-rail__badge{ flex:0 0 auto; width:28px; height:28px; border-radius:8px; display:grid;
+    place-items:center; font-size:.68rem; font-weight:800; letter-spacing:.01em;
+    background:linear-gradient(145deg,#c8a24b,#9c7a2f); color:#1a1205; box-shadow:0 1px 2px rgba(0,0,0,.35); }
+  .mp-rail__caret{ flex:0 0 auto; appearance:none; border:0; background:transparent; color:#8b919b;
+    cursor:pointer; width:40px; border-radius:9px; display:grid; place-items:center; }
+  .mp-rail__caret:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .mp-rail__caret svg{ width:16px; height:16px; transition:transform .2s ease; }
+  .mp-rail__caret[aria-expanded="true"] svg{ transform:rotate(90deg); }
+  .mp-rail__sub{ list-style:none; margin:1px 0 6px; padding:0 0 0 39px; }
+  .mp-rail__sub[hidden]{ display:none; }
+  .mp-rail__sub a{ display:flex; align-items:center; min-height:38px; padding:7px 10px;
+    border-radius:8px; color:#b9bec7; text-decoration:none; font-size:.875rem; font-weight:500; }
+  .mp-rail__sub a::before{ content:""; width:5px; height:5px; border-radius:50%;
+    background:#c8a24b; margin-right:10px; opacity:.7; }
+  .mp-rail__sub a:hover{ background:rgba(255,255,255,.06); color:#fff; }
+
+  .mp-rail__foot{ flex:0 0 auto; padding:12px; border-top:1px solid rgba(255,255,255,.08); }
+  .mp-rail__cta{ display:block; text-align:center; padding:11px 12px; border-radius:10px;
+    background:linear-gradient(145deg,#c8a24b,#a9842f); color:#1a1205; font-weight:800;
+    text-decoration:none; font-size:.9rem; }
+  .mp-rail__cta:hover{ filter:brightness(1.05); }
+  .mp-rail__foot small{ display:block; text-align:center; color:#7e848e; margin-top:8px; font-size:.7rem;
+    letter-spacing:.03em; }
+
+  /* ===== Backdrop ===== */
+  .mp-rail-backdrop{ position:fixed; inset:0; background:rgba(8,9,11,.5);
+    z-index:1000; opacity:0; visibility:hidden; transition:opacity .25s ease,visibility .25s ease; }
+  body.mp-rail-open .mp-rail-backdrop{ opacity:1; visibility:visible; }
+
+  /* ===== Desktop: push page content, no backdrop ===== */
+  @media (min-width:1200px){
+    body.mp-rail-open .mp-rail-backdrop{ opacity:0; visibility:hidden; }
+    body.mp-rail-open #MainContent,
+    body.mp-rail-open > footer{
+      padding-inline-start: var(--mp-rail-w);
+      transition: padding-inline-start .28s cubic-bezier(.22,.61,.36,1);
+    }
+  }
+
+  /* ===== "Shop" button injected into header nav ===== */
+  .mp-shop-btn{ appearance:none; cursor:pointer; display:inline-flex; align-items:center; gap:7px;
+    border:0; background:transparent; color:inherit; font:inherit; font-weight:650; padding:6px 4px; line-height:1; }
+  .mp-shop-btn svg{ width:16px; height:16px; }
+  li.mp-shop-li{ display:flex; align-items:center; }
+
+  /* ===== Mobile floating "Shop" button (fallback control) ===== */
+  .mp-shop-fab{ position:fixed; left:14px; bottom:78px; z-index:999; display:inline-flex; align-items:center;
+    gap:8px; padding:11px 16px 11px 13px; border:1px solid rgba(200,162,75,.55); border-radius:999px;
+    cursor:pointer; background:#15171c; color:#fff; font-weight:800; font-size:.9rem; letter-spacing:.02em;
+    box-shadow:0 6px 18px rgba(0,0,0,.30); }
+  .mp-shop-fab svg{ width:18px; height:18px; color:#c8a24b; }
+  body.mp-rail-open .mp-shop-fab{ opacity:0; pointer-events:none; transform:translateY(8px); transition:.2s; }
+  @media (min-width:1200px){ .mp-shop-fab{ display:none; } }
+  body.mp-force-fab .mp-shop-fab{ display:inline-flex !important; }
+</style>
+
+<div class="mp-rail-backdrop" data-mp-rail-close></div>
+
+<aside id="mp-dept-rail" class="mp-rail" aria-label="Shop by department">
+  <div class="mp-rail__head">
+    <span class="mp-rail__brand">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg>
+      Departments
+    </span>
+    <button class="mp-rail__close" type="button" data-mp-rail-close aria-label="Collapse departments">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="mp-rail__scroll">
+    <ul class="mp-rail__list">
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/all"><span class="mp-rail__badge">★</span><span>All Keychains</span></a>
+        </div>
+      </li>
+
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/law-enforcement-keychains"><span class="mp-rail__badge">LE</span><span>Law Enforcement</span></a>
+          <button class="mp-rail__caret" type="button" data-mp-acc aria-expanded="false" aria-label="Expand Law Enforcement">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <ul class="mp-rail__sub" hidden>
+          <li><a href="/collections/police-department-keychains">Municipal Police</a></li>
+          <li><a href="/collections/sheriffs-office-keychains">Sheriff&rsquo;s Offices</a></li>
+          <li><a href="/collections/state-trooper-dps-keychains">State Troopers</a></li>
+        </ul>
+      </li>
+
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/corrections-keychains"><span class="mp-rail__badge">CJ</span><span>Corrections / Jail</span></a>
+        </div>
+      </li>
+
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/fire-ems-keychains"><span class="mp-rail__badge">FD</span><span>Fire Departments</span></a>
+        </div>
+      </li>
+
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/ems-keychains"><span class="mp-rail__badge">EM</span><span>EMS</span></a>
+        </div>
+      </li>
+
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/military-keychains"><span class="mp-rail__badge">M</span><span>Military</span></a>
+          <button class="mp-rail__caret" type="button" data-mp-acc aria-expanded="false" aria-label="Expand Military">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <ul class="mp-rail__sub" hidden>
+          <li><a href="/collections/army-keychains">Army</a></li>
+          <li><a href="/collections/navy-keychains">Navy</a></li>
+          <li><a href="/collections/marine-corps-keychains">Marine Corps</a></li>
+          <li><a href="/collections/air-force-keychains">Air Force</a></li>
+          <li><a href="/collections/coast-guard-keychains">Coast Guard</a></li>
+          <li><a href="/collections/space-force-keychains">Space Force</a></li>
+        </ul>
+      </li>
+
+      <li class="mp-rail__item">
+        <div class="mp-rail__row">
+          <a class="mp-rail__link" href="/collections/morale-patch-keychains"><span class="mp-rail__badge">MP</span><span>Morale Patches</span></a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mp-rail__foot">
+    <a class="mp-rail__cta" href="/pages/custom-orders">Can&rsquo;t find yours? Custom Order &rarr;</a>
+    <small>USA MADE &middot; PHOENIX, AZ</small>
+  </div>
+</aside>
+
+<button class="mp-shop-fab" type="button" data-mp-rail-toggle aria-controls="mp-dept-rail" aria-label="Shop departments">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
+  Shop
+</button>
+
+<script>
+(function(){
+  if (window.__mpRail) return;
+  window.__mpRail = true;
+  var MQ = window.matchMedia('(min-width:1200px)');
+  var body = document.body;
+
+  function isOpen(){ return body.classList.contains('mp-rail-open'); }
+  function syncAria(open){
+    document.querySelectorAll('[data-mp-rail-toggle], .mp-shop-btn').forEach(function(b){
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  function setOpen(open){
+    body.classList.toggle('mp-rail-open', open);
+    try { localStorage.setItem('mpRailOpen', open ? '1' : '0'); } catch(e){}
+    syncAria(open);
+  }
+  function toggle(){ setOpen(!isOpen()); }
+
+  function shopIcon(){
+    return '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+      + '<rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/>'
+      + '<rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>';
+  }
+
+  function ensureHeaderButton(){
+    var header = document.querySelector('#header-component');
+    if (!header) return;
+    if (header.dataset.menuStyle === 'drawer') body.classList.add('mp-force-fab');
+    else body.classList.remove('mp-force-fab');
+    if (header.querySelector('.mp-shop-btn')) return;
+    var list = header.querySelector('.menu-list');
+    if (!list) return;
+    var li = document.createElement('li');
+    li.className = 'menu-list__list-item mp-shop-li';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mp-shop-btn menu-list__link';
+    btn.setAttribute('data-mp-rail-toggle','');
+    btn.setAttribute('aria-controls','mp-dept-rail');
+    btn.innerHTML = shopIcon() + '<span>Shop</span>';
+    li.appendChild(btn);
+    list.insertBefore(li, list.firstChild);
+  }
+
+  document.addEventListener('click', function(e){
+    if (e.target.closest('[data-mp-rail-toggle]')){ e.preventDefault(); toggle(); return; }
+    if (e.target.closest('[data-mp-rail-close]')){ e.preventDefault(); setOpen(false); return; }
+    var acc = e.target.closest('[data-mp-acc]');
+    if (acc){
+      e.preventDefault();
+      var expanded = acc.getAttribute('aria-expanded') === 'true';
+      acc.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      var sub = acc.closest('.mp-rail__row').nextElementSibling;
+      if (sub) sub.hidden = expanded;
+      return;
+    }
+    if (!MQ.matches && e.target.closest('#mp-dept-rail a')) setOpen(false);
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && isOpen() && !MQ.matches) setOpen(false);
+  });
+
+  function init(){
+    ensureHeaderButton();
+    var stored = null; try { stored = localStorage.getItem('mpRailOpen'); } catch(e){}
+    setOpen(stored === null ? MQ.matches : stored === '1');
+  }
+
+  var hg = document.querySelector('#header-group');
+  if (hg && 'MutationObserver' in window){
+    var raf = 0;
+    new MutationObserver(function(){
+      if (raf) return;
+      raf = requestAnimationFrame(function(){ raf = 0; ensureHeaderButton(); });
+    }).observe(hg, { childList:true, subtree:true });
+  }
+
+  if (document.readyState !== 'loading') init();
+  else document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
