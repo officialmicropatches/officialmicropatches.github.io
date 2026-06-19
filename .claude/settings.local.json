@@ -5,7 +5,8 @@
       "Bash(git config:*)",
       "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__graphql_mutation",
       "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__graphql_schema",
-      "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__validate_graphql_codeblocks"
+      "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__validate_graphql_codeblocks",
+      "mcp__42ec90aa-1bcf-4761-83fc-b191229824e2__graphql_query"
     ]
   }
 }
