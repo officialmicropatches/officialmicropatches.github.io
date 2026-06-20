@@ -1,8 +1,8 @@
 {%- comment -%}
   mp-department-rail.liquid
-  Always-visible left "Departments" sidebar + a "Shop" toggle injected into the header nav.
+  Always-visible left "Ready to Ship Products" sidebar + a "Shop" toggle injected into the header nav.
   Rendered site-wide from the footer section group (custom-liquid -> {% render %}).
-  To change departments, edit the <a> list in the .mp-rail__scroll block below.
+  To change the list, edit the <a> items in the .mp-rail__scroll block below.
 {%- endcomment -%}
 
 <style>
@@ -29,11 +29,10 @@
     display:flex; align-items:center; justify-content:space-between; gap:8px;
     padding:14px 14px 11px; flex:0 0 auto; border-bottom:1px solid rgba(255,255,255,.07);
   }
-  .mp-rail__brand{ display:flex; align-items:center; gap:9px; font-weight:800;
-    letter-spacing:.05em; text-transform:uppercase; font-size:.8rem; color:#fff; }
-  .mp-rail__brand svg{ width:18px; height:18px; color:#c8a24b; }
+  .mp-rail__brand{ font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+    font-size:.8rem; color:#fff; }
   .mp-rail__close{ appearance:none; border:0; background:transparent; color:#9aa0aa;
-    cursor:pointer; width:34px; height:34px; border-radius:8px; display:grid; place-items:center; }
+    cursor:pointer; width:34px; height:34px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; }
   .mp-rail__close:hover{ background:rgba(255,255,255,.08); color:#fff; }
   .mp-rail__close svg{ width:18px; height:18px; }
 
@@ -41,25 +40,22 @@
   .mp-rail__list{ list-style:none; margin:0; padding:0; }
   .mp-rail__item{ margin:2px 0; }
   .mp-rail__row{ display:flex; align-items:stretch; gap:2px; }
-  .mp-rail__link{ flex:1 1 auto; display:flex; align-items:center; gap:11px;
-    padding:10px; border-radius:9px; color:#e8e9ec; text-decoration:none;
-    font-weight:600; font-size:.95rem; line-height:1.1; min-height:44px;
+  .mp-rail__link{ flex:1 1 auto; display:flex; align-items:center;
+    padding:11px 12px; border-radius:9px; color:#e8e9ec; text-decoration:none;
+    font-weight:600; font-size:.95rem; line-height:1.15; min-height:44px;
     transition:background .15s ease,color .15s ease; }
   .mp-rail__link:hover,.mp-rail__link:focus-visible{ background:rgba(200,162,75,.15); color:#fff; outline:none; }
-  .mp-rail__badge{ flex:0 0 auto; width:28px; height:28px; border-radius:8px; display:grid;
-    place-items:center; font-size:.68rem; font-weight:800; letter-spacing:.01em;
-    background:linear-gradient(145deg,#c8a24b,#9c7a2f); color:#1a1205; box-shadow:0 1px 2px rgba(0,0,0,.35); }
   .mp-rail__caret{ flex:0 0 auto; appearance:none; border:0; background:transparent; color:#8b919b;
     cursor:pointer; width:40px; border-radius:9px; display:grid; place-items:center; }
   .mp-rail__caret:hover{ background:rgba(255,255,255,.06); color:#fff; }
   .mp-rail__caret svg{ width:16px; height:16px; transition:transform .2s ease; }
   .mp-rail__caret[aria-expanded="true"] svg{ transform:rotate(90deg); }
-  .mp-rail__sub{ list-style:none; margin:1px 0 6px; padding:0 0 0 39px; }
+  .mp-rail__sub{ list-style:none; margin:1px 0 6px; padding:0 0 0 12px; }
   .mp-rail__sub[hidden]{ display:none; }
-  .mp-rail__sub a{ display:flex; align-items:center; min-height:38px; padding:7px 10px;
+  .mp-rail__sub a{ display:flex; align-items:center; min-height:38px; padding:7px 12px;
     border-radius:8px; color:#b9bec7; text-decoration:none; font-size:.875rem; font-weight:500; }
   .mp-rail__sub a::before{ content:""; width:5px; height:5px; border-radius:50%;
-    background:#c8a24b; margin-right:10px; opacity:.7; }
+    background:#c8a24b; margin-right:11px; opacity:.7; }
   .mp-rail__sub a:hover{ background:rgba(255,255,255,.06); color:#fff; }
 
   .mp-rail__foot{ flex:0 0 auto; padding:12px; border-top:1px solid rgba(255,255,255,.08); }
@@ -104,13 +100,10 @@
 
 <div class="mp-rail-backdrop" data-mp-rail-close></div>
 
-<aside id="mp-dept-rail" class="mp-rail" aria-label="Shop by department">
+<aside id="mp-dept-rail" class="mp-rail" aria-label="Ready to ship products by department">
   <div class="mp-rail__head">
-    <span class="mp-rail__brand">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"/></svg>
-      Departments
-    </span>
-    <button class="mp-rail__close" type="button" data-mp-rail-close aria-label="Collapse departments">
+    <span class="mp-rail__brand">Ready to Ship Products</span>
+    <button class="mp-rail__close" type="button" data-mp-rail-close aria-label="Collapse menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
   </div>
@@ -119,13 +112,13 @@
     <ul class="mp-rail__list">
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/all"><span class="mp-rail__badge">★</span><span>All Keychains</span></a>
+          <a class="mp-rail__link" href="/collections/all"><span>All Keychains</span></a>
         </div>
       </li>
 
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/law-enforcement-keychains"><span class="mp-rail__badge">LE</span><span>Law Enforcement</span></a>
+          <a class="mp-rail__link" href="/collections/law-enforcement-keychains"><span>Law Enforcement</span></a>
           <button class="mp-rail__caret" type="button" data-mp-acc aria-expanded="false" aria-label="Expand Law Enforcement">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </button>
@@ -139,25 +132,25 @@
 
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/corrections-keychains"><span class="mp-rail__badge">CJ</span><span>Corrections / Jail</span></a>
+          <a class="mp-rail__link" href="/collections/corrections-keychains"><span>Corrections / Jail</span></a>
         </div>
       </li>
 
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/fire-ems-keychains"><span class="mp-rail__badge">FD</span><span>Fire Departments</span></a>
+          <a class="mp-rail__link" href="/collections/fire-ems-keychains"><span>Fire Departments</span></a>
         </div>
       </li>
 
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/ems-keychains"><span class="mp-rail__badge">EM</span><span>EMS</span></a>
+          <a class="mp-rail__link" href="/collections/ems-keychains"><span>EMS</span></a>
         </div>
       </li>
 
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/military-keychains"><span class="mp-rail__badge">M</span><span>Military</span></a>
+          <a class="mp-rail__link" href="/collections/military-keychains"><span>Military</span></a>
           <button class="mp-rail__caret" type="button" data-mp-acc aria-expanded="false" aria-label="Expand Military">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </button>
@@ -174,7 +167,7 @@
 
       <li class="mp-rail__item">
         <div class="mp-rail__row">
-          <a class="mp-rail__link" href="/collections/morale-patch-keychains"><span class="mp-rail__badge">MP</span><span>Morale Patches</span></a>
+          <a class="mp-rail__link" href="/collections/morale-patch-keychains"><span>Morale Patches</span></a>
         </div>
       </li>
     </ul>
@@ -186,7 +179,7 @@
   </div>
 </aside>
 
-<button class="mp-shop-fab" type="button" data-mp-rail-toggle aria-controls="mp-dept-rail" aria-label="Shop departments">
+<button class="mp-shop-fab" type="button" data-mp-rail-toggle aria-controls="mp-dept-rail" aria-label="Open shop menu">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
   Shop
 </button>
