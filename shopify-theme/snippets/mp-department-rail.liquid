@@ -88,17 +88,6 @@
   /* ===== "Shop" button in header nav — inherit the theme's nav link look ===== */
   .mp-shop-btn{ appearance:none; -webkit-appearance:none; background:transparent; border:0; cursor:pointer; color:inherit; }
   li.mp-shop-li{ display:flex; align-items:center; }
-
-  /* ===== Mobile floating "Shop" button (fallback control) ===== */
-  .mp-shop-fab{ position:fixed; left:14px; bottom:78px; z-index:999; display:inline-flex; align-items:center; gap:8px;
-    padding:12px 18px; border:1px solid rgba(217,164,65,.6); border-radius:999px; cursor:pointer;
-    background:var(--color-background, #0b0907); color:var(--color-foreground, #F4EFE6);
-    font-family:var(--font-subheading--family); text-transform:uppercase; letter-spacing:.1em; font-weight:600; font-size:.74rem;
-    box-shadow:0 6px 18px rgba(0,0,0,.30); }
-  .mp-shop-fab svg{ width:16px; height:16px; color:var(--color-primary, #d9a441); }
-  body.mp-rail-open .mp-shop-fab{ opacity:0; pointer-events:none; transform:translateY(8px); transition:.2s; }
-  @media (min-width:1200px){ .mp-shop-fab{ display:none; } }
-  body.mp-force-fab .mp-shop-fab{ display:inline-flex !important; }
 </style>
 
 <div class="mp-rail-backdrop" data-mp-rail-close></div>
@@ -173,11 +162,6 @@
   </div>
 </aside>
 
-<button class="mp-shop-fab" type="button" data-mp-rail-toggle aria-controls="mp-dept-rail" aria-label="Open shop menu">
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
-  Shop
-</button>
-
 <script>
 (function(){
   if (window.__mpRail) return;
@@ -201,8 +185,6 @@
   function ensureHeaderButton(){
     var header = document.querySelector('#header-component');
     if (!header) return;
-    if (header.dataset.menuStyle === 'drawer') body.classList.add('mp-force-fab');
-    else body.classList.remove('mp-force-fab');
     if (header.querySelector('.mp-shop-btn')) return;
     var list = header.querySelector('.menu-list');
     if (!list) return;

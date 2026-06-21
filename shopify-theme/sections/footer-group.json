@@ -293,7 +293,7 @@
       "type": "custom-liquid",
       "name": "Sticky mobile CTA",
       "settings": {
-        "custom_liquid": "<div class='mp-sticky'><a class='mp-sticky__btn mp-sticky__btn--primary' href='/collections/all'>Shop</a><a class='mp-sticky__btn' href='/pages/custom-orders'>Custom Order</a></div>",
+        "custom_liquid": "<div class='mp-sticky'><a class='mp-sticky__btn mp-sticky__btn--primary' href='#' data-mp-rail-toggle>Shop</a><a class='mp-sticky__btn' href='/pages/custom-orders'>Custom Order</a></div>",
         "color_scheme": "scheme-1",
         "section_width": "full-width",
         "padding-block-start": 0,
