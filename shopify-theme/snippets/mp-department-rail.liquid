@@ -2,6 +2,7 @@
   mp-department-rail.liquid
   Always-visible left "Ready to Ship Products" sidebar + a "Shop" toggle injected into the header nav.
   Rendered site-wide from the footer section group (custom-liquid -> {% render %}).
+  Uses the theme's color-scheme + font CSS variables so it matches the rest of the site.
   To change the list, edit the <a> items in the .mp-rail__scroll block below.
 {%- endcomment -%}
 
@@ -14,9 +15,10 @@
     top: var(--header-group-height, 64px);
     left: 0; bottom: 0;
     width: var(--mp-rail-w); max-width: 86vw;
-    background: #15171c; color: #e8e9ec;
-    border-right: 1px solid rgba(200,162,75,.30);
-    box-shadow: 4px 0 26px rgba(0,0,0,.20);
+    background: var(--color-background, #0b0907);
+    color: var(--color-foreground, #F4EFE6);
+    border-right: 1px solid rgba(217,164,65,.30);
+    box-shadow: 4px 0 26px rgba(0,0,0,.28);
     display: flex; flex-direction: column;
     z-index: 1001;
     transform: translateX(-102%);
@@ -27,47 +29,49 @@
 
   .mp-rail__head{
     display:flex; align-items:center; justify-content:space-between; gap:8px;
-    padding:14px 14px 11px; flex:0 0 auto; border-bottom:1px solid rgba(255,255,255,.07);
+    padding:16px 16px 12px; flex:0 0 auto; border-bottom:1px solid rgba(255,255,255,.08);
   }
-  .mp-rail__brand{ font-weight:800; letter-spacing:.04em; text-transform:uppercase;
-    font-size:.8rem; color:#fff; }
-  .mp-rail__close{ appearance:none; border:0; background:transparent; color:#9aa0aa;
-    cursor:pointer; width:34px; height:34px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; }
-  .mp-rail__close:hover{ background:rgba(255,255,255,.08); color:#fff; }
+  .mp-rail__brand{ font-family:var(--font-subheading--family); text-transform:uppercase;
+    letter-spacing:.14em; font-size:.72rem; font-weight:600; color:var(--color-primary, #d9a441); }
+  .mp-rail__close{ appearance:none; border:0; background:transparent; color:var(--color-foreground, #F4EFE6);
+    opacity:.6; cursor:pointer; width:34px; height:34px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; }
+  .mp-rail__close:hover{ opacity:1; background:rgba(255,255,255,.07); }
   .mp-rail__close svg{ width:18px; height:18px; }
 
-  .mp-rail__scroll{ flex:1 1 auto; overflow-y:auto; padding:8px 8px 4px; }
+  .mp-rail__scroll{ flex:1 1 auto; overflow-y:auto; padding:10px 10px 6px; }
   .mp-rail__list{ list-style:none; margin:0; padding:0; }
-  .mp-rail__item{ margin:2px 0; }
+  .mp-rail__item{ margin:1px 0; }
   .mp-rail__row{ display:flex; align-items:stretch; gap:2px; }
-  .mp-rail__link{ flex:1 1 auto; display:flex; align-items:center;
-    padding:11px 12px; border-radius:9px; color:#e8e9ec; text-decoration:none;
+  .mp-rail__link{ flex:1 1 auto; display:flex; align-items:center; padding:11px 12px; border-radius:8px;
+    color:var(--color-foreground, #F4EFE6); text-decoration:none;
+    font-family:var(--font-heading--family); text-transform:uppercase; letter-spacing:.03em;
     font-weight:600; font-size:.95rem; line-height:1.15; min-height:44px;
     transition:background .15s ease,color .15s ease; }
-  .mp-rail__link:hover,.mp-rail__link:focus-visible{ background:rgba(200,162,75,.15); color:#fff; outline:none; }
-  .mp-rail__caret{ flex:0 0 auto; appearance:none; border:0; background:transparent; color:#8b919b;
-    cursor:pointer; width:40px; border-radius:9px; display:grid; place-items:center; }
-  .mp-rail__caret:hover{ background:rgba(255,255,255,.06); color:#fff; }
-  .mp-rail__caret svg{ width:16px; height:16px; transition:transform .2s ease; }
+  .mp-rail__link:hover,.mp-rail__link:focus-visible{ background:rgba(217,164,65,.14); color:var(--color-primary, #d9a441); outline:none; }
+  .mp-rail__caret{ flex:0 0 auto; appearance:none; border:0; background:transparent;
+    color:var(--color-foreground, #F4EFE6); opacity:.5; cursor:pointer; width:40px; border-radius:8px; display:grid; place-items:center; }
+  .mp-rail__caret:hover{ opacity:1; background:rgba(255,255,255,.06); }
+  .mp-rail__caret svg{ width:15px; height:15px; transition:transform .2s ease; }
   .mp-rail__caret[aria-expanded="true"] svg{ transform:rotate(90deg); }
-  .mp-rail__sub{ list-style:none; margin:1px 0 6px; padding:0 0 0 12px; }
+  .mp-rail__sub{ list-style:none; margin:0 0 6px; padding:0 0 0 12px; }
   .mp-rail__sub[hidden]{ display:none; }
-  .mp-rail__sub a{ display:flex; align-items:center; min-height:38px; padding:7px 12px;
-    border-radius:8px; color:#b9bec7; text-decoration:none; font-size:.875rem; font-weight:500; }
-  .mp-rail__sub a::before{ content:""; width:5px; height:5px; border-radius:50%;
-    background:#c8a24b; margin-right:11px; opacity:.7; }
-  .mp-rail__sub a:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .mp-rail__sub a{ display:flex; align-items:center; min-height:36px; padding:7px 12px; border-radius:6px;
+    color:var(--color-foreground, #F4EFE6); opacity:.72; text-decoration:none;
+    font-family:var(--font-body--family); font-size:.875rem; font-weight:400; }
+  .mp-rail__sub a::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--color-primary, #d9a441); margin-right:11px; }
+  .mp-rail__sub a:hover{ opacity:1; background:rgba(255,255,255,.05); color:var(--color-primary, #d9a441); }
 
   .mp-rail__foot{ flex:0 0 auto; padding:12px; border-top:1px solid rgba(255,255,255,.08); }
-  .mp-rail__cta{ display:block; text-align:center; padding:11px 12px; border-radius:10px;
-    background:linear-gradient(145deg,#c8a24b,#a9842f); color:#1a1205; font-weight:800;
-    text-decoration:none; font-size:.9rem; }
-  .mp-rail__cta:hover{ filter:brightness(1.05); }
-  .mp-rail__foot small{ display:block; text-align:center; color:#7e848e; margin-top:8px; font-size:.7rem;
-    letter-spacing:.03em; }
+  .mp-rail__cta{ display:block; text-align:center; padding:12px; border-radius:8px;
+    background:var(--color-primary, #d9a441); color:#0b0907;
+    font-family:var(--font-subheading--family); text-transform:uppercase; letter-spacing:.08em;
+    font-weight:700; font-size:.72rem; text-decoration:none; }
+  .mp-rail__cta:hover{ filter:brightness(1.06); }
+  .mp-rail__foot small{ display:block; text-align:center; color:var(--color-foreground, #C6BCA9); opacity:.5;
+    margin-top:10px; font-family:var(--font-subheading--family); font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; }
 
   /* ===== Backdrop ===== */
-  .mp-rail-backdrop{ position:fixed; inset:0; background:rgba(8,9,11,.5);
+  .mp-rail-backdrop{ position:fixed; inset:0; background:rgba(8,9,11,.55);
     z-index:1000; opacity:0; visibility:hidden; transition:opacity .25s ease,visibility .25s ease; }
   body.mp-rail-open .mp-rail-backdrop{ opacity:1; visibility:visible; }
 
@@ -81,18 +85,17 @@
     }
   }
 
-  /* ===== "Shop" button injected into header nav ===== */
-  .mp-shop-btn{ appearance:none; cursor:pointer; display:inline-flex; align-items:center; gap:7px;
-    border:0; background:transparent; color:inherit; font:inherit; font-weight:650; padding:6px 4px; line-height:1; }
-  .mp-shop-btn svg{ width:16px; height:16px; }
+  /* ===== "Shop" button in header nav — inherit the theme's nav link look ===== */
+  .mp-shop-btn{ appearance:none; -webkit-appearance:none; background:transparent; border:0; cursor:pointer; color:inherit; }
   li.mp-shop-li{ display:flex; align-items:center; }
 
   /* ===== Mobile floating "Shop" button (fallback control) ===== */
-  .mp-shop-fab{ position:fixed; left:14px; bottom:78px; z-index:999; display:inline-flex; align-items:center;
-    gap:8px; padding:11px 16px 11px 13px; border:1px solid rgba(200,162,75,.55); border-radius:999px;
-    cursor:pointer; background:#15171c; color:#fff; font-weight:800; font-size:.9rem; letter-spacing:.02em;
+  .mp-shop-fab{ position:fixed; left:14px; bottom:78px; z-index:999; display:inline-flex; align-items:center; gap:8px;
+    padding:12px 18px; border:1px solid rgba(217,164,65,.6); border-radius:999px; cursor:pointer;
+    background:var(--color-background, #0b0907); color:var(--color-foreground, #F4EFE6);
+    font-family:var(--font-subheading--family); text-transform:uppercase; letter-spacing:.1em; font-weight:600; font-size:.74rem;
     box-shadow:0 6px 18px rgba(0,0,0,.30); }
-  .mp-shop-fab svg{ width:18px; height:18px; color:#c8a24b; }
+  .mp-shop-fab svg{ width:16px; height:16px; color:var(--color-primary, #d9a441); }
   body.mp-rail-open .mp-shop-fab{ opacity:0; pointer-events:none; transform:translateY(8px); transition:.2s; }
   @media (min-width:1200px){ .mp-shop-fab{ display:none; } }
   body.mp-force-fab .mp-shop-fab{ display:inline-flex !important; }
@@ -175,7 +178,7 @@
 
   <div class="mp-rail__foot">
     <a class="mp-rail__cta" href="/pages/custom-orders">Can&rsquo;t find yours? Custom Order &rarr;</a>
-    <small>USA MADE &middot; PHOENIX, AZ</small>
+    <small>USA Made &middot; Phoenix, AZ</small>
   </div>
 </aside>
 
@@ -204,12 +207,6 @@
   }
   function toggle(){ setOpen(!isOpen()); }
 
-  function shopIcon(){
-    return '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
-      + '<rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/>'
-      + '<rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>';
-  }
-
   function ensureHeaderButton(){
     var header = document.querySelector('#header-component');
     if (!header) return;
@@ -225,7 +222,7 @@
     btn.className = 'mp-shop-btn menu-list__link';
     btn.setAttribute('data-mp-rail-toggle','');
     btn.setAttribute('aria-controls','mp-dept-rail');
-    btn.innerHTML = shopIcon() + '<span>Shop</span>';
+    btn.innerHTML = '<span>Shop</span>';
     li.appendChild(btn);
     list.insertBefore(li, list.firstChild);
   }
