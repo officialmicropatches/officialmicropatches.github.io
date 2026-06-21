@@ -1,0 +1,98 @@
+{%- comment -%}
+  mp-hero-carousel.liquid
+  Large auto-playing image carousel of keychain products (All Keychains collection).
+  Uses each product's featured (white-background) image, links to the product page,
+  with left/right arrows + autoplay. Rendered via a custom-liquid section on the homepage.
+{%- endcomment -%}
+{%- assign hcar = collections.all -%}
+<div class="mp-hcar" data-mp-hcar>
+  <div class="mp-hcar__track" data-mp-hcar-track>
+    {%- for product in hcar.products limit: 24 -%}
+      {%- if product.featured_image -%}
+        <a class="mp-hcar__slide" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+          <img class="mp-hcar__img"
+               src="{{ product.featured_image | image_url: width: 1100 }}"
+               srcset="{{ product.featured_image | image_url: width: 700 }} 700w, {{ product.featured_image | image_url: width: 1100 }} 1100w"
+               sizes="(min-width: 1100px) 1040px, 92vw"
+               alt="{{ product.title | escape }}" loading="lazy" width="1100" height="1100">
+          <span class="mp-hcar__cap">
+            <span class="mp-hcar__name">{{ product.title }}</span>
+            {%- if product.price > 0 -%}<span class="mp-hcar__price">{{ product.price | money }}</span>{%- endif -%}
+          </span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <button class="mp-hcar__btn mp-hcar__btn--prev" type="button" data-mp-hcar-prev aria-label="Previous keychain">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+  <button class="mp-hcar__btn mp-hcar__btn--next" type="button" data-mp-hcar-next aria-label="Next keychain">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</div>
+
+<style>
+  .mp-hcar{ position:relative; max-width:1040px; margin:0 auto; }
+  .mp-hcar__track{ display:flex; gap:0; overflow-x:auto; scroll-snap-type:x mandatory;
+    scroll-behavior:smooth; -webkit-overflow-scrolling:touch; border-radius:16px;
+    border:1px solid rgba(200,162,75,.30); background:#fff;
+    scrollbar-width:none; -ms-overflow-style:none; box-shadow:0 10px 34px rgba(0,0,0,.28); }
+  .mp-hcar__track::-webkit-scrollbar{ display:none; }
+  .mp-hcar__slide{ position:relative; flex:0 0 100%; scroll-snap-align:center; display:block;
+    background:#fff; text-decoration:none; }
+  .mp-hcar__img{ display:block; width:100%; height:clamp(300px,42vw,520px); object-fit:contain;
+    background:#fff; padding:14px; }
+  .mp-hcar__cap{ position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; padding:14px 18px; color:#fff;
+    background:linear-gradient(to top, rgba(10,11,13,.82), rgba(10,11,13,0)); }
+  .mp-hcar__name{ font-weight:700; font-size:1rem; letter-spacing:.01em; }
+  .mp-hcar__price{ font-weight:800; color:#e7c46b; font-size:1rem; white-space:nowrap; }
+  .mp-hcar__btn{ position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px;
+    border-radius:50%; border:0; cursor:pointer; background:rgba(21,23,28,.72); color:#fff;
+    display:grid; place-items:center; z-index:2; transition:background .15s ease, color .15s ease; }
+  .mp-hcar__btn svg{ width:22px; height:22px; }
+  .mp-hcar__btn:hover{ background:#c8a24b; color:#1a1205; }
+  .mp-hcar__btn--prev{ left:12px; }
+  .mp-hcar__btn--next{ right:12px; }
+  @media (max-width:600px){ .mp-hcar__btn{ width:40px; height:40px; } .mp-hcar__btn svg{ width:18px; height:18px; } }
+</style>
+
+<script>
+(function(){
+  function init(root){
+    if (root.__hcar) return; root.__hcar = true;
+    var track = root.querySelector('[data-mp-hcar-track]');
+    var slides = root.querySelectorAll('.mp-hcar__slide');
+    if (!track || slides.length < 2) return;
+    var idx = 0, timer = null, paused = false;
+    function to(n){
+      idx = (n % slides.length + slides.length) % slides.length;
+      track.scrollTo({ left: slides[idx].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    }
+    function start(){ timer = setInterval(function(){ if (!paused) to(idx + 1); }, 4500); }
+    function reset(){ clearInterval(timer); start(); }
+    var n = root.querySelector('[data-mp-hcar-next]'), p = root.querySelector('[data-mp-hcar-prev]');
+    if (n) n.addEventListener('click', function(){ to(idx + 1); reset(); });
+    if (p) p.addEventListener('click', function(){ to(idx - 1); reset(); });
+    root.addEventListener('mouseenter', function(){ paused = true; });
+    root.addEventListener('mouseleave', function(){ paused = false; });
+    var st;
+    track.addEventListener('scroll', function(){
+      clearTimeout(st);
+      st = setTimeout(function(){
+        var c = track.scrollLeft + track.clientWidth / 2, best = 0, bd = 1e9;
+        for (var i = 0; i < slides.length; i++){
+          var center = slides[i].offsetLeft - track.offsetLeft + slides[i].clientWidth / 2;
+          var d = Math.abs(center - c);
+          if (d < bd){ bd = d; best = i; }
+        }
+        idx = best;
+      }, 120);
+    }, { passive: true });
+    start();
+  }
+  function boot(){ Array.prototype.forEach.call(document.querySelectorAll('[data-mp-hcar]'), init); }
+  if (document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>

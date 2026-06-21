@@ -1,0 +1,305 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_main": {
+      "type": "hero",
+      "blocks": {
+        "eyebrow": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h6>Active Law Enforcement Owned · Phoenix, AZ</h6>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h6",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.8rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "uppercase",
+            "wrap": "pretty",
+            "color": "var(--color-primary)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "headline": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h1>Your Patch. <em>Now Micro.</em></h1>",
+            "width": "fit-content",
+            "max_width": "wide",
+            "alignment": "center",
+            "type_preset": "h1",
+            "font": "var(--font-heading--family)",
+            "font_size": "clamp(3.5rem, 10vw, 8rem)",
+            "line_height": "display-tight",
+            "letter_spacing": "normal",
+            "case": "uppercase",
+            "wrap": "balance",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "subtext": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<p>Premium UV-cured patch keychains. USA made. No minimums on custom orders.</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "paragraph",
+            "font": "var(--font-body--family)",
+            "font_size": "1.1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "cta_group": {
+          "type": "group",
+          "name": "t:names.group",
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 14,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "btn_shop": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "Shop MicroKeychains",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            },
+            "btn_custom": {
+              "type": "button",
+              "name": "t:names.button",
+              "settings": {
+                "label": "Start Custom Order",
+                "link": "/pages/custom-orders",
+                "open_in_new_tab": false,
+                "style_class": "button-secondary",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "btn_shop",
+            "btn_custom"
+          ]
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "headline",
+        "subtext",
+        "cta_group"
+      ],
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "media_type_2": "image",
+        "stack_media_on_mobile": false,
+        "custom_mobile_media": false,
+        "media_type_1_mobile": "image",
+        "media_type_2_mobile": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "space-between",
+        "vertical_alignment": "flex-end",
+        "align_baseline": true,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 22,
+        "section_width": "page-width",
+        "section_height": "medium",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-1",
+        "toggle_overlay": false,
+        "overlay_color": "#0b0907a6",
+        "overlay_style": "solid",
+        "gradient_direction": "to bottom",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 80,
+        "padding-block-end": 56
+      }
+    },
+    "mp_hero_carousel": {
+      "type": "custom-liquid",
+      "name": "Keychain image carousel",
+      "settings": {
+        "custom_liquid": "{% render 'mp-hero-carousel' %}",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 24,
+        "padding-block-end": 28
+      }
+    },
+    "category_tiles": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class='mp-cats'><p class='mp-eyebrow' style='text-align:center'>Shop By Category</p><div class='mp-cats__grid'><a class='mp-cat mp-cat--img' href='/collections/police-department-keychains'><img src='https://cdn.shopify.com/s/files/1/0719/0691/8442/files/mp-cat-le-v2.jpg?v=1780720821&amp;width=640' alt='Law Enforcement keychains' loading='lazy'><span class='mp-cat__label'>Law Enforcement</span></a><a class='mp-cat mp-cat--img' href='/collections/military-keychains'><img src='https://cdn.shopify.com/s/files/1/0719/0691/8442/files/mp-cat-military.jpg?v=1780648722&amp;width=640' alt='Military keychains' loading='lazy'><span class='mp-cat__label'>Military</span></a><a class='mp-cat mp-cat--img' href='/collections/fire-ems-keychains'><img src='https://cdn.shopify.com/s/files/1/0719/0691/8442/files/mp-cat-fire.jpg?v=1780648722&amp;width=640' alt='Fire and EMS keychains' loading='lazy'><span class='mp-cat__label'>Fire &amp; EMS</span></a><a class='mp-cat mp-cat--img' href='/collections/pink-patch-project'><img src='https://cdn.shopify.com/s/files/1/0719/0691/8442/files/mp-cat-pink-pomona.jpg?v=1780649056&amp;width=640' alt='Pink Patch Project keychains' loading='lazy'><span class='mp-cat__label'>Pink Patch</span></a><a class='mp-cat mp-cat--img' href='/collections/all'><img src='https://cdn.shopify.com/s/files/1/0719/0691/8442/files/mp-cat-all.jpg?v=1780648722&amp;width=640' alt='All keychains' loading='lazy'><span class='mp-cat__label'>All Keychains</span></a><a class='mp-cat mp-cat--custom' href='/pages/custom-orders'><svg class='mp-cat__icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><circle cx='12' cy='12' r='9'></circle><path d='M12 8v8M8 12h8'></path></svg><span class='mp-cat__label'>Custom Order</span><span class='mp-cat__sub'>Send Us Your Patch →</span></a></div></div>",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 48,
+        "padding-block-end": 32
+      }
+    },
+    "rts_intro": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div style='max-width:760px;margin:0 auto;text-align:center'><p class='mp-eyebrow' style='text-align:center'>In Stock · Ships From Phoenix</p><h2 style='margin:0 0 0.9rem'>Keychains Ship <em style='font-style:normal;color:#d9a441'>Right Now.</em></h2><p style='color:#C6BCA9;font-size:1.02rem;line-height:1.6;margin:0 0 0.6rem'>Every MicroKeychain in our catalog is made and ready to ship today. As we expand, more products will be stocked and ready to go.</p><p style='color:#C6BCA9;font-size:1.02rem;line-height:1.6;margin:0'>Want a MicroMagnet, MicroPin, MicroCharm, Flexible Patch, or Challenge Coin? <a href='/pages/custom-orders' style='color:#d9a441;text-decoration:none'>Fill out a custom order request →</a> and we'll build any of our products for you — no minimums.</p></div>",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 8,
+        "padding-block-end": 28
+      }
+    },
+    "rts_custom_strip": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div style='text-align:center;margin:0 0 1.8rem'><a class='mp-btn mp-btn--ghost' href='/collections/homepage-ready-to-ship'>View All In-Stock Keychains →</a></div><div style='max-width:980px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.9rem 1.4rem;border:1px dashed #d9a441;border-radius:10px;padding:1.1rem 1.4rem;text-align:center'><span style=\"font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.14em;font-size:0.7rem;color:#d9a441\">Made To Order</span><span style='color:#C6BCA9;font-size:0.95rem'>Magnets · Pins · Charms · Flexible Patches · Challenge Coins — built for you on request</span><a class='mp-btn mp-btn--primary' href='/pages/custom-orders' style='padding:0.6rem 1.1rem;font-size:0.72rem'>Start Custom Order →</a></div>",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 44
+      }
+    },
+    "trust_bar": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class='mp-trust'><span class='mp-trust__item'>No Minimums</span><span class='mp-trust__dot'></span><span class='mp-trust__item'>USA Made</span><span class='mp-trust__dot'></span><span class='mp-trust__item'>Active Law Enforcement Owned</span><span class='mp-trust__dot'></span><span class='mp-trust__item'>Rated 5.0 ★ on Etsy</span></div>",
+        "color_scheme": "scheme-2",
+        "section_width": "full-width",
+        "padding-block-start": 20,
+        "padding-block-end": 20
+      }
+    },
+    "buy_options": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class='mp-buy'><article class='mp-buy__card'><span class='mp-buy__tag'>Ready To Ship · In Stock Now</span><h3 class='mp-buy__title'>MicroKeychains Ready To Ship</h3><div class='mp-buy__price'>$13.99 <span>· flat price</span></div><ul class='mp-buy__list'><li>80+ designs in stock — ships from Phoenix, no design fee</li><li>Premium UV-cured ink on a 3D-printed base</li><li>Don't see yours? Available by custom order too</li></ul><a class='mp-btn mp-btn--primary' href='/collections/all'>Shop MicroKeychains →</a></article><article class='mp-buy__card mp-buy__card--feature'><span class='mp-buy__tag'>Made To Order · Custom Request</span><h3 class='mp-buy__title'>Custom Micro Patch Products</h3><div class='mp-buy__price'>$25 <span>· one-time design fee</span></div><ul class='mp-buy__list'><li>MicroKeychains, MicroMagnets, MicroPins, MicroCharms, Flexible Patches &amp; Challenge Coins</li><li>No minimum order quantity</li><li>Send your patch — we build it for you</li></ul><a class='mp-btn mp-btn--primary' href='/pages/custom-orders'>Start Custom Order →</a></article></div>",
+        "color_scheme": "scheme-1",
+        "section_width": "page-width",
+        "padding-block-start": 40,
+        "padding-block-end": 52
+      }
+    },
+    "reviews": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class='mp-reviews'><p class='mp-eyebrow' style='text-align:center'>Rated 5.0 ★ on Etsy · 26 Reviews</p><h2 style='text-align:center;margin:0 0 0.4rem'>Trusted By Those Who Serve.</h2><div class='mp-reviews__grid'><div class='mp-review'><div class='mp-review__stars'>★★★★★</div><p class='mp-review__quote'>“I couldn't be happier with this keychain! The materials feel durable and high-quality! If you're thinking about getting one, do it!”</p><div class='mp-review__name'>Tyler · Verified Etsy Buyer</div></div><div class='mp-review'><div class='mp-review__stars'>★★★★★</div><p class='mp-review__quote'>“10/10 great quality. Definitely recommending to co workers.”</p><div class='mp-review__name'>Morgan Gonzalez · Verified Etsy Buyer</div></div><div class='mp-review'><div class='mp-review__stars'>★★★★★</div><p class='mp-review__quote'>“Great product! Exactly as pictured — great quality.”</p><div class='mp-review__name'>F Young · Verified Etsy Buyer</div></div></div></div>",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 56,
+        "padding-block-end": 56
+      }
+    },
+    "story": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class='mp-story'><p class='mp-eyebrow'>Made in Phoenix, Arizona</p><h2 class='mp-story__title'>Made By Someone Who Wears The Badge.</h2><p class='mp-story__body'>MicroPatches is active law enforcement owned and based in Phoenix, Arizona. Every product is built with the same care whether the order is one piece or fifty.</p></div>",
+        "color_scheme": "scheme-3",
+        "section_width": "page-width",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    },
+    "final_cta": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class='mp-final'><h2 class='mp-final__title'>Carry Your Patch. Anywhere.</h2><p class='mp-final__sub'>Shop keychains in stock now — or send us your patch and we'll build any of our products for you.</p><div class='mp-final__cta'><a class='mp-btn mp-btn--primary' href='/collections/all'>Shop MicroKeychains →</a><a class='mp-btn mp-btn--ghost' href='/pages/custom-orders'>Start Custom Order</a></div></div>",
+        "color_scheme": "scheme-5",
+        "section_width": "full-width",
+        "padding-block-start": 76,
+        "padding-block-end": 76
+      }
+    }
+  },
+  "order": [
+    "hero_main",
+    "mp_hero_carousel",
+    "category_tiles",
+    "rts_intro",
+    "rts_custom_strip",
+    "trust_bar",
+    "buy_options",
+    "reviews",
+    "story",
+    "final_cta"
+  ]
+}
