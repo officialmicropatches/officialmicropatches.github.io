@@ -188,19 +188,21 @@
   function ensureHeaderButton(){
     var header = document.querySelector('#header-component');
     if (!header) return;
-    if (header.querySelector('.mp-shop-btn')) return;
-    var list = header.querySelector('.menu-list');
-    if (!list) return;
-    var li = document.createElement('li');
-    li.className = 'menu-list__list-item mp-shop-li';
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'mp-shop-btn menu-list__link';
-    btn.setAttribute('data-mp-rail-toggle','');
-    btn.setAttribute('aria-controls','mp-dept-rail');
-    btn.innerHTML = '<span>Shop</span>';
-    li.appendChild(btn);
-    list.insertBefore(li, list.firstChild);
+    // Inject "Shop" into every header menu list (covers both the desktop nav and the mobile hamburger drawer)
+    var lists = header.querySelectorAll('.menu-list');
+    Array.prototype.forEach.call(lists, function(list){
+      if (list.querySelector('.mp-shop-btn')) return;
+      var li = document.createElement('li');
+      li.className = 'menu-list__list-item mp-shop-li';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mp-shop-btn menu-list__link';
+      btn.setAttribute('data-mp-rail-toggle','');
+      btn.setAttribute('aria-controls','mp-dept-rail');
+      btn.innerHTML = '<span>Shop</span>';
+      li.appendChild(btn);
+      list.insertBefore(li, list.firstChild);
+    });
   }
 
   document.addEventListener('click', function(e){
@@ -221,6 +223,23 @@
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' && isOpen() && !MQ.matches) setOpen(false);
   });
+
+  // On the search page, the layout injects a "Can't find…" custom-order card near the top,
+  // which can read as "no results". Move it below the results once it appears.
+  if (location.pathname === '/search'){
+    var moveSearchCta = function(){
+      var main = document.querySelector('main');
+      if (!main) return false;
+      var cta = main.querySelector('.mp-custom-order-cta');
+      if (cta && cta !== main.lastElementChild){ main.appendChild(cta); return true; }
+      return false;
+    };
+    if (!moveSearchCta()){
+      var ctaObs = new MutationObserver(function(){ if (moveSearchCta()) ctaObs.disconnect(); });
+      ctaObs.observe(document.body, { childList:true, subtree:true });
+      setTimeout(function(){ try { ctaObs.disconnect(); } catch(e){} }, 5000);
+    }
+  }
 
   function init(){
     ensureHeaderButton();
