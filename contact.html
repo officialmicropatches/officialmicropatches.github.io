@@ -6,6 +6,9 @@
 <title>Contact MicroPatches</title>
 <meta name="description" content="Get in touch with MicroPatches. Email OfficialMicroPatches@gmail.com or send a message — we usually reply within one business day. Based in Phoenix, Arizona." />
 <link rel="canonical" href="https://officialmicropatches.com/contact.html" />
+<meta property="og:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <meta property="og:title" content="Contact MicroPatches" />
 <meta property="og:description" content="Questions, bulk orders, partnerships — write to us. Phoenix, AZ." />
 <meta property="og:url" content="https://officialmicropatches.com/contact.html" />
@@ -13,8 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260534" />
-  <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
+<link rel="stylesheet" href="assets/css/style.css?v=20260704" />
+  <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260704">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 </head>
 <body data-page="contact">
@@ -31,15 +34,15 @@
 
 <section class="section">
   <div class="container">
-    <div class="grid grid-12" style="row-gap: 32px;">
-      <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 16px;">
-        <a href="mailto:OfficialMicroPatches@gmail.com" style="padding: 28px; border: 1px solid var(--line); display: block; transition: border-color .15s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line)'">
+    <div class="contact-grid">
+      <div class="contact-aside">
+        <a href="mailto:OfficialMicroPatches@gmail.com" class="contact-card">
           <div class="eyebrow" style="color: var(--accent);">EMAIL</div>
-          <h3 class="display" style="font-size: 26px; margin: 12px 0 6px; word-break: break-word;">OfficialMicroPatches@gmail.com</h3>
+          <h3 class="contact-card__email">officialmicropatches@gmail.com</h3>
           <p style="color: var(--ink-dim); font-size: 13.5px; margin: 0;">For orders, custom requests, and general questions.</p>
         </a>
 
-        <div style="padding: 28px; border: 1px solid var(--line); background: var(--bg-2);">
+        <div class="contact-card contact-card--tint">
           <div class="eyebrow">LOCATION</div>
           <dl style="margin: 16px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; font-size: 14px;">
             <dt class="mono-sm">Workshop</dt><dd style="margin:0;">Phoenix, Arizona</dd>
@@ -48,7 +51,7 @@
           </dl>
         </div>
 
-        <div style="padding: 28px; border: 1px solid var(--line);">
+        <div class="contact-card">
           <div class="eyebrow">QUICK LINKS</div>
           <ul style="margin: 14px 0 0; padding: 0; list-style: none; display:grid; gap: 10px; font-size: 14px;">
             <li><a href="custom.html" style="color: var(--ink);">Start a custom order →</a></li>
@@ -59,51 +62,59 @@
         </div>
       </div>
 
-      <form style="grid-column: span 7; display: grid; gap: 20px;" id="contact-form">
-        <div class="eyebrow">§ Send a Message</div>
-        <h2 class="display h-m" style="margin: 0 0 8px;">Write to the workbench.</h2>
+      <div>
+        <form class="contact-form" id="contact-form" novalidate>
+          <input type="hidden" name="access_key" value="9ac9af5f-c015-4eb0-a4e5-62fa3c855b44">
+          <input type="hidden" name="from_name" value="MicroPatches Website">
+          <!-- Honeypot: must stay empty (bots tend to fill it) -->
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div class="field">
-            <label for="ct-name">Name *</label>
-            <input id="ct-name" name="name" type="text" required autocomplete="name" />
+          <div class="eyebrow">§ Send a Message</div>
+          <h2 class="display h-m" style="margin: 0 0 8px;">Write to the workbench.</h2>
+
+          <div class="contact-form__pair">
+            <div class="field">
+              <label for="ct-name">Name *</label>
+              <input id="ct-name" name="name" type="text" required maxlength="120" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="ct-email">Email *</label>
+              <input id="ct-email" name="email" type="email" required maxlength="120" autocomplete="email" />
+            </div>
           </div>
+
           <div class="field">
-            <label for="ct-email">Email *</label>
-            <input id="ct-email" name="email" type="email" required autocomplete="email" />
+            <label for="ct-subject">Subject *</label>
+            <select id="ct-subject" name="subject" required>
+              <option value="General question">General question</option>
+              <option value="Order status">Order status</option>
+              <option value="Bulk or agency order">Bulk / agency order</option>
+              <option value="Custom request">Custom request</option>
+              <option value="Press or partnership">Press / partnership</option>
+            </select>
           </div>
+
+          <div class="field">
+            <label for="ct-message">Message *</label>
+            <textarea id="ct-message" name="message" required maxlength="4000" style="min-height: 180px;" placeholder="Tell us what you need."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--lg" id="ct-submit" style="justify-self: start;">
+            <span class="label">Send Message</span>
+            <span class="arr">→</span>
+          </button>
+
+          <div id="contact-status" role="status" aria-live="polite" style="display:none; font-size: 14px;"></div>
+          <p class="mono-sm" style="margin: 0; color: var(--ink-mute);">
+            Trouble sending? Email <a href="mailto:OfficialMicroPatches@gmail.com" style="color: var(--ink);">OfficialMicroPatches@gmail.com</a> directly.
+          </p>
+        </form>
+
+        <div id="contact-success" style="display: none; padding: 56px 32px; border: 1px solid var(--accent); border-radius: 14px; background: rgba(217,164,65,0.08); text-align: center;" role="status" aria-live="polite">
+          <div style="font-family: var(--f-mono); color: var(--accent); letter-spacing: .18em; font-size: 11px;">MESSAGE SENT</div>
+          <h2 class="display h-l" style="margin: 16px 0;">Got it. We're on it.</h2>
+          <p style="color: var(--ink-dim); max-width: 50ch; margin: 0 auto; line-height: 1.6;">Thanks for writing — we'll reply to the email you provided, usually within one business day.</p>
         </div>
-
-        <div class="field">
-          <label for="ct-subject">Subject *</label>
-          <select id="ct-subject" name="subject" required>
-            <option value="General question">General question</option>
-            <option value="Order status">Order status</option>
-            <option value="Bulk or agency order">Bulk / agency order</option>
-            <option value="Custom request">Custom request</option>
-            <option value="Press or partnership">Press / partnership</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="ct-message">Message *</label>
-          <textarea id="ct-message" name="message" required style="min-height: 180px;" placeholder="Tell us what you need."></textarea>
-        </div>
-
-        <button type="submit" class="btn btn--primary btn--lg" style="justify-self: start;">
-          <span class="label">Send Message</span>
-          <span class="arr">→</span>
-        </button>
-
-        <p class="mono-sm" style="margin: 0; color: var(--ink-mute);">
-          Submits via your email client. Replies sent to the address you provide.
-        </p>
-      </form>
-
-      <div id="contact-success" style="grid-column: span 7; display: none; padding: 64px 48px; border: 1px solid var(--line); background: var(--bg-2); text-align: center;">
-        <div style="font-family: var(--f-mono); color: var(--accent); letter-spacing: .18em; font-size: 11px;">MESSAGE READY</div>
-        <h2 class="display h-l" style="margin: 16px 0;">Email client opened.</h2>
-        <p style="color: var(--ink-dim); max-width: 50ch; margin: 0 auto; line-height: 1.6;">Your email is pre-filled — just hit send. We'll reply within one business day.</p>
       </div>
     </div>
   </div>
@@ -114,33 +125,60 @@
 
 <script src="assets/js/image-slot.js?v=20260520"></script>
 <script src="assets/js/shopify-config.js?v=20260520"></script>
-<script src="assets/js/site.js?v=20260535"></script>
+<script src="assets/js/site.js?v=20260704"></script>
 <script>
-document.getElementById('contact-form').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const name = document.getElementById('ct-name').value.trim();
-  const email = document.getElementById('ct-email').value.trim();
-  const subject = document.getElementById('ct-subject').value;
-  const message = document.getElementById('ct-message').value.trim();
-  if (!name || !email || !message) return;
+/* Contact form: Web3Forms AJAX submit (same endpoint as the custom-order
+   form). The old mailto: flow failed silently on machines without a mail
+   client while still showing a success panel. */
+(function () {
+  var form = document.getElementById('contact-form');
+  var statusEl = document.getElementById('contact-status');
+  var successEl = document.getElementById('contact-success');
+  var submitBtn = document.getElementById('ct-submit');
+  if (!form) return;
 
-  const endpoint = (window.SHOPIFY && window.SHOPIFY.CONTACT_FORM_ENDPOINT) || 'mailto:OfficialMicroPatches@gmail.com';
-  const to = endpoint.replace(/^mailto:/, '');
-  const body = [
-    'NEW CONTACT MESSAGE',
-    '═══════════════════',
-    '',
-    'From:    ' + name + ' <' + email + '>',
-    'Subject: ' + subject,
-    '',
-    'Message:',
-    message,
-  ].join('\n');
-  window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('[Contact] ' + subject) + '&body=' + encodeURIComponent(body);
+  function setStatus(msg, color) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = color || '';
+    statusEl.style.display = msg ? 'block' : 'none';
+  }
 
-  this.style.display = 'none';
-  document.getElementById('contact-success').style.display = 'block';
-});
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      setStatus('Please complete the required fields before sending.', '#fbbf24');
+      form.reportValidity();
+      return;
+    }
+    var subject = document.getElementById('ct-subject').value;
+    var data = new FormData(form);
+    data.set('subject', '[Contact] ' + subject + ' — MicroPatches');
+    data.set('Topic', subject);
+
+    setStatus('Sending your message…', '#9aa');
+    submitBtn.disabled = true;
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: data,
+      headers: { Accept: 'application/json' }
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (res.ok && res.d && res.d.success) {
+          form.style.display = 'none';
+          successEl.style.display = 'block';
+          setStatus('');
+          if (successEl.scrollIntoView) successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        throw new Error((res.d && res.d.message) || 'send failed');
+      })
+      .catch(function () {
+        setStatus('Could not send right now — please email OfficialMicroPatches@gmail.com and we’ll help you directly.', '#f08a8a');
+        submitBtn.disabled = false;
+      });
+  });
+})();
 </script>
 </body>
 </html>

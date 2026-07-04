@@ -137,15 +137,17 @@
     card.setAttribute('data-type',     type);
     card.setAttribute('data-state',    state);
 
+    // Scarcity badge only when stock is genuinely low (≤3). Most SKUs sit
+    // under 10 units, so a higher threshold put "Only N left" on nearly
+    // every card — when everything is scarce, nothing is. No default
+    // "Ready To Ship" badge for the same reason.
     var inv = (window.__MP_INV || {})[handle];
     var invQ = inv && typeof inv.q === 'number' ? inv.q : null;
-    var badgeHtml;
+    var badgeHtml = '';
     if (!inStock) {
       badgeHtml = '<span class="pcard__rts" style="background:var(--line-2);color:var(--ink-dim);">Sold Out</span>';
-    } else if (invQ !== null && invQ > 0 && invQ <= 10) {
+    } else if (invQ !== null && invQ > 0 && invQ <= 3) {
       badgeHtml = '<span class="pcard__rts pcard__rts--low">Only ' + invQ + ' left</span>';
-    } else {
-      badgeHtml = '<span class="pcard__rts">Ready To Ship</span>';
     }
 
     card.innerHTML =
@@ -209,13 +211,62 @@
     }
     grid.appendChild(fragment);
 
-    console.log('[MicroPatches] Loaded ' + display.length + ' live products from Shopify.');
+    console.log('[MicroPatches] Loaded ' + display.length + ' products.');
     setupFilters();
+  }
+
+  /* Static snapshot fallback (listings.json) mapped to the Shopify
+     products.json shape buildCard() expects. Variant IDs are absent \u2014
+     checkout still works because buildCheckoutUrl() resolves them from
+     the live catalog by handle. */
+  function fromListings() {
+    return fetch('listings.json')
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (list) {
+        return (list || []).map(function (p) {
+          return {
+            title:  p.title,
+            handle: p.handle,
+            tags:   [],
+            variants: [{ id: null, price: String(p.price || '13.99'), available: (p.qty || 0) > 0 }],
+            images: (p.images || []).filter(Boolean).map(function (src) { return { src: src }; })
+          };
+        });
+      })
+      .catch(function () { return []; });
+  }
+
+  /* Honest failure state \u2014 distinct from the "no filter matches" empty
+     state, which used to (misleadingly) show on network failures. */
+  function showUnavailable() {
+    var grid = document.querySelector('.product-grid');
+    if (grid) {
+      grid.innerHTML = '<p class="shop-loading">The catalog is temporarily unavailable \u2014 please refresh in a moment, or ' +
+        '<a href="' + STORE_URL + '" style="color:var(--accent)">shop directly on our Shopify store</a>.</p>';
+    }
+    var count = document.getElementById('product-count');
+    if (count) count.textContent = '';
+    var moreWrap = document.getElementById('shop-more-wrap');
+    if (moreWrap) moreWrap.hidden = true;
+    var emptyEl = document.getElementById('shop-empty');
+    if (emptyEl) emptyEl.hidden = true;
   }
 
   function fetchAllProducts(onDone) {
     var all  = [];
     var page = 1;
+
+    function finish() {
+      if (all.length) { onDone(all); return; }
+      fromListings().then(function (fallback) {
+        if (fallback.length) {
+          console.warn('[MicroPatches] Live catalog unavailable \u2014 showing listings.json snapshot.');
+          onDone(fallback);
+        } else {
+          showUnavailable();
+        }
+      });
+    }
 
     function next() {
       fetch(STORE_URL + '/products.json?limit=250&page=' + page)
@@ -227,12 +278,12 @@
             page++;
             next();
           } else {
-            onDone(all);
+            finish();
           }
         })
         .catch(function (err) {
           console.error('[MicroPatches] Product fetch failed:', err);
-          onDone(all);
+          finish();
         });
     }
 
@@ -245,9 +296,18 @@
     var activeState = 'all';
     var searchTerm  = '';
 
+    // Chunked rendering: the full catalog in one page made shop.html a
+    // ~17,000px scroll on phones. Show PAGE_SIZE at a time; "Show more"
+    // reveals the next chunk. Changing any filter resets the window.
+    var PAGE_SIZE    = 24;
+    var visibleLimit = PAGE_SIZE;
+    var moreWrap = document.getElementById('shop-more-wrap');
+    var moreBtn  = document.getElementById('shop-more');
+
     function applyFilters() {
       var cards   = document.querySelectorAll('.product-card');
-      var visible = 0;
+      var matched = 0;
+      var shown   = 0;
       for (var i = 0; i < cards.length; i++) {
         var cat     = cards[i].getAttribute('data-category') || '';
         var type    = cards[i].getAttribute('data-type')     || '';
@@ -260,14 +320,31 @@
         var stateMatch  = activeState === 'all' || state === activeState;
         var searchMatch = searchTerm  === ''    || title.toLowerCase().indexOf(searchTerm) !== -1;
 
-        var show = tabMatch && typeMatch && stateMatch && searchMatch;
+        var match = tabMatch && typeMatch && stateMatch && searchMatch;
+        if (match) matched++;
+        var show = match && matched <= visibleLimit;
         cards[i].style.display = show ? '' : 'none';
-        if (show) visible++;
+        if (show) shown++;
       }
       var countEl = document.querySelector('.product-count, #product-count, .results-count');
-      if (countEl) countEl.textContent = visible + ' product' + (visible === 1 ? '' : 's');
+      if (countEl) {
+        countEl.textContent = (shown < matched)
+          ? 'Showing ' + shown + ' of ' + matched + ' products'
+          : matched + ' product' + (matched === 1 ? '' : 's');
+      }
       var emptyEl = document.getElementById('shop-empty');
-      if (emptyEl) emptyEl.hidden = visible !== 0;
+      if (emptyEl) emptyEl.hidden = matched !== 0;
+      if (moreWrap) moreWrap.hidden = matched <= visibleLimit;
+    }
+
+    function resetChunk() { visibleLimit = PAGE_SIZE; }
+
+    if (moreBtn && !moreBtn.dataset.wired) {
+      moreBtn.dataset.wired = '1';
+      moreBtn.addEventListener('click', function () {
+        visibleLimit += PAGE_SIZE;
+        applyFilters();
+      });
     }
 
     var stateSelects = document.querySelectorAll('select[data-shop-filter="state"]');
@@ -278,6 +355,7 @@
       sel.addEventListener('change', function () {
         activeState = sel.value || 'all';
         syncStateSelects(activeState);
+        resetChunk();
         applyFilters();
       });
     });
@@ -291,17 +369,24 @@
           activeState = 'all';
           syncStateSelects('all');
           for (var j = 0; j < tabBtns.length; j++) {
-            tabBtns[j].classList.toggle('active', tabBtns[j] === btn);
+            var on = tabBtns[j] === btn;
+            tabBtns[j].classList.toggle('active', on);
+            tabBtns[j].setAttribute('aria-pressed', on ? 'true' : 'false');
           }
           document.querySelectorAll('button[data-shop-filter]').forEach(function (b) {
             b.classList.remove('active');
+            b.setAttribute('aria-pressed', 'false');
           });
           var activeGroup = document.querySelector(
             '.shop-filter-group[data-filter-for="' + activeTab + '"]');
           if (activeGroup) {
             var allPill = activeGroup.querySelector('button[data-filter-value="all"]');
-            if (allPill) allPill.classList.add('active');
+            if (allPill) {
+              allPill.classList.add('active');
+              allPill.setAttribute('aria-pressed', 'true');
+            }
           }
+          resetChunk();
           applyFilters();
         });
       })(tabBtns[t]);
@@ -315,12 +400,16 @@
           if (activeType === val) {
             activeType = 'all';
             btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
           } else {
             activeType = val;
             for (var j = 0; j < filterBtns.length; j++) {
-              filterBtns[j].classList.toggle('active', filterBtns[j] === btn);
+              var on = filterBtns[j] === btn;
+              filterBtns[j].classList.toggle('active', on);
+              filterBtns[j].setAttribute('aria-pressed', on ? 'true' : 'false');
             }
           }
+          resetChunk();
           applyFilters();
         });
       })(filterBtns[f]);
@@ -330,6 +419,7 @@
     if (searchInput) {
       searchInput.addEventListener('input', function () {
         searchTerm = (searchInput.value || '').trim().toLowerCase();
+        resetChunk();
         applyFilters();
       });
     }

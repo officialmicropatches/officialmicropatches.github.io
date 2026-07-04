@@ -21,8 +21,8 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260534">
-  <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
+<link rel="stylesheet" href="assets/css/style.css?v=20260704">
+  <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260704">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
   <style>
     /* Custom-order success panel (scoped here to avoid a site-wide style.css cache bump) */
@@ -375,7 +375,19 @@ Referrer-Policy: strict-origin-when-cross-origin -->
   </div>
 </section>
 
-<a href="#request" class="co-sticky">Start Your Request <span aria-hidden="true">→</span></a>
+<a href="#request" class="co-sticky" id="co-sticky">Start Your Request <span aria-hidden="true">→</span></a>
+<script>
+/* Hide the sticky CTA while the request form it points to is on screen —
+   otherwise it covers the form's own submit button on phones. */
+(function () {
+  var bar = document.getElementById('co-sticky');
+  var target = document.getElementById('request');
+  if (!bar || !target || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (entries) {
+    bar.classList.toggle('is-hidden', entries[0].isIntersecting);
+  }, { rootMargin: '0px 0px -20% 0px' }).observe(target);
+})();
+</script>
 
 <!-- ===== SCRIPTS ===== -->
 <script src="assets/js/shopify-config.js?v=20260520"></script>
@@ -515,7 +527,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
   });
 })();
 </script>
-  <script src="assets/js/site.js?v=20260535"></script>
+  <script src="assets/js/site.js?v=20260704"></script>
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 </body>

@@ -48,22 +48,20 @@ robots.txt, favicon.svg
 listings.json           static product fallback (NO variant IDs)
 reviews.json
 assets/css/
-  style.css             PRIMARY stylesheet (~1500 lines, the new design system)
+  style.css             PRIMARY stylesheet (the design system)
   audit-fixes.css       small runtime/layout patches
-  hero-carousel.css     homepage hero carousel
-  shopify-forms-theme.css
 assets/js/
   site.js               shared chrome (header/footer/cart drawer) + local cart + checkout
   shopify-config.js     window.SHOPIFY: domain, productUrl, cartUrl, loadCatalog, buildCheckoutUrl
-  shopify-loader.js     shop.html catalog: fetches Shopify products.json, builds cards, filters
-  main.js               legacy multi-purpose module (still used on some pages; a competing renderer)
-  main-original.js      DEAD. not referenced. ignore/delete.
-  firebase.js           product-card hover styles + custom-order photo helpers
-  hero-carousel.js      homepage hero carousel
+  shopify-loader.js     shop.html catalog: Shopify products.json (listings.json fallback),
+                        cards, filters, 24-at-a-time "Show more" chunking
+  product-carousel.js   reusable image carousel (homepage hero)
   image-slot.js         <image-slot> custom element placeholder
   audit-fixes.js        RUNTIME BAND-AID layer (see §7)
-assets/img/
+assets/img/             favicon.svg, nav-logo.svg, og-cover.jpg (1200×630 share image)
 ```
+Deleted 2026-07 (dead, unreferenced): main.js, main-original.js, firebase.js,
+hero-carousel.js/.css, shopify-forms-theme.css, shopify-products-data.js.
 
 ## 4. Two design systems (important)
 
@@ -132,19 +130,18 @@ That's fine now — variants resolve from the live catalog at checkout.
 ## 7. audit-fixes.js — the band-aid layer (handle with care)
 
 Loaded on every page (`defer`). It mutates the DOM at runtime:
-- Rewrites canonical/og links github.io → .com (source is now also fixed;
-  this is redundant but harmless).
+- Adds icon / og:image fallbacks if a page is missing them (all pages now
+  carry them in source, so this is only a safety net).
 - Adds `is-scrolled` class to header on scroll.
-- On `custom.html` ONLY: hides the legacy Shopify-form widgets and
-  **injects a replacement custom-order form** (`.patch-form-wrap`) after the
-  "Send Your Request" heading. Submits via Zapier webhook **or** falls back
-  to `mailto:` (the webhook URL is the placeholder
-  `REPLACE_ME_AFTER_ZAPIER_SETUP` — real submissions are not wired yet).
-- Removes duplicate `<footer>` if more than one exists.
+- Keys the shop filter-panel visibility off `body[data-active-tab]`.
+- Removes duplicate `<footer>` if more than one exists (keeps the LAST,
+  i.e. the site.js-injected one).
 
-Known pitfall (fixed): its orphan-`input[type=file]` cleanup used to hide the
-file input's closest `<section>`, which nuked the entire custom-order form
-section. It is now scoped to `#patch-photo-wrap` only. Do not widen it again.
+2026-07: the matching CSS rule in audit-fixes.css that hid LATER duplicate
+footers was removed — it contradicted the JS and hid the injected (current)
+footer on shop.html while keeping a stale hardcoded one. shop.html's
+hardcoded footer is deleted; site.js is the single source of footer markup.
+Do not add page-local footers again.
 
 ## 8. Per-page JS load order / conflicts
 
@@ -152,11 +149,14 @@ section. It is now scoped to `#patch-photo-wrap` only. Do not widen it again.
   featured-grid renderer (its own `.card` template using `listings.json`/live
   snapshot). Clean.
 - `shop.html`: shopify-config → shopify-loader → site.js. `shopify-loader`
-  fetches live products, renders the grid into `.product-grid`, and runs
+  fetches live products (falls back to listings.json; shows an honest
+  "catalog unavailable" state if both fail), renders the grid into
+  `.product-grid` 24 cards at a time ("Show more" button), and runs
   `setupFilters()` (tabs `[data-tab]`, pills `[data-shop-filter]`, search).
-  `main.js` was REMOVED from shop (it was a competing renderer + duplicate
-  cart). The State `<select>` filter is inert by design (cards have empty
-  `data-state`) — acceptable; hide it if undesired.
+  The State `<select>` is `hidden` in markup until every Shopify product
+  carries a `state: XX` tag — title-based inference silently hid valid
+  products. Scarcity badge renders only at qty ≤ 3 (from inventory.json);
+  there is deliberately no per-card "Ready To Ship" badge.
 - `product.html`: image-slot, shopify-config, site.js. Loads product by
   `?handle=` from `listings.json`. Add-to-cart via `window.MP.addToCart`.
 - `custom.html`: image-slot, shopify-config, site.js, Shopify forms script,
@@ -181,9 +181,9 @@ Internal: `internal/*`, `launch-checklist.html` (uses inline `<style>`).
 
 ## 10. Known tech debt / open items
 
-1. **Custom-order backend:** `audit-fixes.js` ZAPIER_WEBHOOK_URL is a
-   placeholder; submissions only open the user's email client. Wire a real
-   endpoint (Formspree/Zapier/Cloudflare) for true submission.
+1. **Forms are on Web3Forms** (custom order, contact, footer newsletter —
+   same public access key, Cloudinary for the custom-order photo). The old
+   mailto: contact flow and Firebase newsletter hack are gone.
 2. **`product.html`** reads `listings.json` (can be stale; no live stock).
    Consider fetching live Shopify product like the hero carousel does.
 3. **Two design systems** still coexist; the dropped pages and parts of
@@ -191,7 +191,7 @@ Internal: `internal/*`, `launch-checklist.html` (uses inline `<style>`).
 4. **`audit-fixes.js`** does work that should live in source HTML/CSS
    (canonical rewrite is now redundant; the injected custom form should
    become real markup + styled in `style.css`).
-5. **`main-original.js`** dead code.
+5. ~~`main-original.js` dead code~~ — all dead JS/CSS deleted 2026-07.
 6. Some Shopify product **tags/product-types** still contain
    "embroidered"/"45x45mm"/"Micro Patch" wording (descriptions were already
    rewritten via the Shopify Admin API; tags/types were intentionally left).

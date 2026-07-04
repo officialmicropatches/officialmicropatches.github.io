@@ -108,7 +108,7 @@
   function renderCartDrawer(target) {
     target.outerHTML = `
 <div class="cart-drawer-bg" data-cart-bg></div>
-<aside class="cart-drawer" data-cart-drawer aria-label="Shopping cart">
+<aside class="cart-drawer" data-cart-drawer role="dialog" aria-modal="true" aria-label="Shopping cart">
   <div class="cart-drawer__head">
     <h3>Your Cart</h3>
     <button class="cart-drawer__close" data-cart-close aria-label="Close cart">Close ×</button>
@@ -139,14 +139,13 @@
     try { wireNewsletter(); } catch (e) {}
   }
 
-  // Footer email capture — writes to the same Firebase the custom form uses
-  // (submissions collection, type:"subscribe"). Self-contained REST, no SDK.
+  // Footer email capture — Web3Forms (same endpoint as the custom-order
+  // and contact forms). Replaces the old Firebase anonymous-auth hack,
+  // which silently died if anonymous sign-in was ever disabled.
   function wireNewsletter() {
     var form = document.querySelector('form[data-newsletter]');
     if (!form || form.dataset.wired) return;
     form.dataset.wired = '1';
-    var KEY = 'AIzaSyBJD5r0KmlqygWAa0rT17dWplXQQ96IeW4';
-    var PROJ = 'patch-559c8';
     var msg = form.querySelector('[data-newsletter-msg]');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -154,26 +153,18 @@
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = 'Enter a valid email.'; return; }
       var btn = form.querySelector('button');
       btn.disabled = true; msg.textContent = 'Joining…';
-      fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + KEY, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ returnSecureToken: true })
+      var data = new FormData();
+      data.set('access_key', '9ac9af5f-c015-4eb0-a4e5-62fa3c855b44');
+      data.set('subject', '[Newsletter] New signup — MicroPatches');
+      data.set('from_name', 'MicroPatches Website');
+      data.set('email', email);
+      data.set('Source', location.host + location.pathname);
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST', body: data, headers: { Accept: 'application/json' }
       })
         .then(function (r) { return r.json(); })
-        .then(function (a) {
-          if (!a.idToken) throw new Error('auth');
-          return fetch('https://firestore.googleapis.com/v1/projects/' + PROJ + '/databases/(default)/documents/submissions', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + a.idToken, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fields: {
-              type: { stringValue: 'subscribe' },
-              email: { stringValue: email },
-              submittedAt: { stringValue: new Date().toISOString() },
-              source: { stringValue: location.host + location.pathname }
-            } })
-          });
-        })
-        .then(function (r) {
-          if (!r.ok) throw new Error('save');
+        .then(function (d) {
+          if (!d || !d.success) throw new Error('save');
           msg.style.color = 'var(--accent)';
           msg.textContent = '✓ You’re on the list — thanks!';
           form.email.value = '';
@@ -290,15 +281,20 @@
     }));
   }
 
+  let cartReturnFocus = null;
   function openCart() {
+    cartReturnFocus = document.activeElement;
     document.querySelector('[data-cart-drawer]')?.classList.add('open');
     document.querySelector('[data-cart-bg]')?.classList.add('open');
     document.body.style.overflow = 'hidden';
+    document.querySelector('[data-cart-close]')?.focus();
   }
   function closeCart() {
     document.querySelector('[data-cart-drawer]')?.classList.remove('open');
     document.querySelector('[data-cart-bg]')?.classList.remove('open');
     document.body.style.overflow = '';
+    if (cartReturnFocus && cartReturnFocus.focus) cartReturnFocus.focus();
+    cartReturnFocus = null;
   }
 
   // ============================================================

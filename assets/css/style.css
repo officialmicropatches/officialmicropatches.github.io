@@ -1006,7 +1006,9 @@ img { max-width: 100%; display: block; }
 .tag.dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
 .toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px);
+  /* Top-center: never covers the cart checkout button or sticky CTAs */
+  position: fixed; top: 76px; left: 50%; transform: translate(-50%, -16px);
+  max-width: calc(100vw - 32px);
   background: var(--bg-3); color: var(--ink); border: 1px solid var(--line-2);
   padding: 12px 18px;
   border-radius: 2px;
@@ -2470,3 +2472,91 @@ a.pcar__slide { display: block; }
 
 /* No horizontal overflow safety net */
 .mhero, .msection, .mstrip, .mfinal { overflow-x: clip; }
+
+/* =====================================================================
+   2026-07 UI audit fixes
+   ===================================================================== */
+
+/* ---- Contact page: proper responsive layout (replaces span-based
+   grid-12 that overflowed to 470px on 390px phones) ---- */
+.contact-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 880px) {
+  .contact-grid { grid-template-columns: 5fr 7fr; gap: 32px; align-items: start; }
+}
+.contact-aside { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.contact-card {
+  display: block; padding: 24px 22px;
+  border: 1px solid var(--line);
+  transition: border-color 0.15s ease;
+  min-width: 0;
+}
+a.contact-card:hover { border-color: var(--accent); }
+.contact-card--tint { background: var(--bg-2); }
+.contact-card__email {
+  font-family: var(--f-display); font-weight: 700;
+  font-size: clamp(16px, 4.4vw, 21px);
+  margin: 12px 0 6px;
+  overflow-wrap: anywhere;
+}
+.contact-form { display: grid; gap: 20px; min-width: 0; }
+.contact-form__pair { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 560px) { .contact-form__pair { grid-template-columns: 1fr 1fr; } }
+
+/* ---- PDP: tame the display title on phones ---- */
+@media (max-width: 880px) {
+  .pdp__title { font-size: clamp(30px, 8.6vw, 48px); }
+}
+
+/* ---- PDP: sticky mobile buy bar (shown once the main CTA scrolls away) ---- */
+.pdp-sticky {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: none; align-items: center; gap: 14px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line-2);
+  transform: translateY(110%); transition: transform 0.25s ease;
+}
+.pdp-sticky.is-on { transform: translateY(0); }
+.pdp-sticky__price { font-family: var(--f-display); font-weight: 800; font-size: 22px; white-space: nowrap; }
+.pdp-sticky__price .cur { font-size: 12px; color: var(--ink-dim); vertical-align: top; margin-right: 2px; }
+.pdp-sticky .btn { flex: 1; }
+@media (max-width: 880px) { .pdp-sticky { display: flex; } }
+@media (prefers-reduced-motion: reduce) { .pdp-sticky { transition: none; } }
+
+/* ---- Accordion +/− marker that actually toggles ---- */
+.acc-ico::before { content: "+"; }
+details[open] > summary .acc-ico::before { content: "−"; }
+
+/* ---- Shop: single scrollable tab row on phones (was 3 wrapped rows) ---- */
+@media (max-width: 759px) {
+  .shop-tabs {
+    flex-wrap: nowrap; justify-content: flex-start;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .shop-tabs::-webkit-scrollbar { display: none; }
+}
+
+/* ---- Shop: tighter page hero on phones so products surface sooner ---- */
+@media (max-width: 560px) {
+  .page-hero { padding: 22px 0 18px; }
+  .page-hero h1 { font-size: clamp(34px, 10vw, 52px); margin: 6px 0 16px; }
+}
+
+/* ---- Shop: "Show more" chunking control ---- */
+.shop-more-wrap { text-align: center; padding: 26px 0 0; }
+.shop-more-wrap .btn { min-width: 220px; }
+
+/* ---- Buying-option cards: stack on very narrow phones ---- */
+@media (max-width: 419px) {
+  .mbuy { grid-template-columns: 1fr; }
+}
+
+/* ---- Custom page: match sitewide all-caps display headlines ---- */
+.co-hero__title { text-transform: uppercase; }
+
+/* ---- Custom page: sticky CTA hides while the request form is on screen ---- */
+.co-sticky { transition: transform 0.25s ease; }
+.co-sticky.is-hidden { transform: translateY(160%); }
+@media (prefers-reduced-motion: reduce) { .co-sticky { transition: none; } }

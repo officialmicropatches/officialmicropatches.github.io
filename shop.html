@@ -16,8 +16,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260534">
-  <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260704">
+  <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260704">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 </head>
 <body data-page="shop">
@@ -36,22 +36,26 @@
     </div>
   </section>
 
-  <!-- ===== SHOP TABS ===== -->
+  <!-- ===== SHOP TABS (filter buttons — not ARIA tabs; no tabpanel exists) ===== -->
   <div class="shop-tabs-wrap">
-    <div class="shop-tabs" role="tablist">
-      <button class="shop-tab active" data-tab="all" role="tab">All</button>
-      <button class="shop-tab" data-tab="law-enforcement" role="tab" id="law-enforcement">Law Enforcement</button>
-      <button class="shop-tab" data-tab="corrections" role="tab" id="corrections">Corrections</button>
-      <button class="shop-tab" data-tab="military" role="tab" id="military">Military</button>
-      <button class="shop-tab" data-tab="fire" role="tab" id="fire">Fire Departments</button>
-      <button class="shop-tab" data-tab="ems" role="tab" id="ems">EMS</button>
-      <button class="shop-tab" data-tab="pink-patch" role="tab" id="pink-patch">Pink Patch</button>
+    <div class="shop-tabs" aria-label="Product categories">
+      <button class="shop-tab active" data-tab="all" aria-pressed="true">All</button>
+      <button class="shop-tab" data-tab="law-enforcement" aria-pressed="false" id="law-enforcement">Law Enforcement</button>
+      <button class="shop-tab" data-tab="corrections" aria-pressed="false" id="corrections">Corrections</button>
+      <button class="shop-tab" data-tab="military" aria-pressed="false" id="military">Military</button>
+      <button class="shop-tab" data-tab="fire" aria-pressed="false" id="fire">Fire Departments</button>
+      <button class="shop-tab" data-tab="ems" aria-pressed="false" id="ems">EMS</button>
+      <button class="shop-tab" data-tab="pink-patch" aria-pressed="false" id="pink-patch">Pink Patch</button>
     </div>
   </div>
 
   <div class="shop-filter-panel" aria-label="Shop subfilters">
     <div class="shop-filter-group" data-filter-for="law-enforcement">
-      <label class="shop-filter-select">
+      <!-- State filter hidden until every Shopify product carries a
+           "state: XX" tag — title-based inference silently hides valid
+           products (e.g. "Goodyear Police Department" has no state in
+           its title, so it vanished under any state selection). -->
+      <label class="shop-filter-select" hidden>
         <span>State</span>
         <select data-shop-filter="state">
           <option value="all">All States</option>
@@ -79,18 +83,18 @@
         </select>
       </label>
       <div class="shop-filter-pills" aria-label="Law enforcement agency type">
-        <button class="shop-subfilter active" data-shop-filter="type" data-filter-value="all">All Law</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="police">Police Dept.</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="sheriff">Sheriff's Office</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="state">State Troopers / DPS</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="tribal">Tribal Agencies</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="university">University PD</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="federal">Federal Agencies</button>
+        <button class="shop-subfilter active" aria-pressed="true" data-shop-filter="type" data-filter-value="all">All Law</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="police">Police Dept.</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="sheriff">Sheriff's Office</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="state">State Troopers / DPS</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="tribal">Tribal Agencies</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="university">University PD</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="federal">Federal Agencies</button>
       </div>
     </div>
 
     <div class="shop-filter-group" data-filter-for="corrections">
-      <label class="shop-filter-select">
+      <label class="shop-filter-select" hidden>
         <span>State</span>
         <select data-shop-filter="state">
           <option value="all">All States</option>
@@ -101,7 +105,7 @@
     </div>
 
     <div class="shop-filter-group" data-filter-for="fire">
-      <label class="shop-filter-select">
+      <label class="shop-filter-select" hidden>
         <span>State</span>
         <select data-shop-filter="state">
           <option value="all">All States</option>
@@ -112,20 +116,20 @@
 
     <div class="shop-filter-group" data-filter-for="military">
       <div class="shop-filter-pills" aria-label="Military branch">
-        <button class="shop-subfilter active" data-shop-filter="branch" data-filter-value="all">All Military</button>
-        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="army">Army</button>
-        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="marines">Marine Corps</button>
-        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="navy">Navy</button>
-        <button class="shop-subfilter" data-shop-filter="branch" data-filter-value="air-force">Air Force</button>
+        <button class="shop-subfilter active" aria-pressed="true" data-shop-filter="branch" data-filter-value="all">All Military</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="branch" data-filter-value="army">Army</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="branch" data-filter-value="marines">Marine Corps</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="branch" data-filter-value="navy">Navy</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="branch" data-filter-value="air-force">Air Force</button>
       </div>
     </div>
 
     <div class="shop-filter-group" data-filter-for="ems">
       <div class="shop-filter-pills" aria-label="EMS role">
-        <button class="shop-subfilter active" data-shop-filter="type" data-filter-value="all">All EMS</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="emt">EMT</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="paramedic">Paramedic</button>
-        <button class="shop-subfilter" data-shop-filter="type" data-filter-value="cct-rn">CCT-RN</button>
+        <button class="shop-subfilter active" aria-pressed="true" data-shop-filter="type" data-filter-value="all">All EMS</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="emt">EMT</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="paramedic">Paramedic</button>
+        <button class="shop-subfilter" aria-pressed="false" data-shop-filter="type" data-filter-value="cct-rn">CCT-RN</button>
       </div>
     </div>
   </div>
@@ -137,59 +141,16 @@
       <div class="product-grid">
         <p class="shop-loading" id="shop-loading">Loading the latest catalog…</p>
       </div>
-      <p class="shop-empty-state" id="shop-empty" hidden>No keychains match these filters. Try another state or category — or <a href="custom.html">request a custom build</a>.</p>
+      <p class="shop-empty-state" id="shop-empty" hidden>No keychains match these filters. Try another category — or <a href="custom.html">request a custom build</a>.</p>
+      <div class="shop-more-wrap" id="shop-more-wrap" hidden>
+        <button type="button" class="btn btn--ghost btn--lg" id="shop-more"><span class="label">Show more</span></button>
+      </div>
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-logo" style="margin-bottom:8px"><span class="gold">MICRO</span><span class="white"> PATCHES</span></div>
-          <p>Handcrafted for those who serve. USA Made.</p>
-          <div class="footer-social">
-            <a href="https://www.instagram.com/micropatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg></a>
-            <a href="https://www.tiktok.com/@micro.patches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.5a4.85 4.85 0 01-1-.81z"/></svg></a>
-            <a href="https://www.youtube.com/@MicroPatches" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg></a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Shop</h4>
-          <ul>
-            <li><a href="shop.html#law-enforcement">Law Enforcement</a></li>
-            <li><a href="shop.html#corrections">Corrections</a></li>
-            <li><a href="shop.html#military">Military</a></li>
-            <li><a href="shop.html#fire">Fire Departments</a></li>
-            <li><a href="shop.html#ems">EMS</a></li>
-            <li><a href="shop.html#pink-patch">Pink Patch</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Services</h4>
-          <ul>
-            <li><a href="custom.html">Custom Orders</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Connect</h4>
-          <ul>
-            <li><a href="contact.html">Contact Us</a></li>
-            <li><a href="mailto:OfficialMicroPatches@gmail.com">OfficialMicroPatches@gmail.com</a></li>
-            <li><a href="https://etsy.com/shop/MicroPatches" target="_blank" rel="noopener noreferrer">Also on Etsy</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 MicroPatches. All rights reserved. <span id="admin-trigger" style="cursor:default;user-select:none;">USA</span> Made.</p>
-        <span class="pink-partner-badge"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1C3.8 1 2 2.8 2 5c0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z"/></svg> Pink Patch Project Partner</span>
-      </div>
-    </div>
-  </footer>
-
   <script src="assets/js/shopify-config.js?v=20260520"></script>
-  <script src="assets/js/shopify-loader.js?v=20260534"></script>
-  <script src="assets/js/site.js?v=20260535"></script>
+  <script src="assets/js/shopify-loader.js?v=20260704"></script>
+  <script src="assets/js/site.js?v=20260704"></script>
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 </body>

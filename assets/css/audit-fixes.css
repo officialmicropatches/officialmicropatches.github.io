@@ -53,4 +53,6 @@ body[data-active-tab="pink-patch"] .shop-filter-panel { display: none; }
   transform: scale(0.92);
   transition: transform 200ms ease;
 }
-body > footer.site-footer ~ footer.site-footer { display: none; }
+/* (removed) the "hide later duplicate footers" rule — it hid the injected
+   shared footer on shop.html and kept a stale hardcoded one. The hardcoded
+   footer is gone from source; site.js is the single footer source now. */

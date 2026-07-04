@@ -6,12 +6,15 @@
 <title id="page-title">MicroKeychain — MicroPatches</title>
 <meta id="page-desc" name="description" content="Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format." />
 <link id="page-canonical" rel="canonical" href="https://officialmicropatches.com/product.html" />
+<meta property="og:image" content="https://officialmicropatches.com/assets/img/og-cover.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <meta property="og:type" content="product" />
 <meta name="theme-color" content="#0e0c0a" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260534" />
+<link rel="stylesheet" href="assets/css/style.css?v=20260704" />
 </head>
 <body data-page="shop">
 
@@ -51,11 +54,11 @@
           <div><dt>Stock</dt><dd id="pdp-stock">—</dd></div>
         </dl>
 
-        <div class="pdp__cta">
+        <div class="pdp__cta" id="pdp-cta">
           <div class="qty-stepper" role="group" aria-label="Quantity">
-            <button type="button" onclick="adjustQty(-1)">−</button>
-            <input id="qty" type="text" value="1" inputmode="numeric" />
-            <button type="button" onclick="adjustQty(1)">+</button>
+            <button type="button" onclick="adjustQty(-1)" aria-label="Decrease quantity">−</button>
+            <input id="qty" type="text" value="1" inputmode="numeric" aria-label="Quantity" />
+            <button type="button" onclick="adjustQty(1)" aria-label="Increase quantity">+</button>
           </div>
           <button class="btn btn--primary btn--lg" id="add-btn">
             <span class="label">Add to Cart</span>
@@ -76,13 +79,13 @@
         <div style="margin-top: 40px; border-top: 1px solid var(--line);">
           <details style="border-bottom: 1px solid var(--line);" open>
             <summary style="cursor:pointer; padding: 20px 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between;">
-              <span>Description</span><span>+</span>
+              <span>Description</span><span class="acc-ico" aria-hidden="true"></span>
             </summary>
             <div id="pdp-body" style="padding: 0 0 24px; color: var(--ink-dim); line-height: 1.65; font-size: 14.5px;"></div>
           </details>
           <details style="border-bottom: 1px solid var(--line);">
             <summary style="cursor:pointer; padding: 20px 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between;">
-              <span>Details &amp; Craftsmanship</span><span>+</span>
+              <span>Details &amp; Craftsmanship</span><span class="acc-ico" aria-hidden="true"></span>
             </summary>
             <div style="padding: 0 0 24px; color: var(--ink-dim); line-height: 1.6; font-size: 14.5px;">
               Each MicroPatch is hand-assembled in Phoenix. The base is 3D-printed for raised texture and crisp edges; the design on top is premium UV-cured ink for sharp full-color detail. The ring is solid stainless. Built to replicate the look and feel of a real patch in a compact collectible format.
@@ -90,7 +93,7 @@
           </details>
           <details style="border-bottom: 1px solid var(--line);">
             <summary style="cursor:pointer; padding: 20px 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between;">
-              <span>Shipping &amp; Returns</span><span>+</span>
+              <span>Shipping &amp; Returns</span><span class="acc-ico" aria-hidden="true"></span>
             </summary>
             <div style="padding: 0 0 24px; color: var(--ink-dim); line-height: 1.6; font-size: 14.5px;">
               Ships in 5–9 business days from Phoenix, AZ. Defects replaced free within 60 days — see the <a href="refunds.html" style="color:var(--ink);">refund policy</a> and <a href="shipping.html" style="color:var(--ink);">shipping policy</a> for details.
@@ -106,9 +109,18 @@
 <div data-site-footer></div>
 <div data-cart-drawer-mount></div>
 
+<!-- Mobile sticky buy bar — appears once the main Add to Cart scrolls away -->
+<div class="pdp-sticky" id="pdp-sticky" aria-hidden="true">
+  <span class="pdp-sticky__price"><span class="cur">$</span><span id="pdp-sticky-price">13.99</span></span>
+  <button class="btn btn--primary" id="pdp-sticky-add">
+    <span class="label">Add to Cart</span>
+    <span class="arr">→</span>
+  </button>
+</div>
+
 <script src="assets/js/image-slot.js?v=20260520"></script>
 <script src="assets/js/shopify-config.js?v=20260520"></script>
-<script src="assets/js/site.js?v=20260535"></script>
+<script src="assets/js/site.js?v=20260704"></script>
 <script id="pdp-jsonld" type="application/ld+json"></script>
 <script>
 function adjustQty(d) {
@@ -161,8 +173,14 @@ function adjustQty(d) {
   if (maxQty === 0) inStock = false;
   const LOW_STOCK = 10;
 
+  // Same short-title logic as the shop/home cards: drop the boilerplate
+  // suffix words so the display H1 doesn't run five lines on phones.
   const cleaned = (p.title || '').replace(/\s*\|\s*$/, '').trim();
-  const main = cleaned.split(/\s*\|\s*/)[0] || cleaned;
+  let main = cleaned.split(/\s*\|\s*/)[0] || cleaned;
+  for (let i = 0; i < 6; i++) {
+    main = main.replace(/[\s\-–—]*\b(Collector|Patch|Keychain|Magnet|Pin|Charm|Replica|3D Printed|45mm)\b\s*$/i, '').trim();
+  }
+  if (!main) main = cleaned.split(/\s*\|\s*/)[0] || cleaned;
   const stripHtml = (s) => (s || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
   document.title = main + ' — MicroPatches';
@@ -196,6 +214,27 @@ function adjustQty(d) {
   if (!inStock && addBtn) {
     addBtn.disabled = true;
     addBtn.textContent = 'Sold out';
+  }
+
+  // Mobile sticky buy bar: mirror price, proxy the add button, and only
+  // show it while the main CTA is out of view.
+  const stickyBar = document.getElementById('pdp-sticky');
+  const stickyAdd = document.getElementById('pdp-sticky-add');
+  document.getElementById('pdp-sticky-price').textContent = (p.price || 13.99).toFixed(2);
+  if (!inStock && stickyAdd) {
+    stickyAdd.disabled = true;
+    stickyAdd.querySelector('.label').textContent = 'Sold out';
+  }
+  if (stickyAdd) {
+    stickyAdd.addEventListener('click', () => document.getElementById('add-btn').click());
+  }
+  const ctaEl = document.getElementById('pdp-cta');
+  if (stickyBar && ctaEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      const past = !entries[0].isIntersecting;
+      stickyBar.classList.toggle('is-on', past);
+      stickyBar.setAttribute('aria-hidden', past ? 'false' : 'true');
+    }, { rootMargin: '-40px 0px 0px 0px' }).observe(ctaEl);
   }
   document.getElementById('pdp-body').innerHTML = (p.body || '').replace(/<script[\s\S]*?<\/script>/g, '') || 'Premium MicroKeychain — UV-cured ink on a 3D-printed base, with raised texture detail. Designed to replicate the look and feel of a real patch in a compact collectible format.';
 
@@ -235,7 +274,10 @@ function adjustQty(d) {
     a.hidden = false;
   }
 
-  // Reviews (shared social proof from reviews.json) + JSON-LD
+  // Product JSON-LD. Deliberately NO aggregateRating/review here: the
+  // reviews.json pool is sitewide, and Google requires review markup to
+  // be about the specific product — duplicating one rating across every
+  // PDP risks a rich-results penalty. Reviews still render on-page.
   const ld = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -259,14 +301,6 @@ function adjustQty(d) {
     const total = Number(rv.total) || (rv.reviews || []).length;
     const list = (rv.reviews || []).filter(r => r && r.quote).slice(0, 5);
     const starStr = n => '★★★★★'.slice(0, Math.round(n)) + '☆☆☆☆☆'.slice(0, 5 - Math.round(n));
-
-    ld.aggregateRating = { "@type": "AggregateRating", "ratingValue": overall.toFixed(1), "reviewCount": String(total) };
-    ld.review = list.map(r => ({
-      "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": String(r.stars || 5), "bestRating": "5" },
-      "author": { "@type": "Person", "name": r.name || "Verified buyer" },
-      "reviewBody": r.quote
-    }));
 
     const wrap = document.getElementById('pdp-reviews');
     if (wrap && list.length) {
