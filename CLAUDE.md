@@ -6,6 +6,25 @@ conventions discovered through a complete site audit.
 
 ---
 
+## 0. ⚠️ HOSTING CHANGED (verified 2026-07-06): the live site is Shopify, NOT this repo
+
+`officialmicropatches.com` is now the **primary domain of the Shopify store**
+(`micropatches.myshopify.com`). What buyers see at that domain is the Shopify
+**theme**, not the HTML in this repository. Editing files here does NOT change
+the live site.
+
+- Live homepage sections (hero, "Shop by Category" tiles, reviews, etc.) are
+  `custom-liquid` sections in the theme's `templates/index.json`; the category
+  tiles render `snippets/mp-category-tiles.liquid` and each tile links to a
+  Shopify **collection** (`/collections/<handle>`).
+- Theme-file writes to the **published** theme are blocked for agents: duplicate
+  the live theme via the Admin API (`themeDuplicate`), edit the draft with
+  `themeFilesUpsert`, and have the merchant publish it from Shopify admin
+  (Online Store → Themes).
+- The sections below describe this repo's static site, which the domain no
+  longer serves. Treat them as history/reference until the repo's role is
+  re-decided (it may return as a landing page or be retired).
+
 ## 1. What this is
 
 - **Static marketing + storefront site** for *MicroPatches* (3D-printed,
