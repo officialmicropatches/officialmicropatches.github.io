@@ -216,11 +216,44 @@
     writeCart(cart);
   }
 
+  let lastBadgeCount = null;
   function updateBadge() {
     const count = readCart().reduce((s, i) => s + i.qty, 0);
+    const grew = lastBadgeCount !== null && count > lastBadgeCount;
     document.querySelectorAll('[data-cart-count]').forEach(el => {
       el.textContent = count;
+      if (grew) {
+        el.classList.remove('bump');
+        void el.offsetWidth; // restart the animation
+        el.classList.add('bump');
+      }
     });
+    lastBadgeCount = count;
+  }
+
+  // Gold dot that arcs from the pressed add button to the cart button
+  function flyToCart(fromEl) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const target = document.querySelector('.cart-btn');
+    if (!fromEl || !target) return;
+    const a = fromEl.getBoundingClientRect();
+    const b = target.getBoundingClientRect();
+    if (!a.width || !b.width) return;
+    const dot = document.createElement('span');
+    dot.className = 'fly-dot';
+    dot.style.left = (a.left + a.width / 2) + 'px';
+    dot.style.top = (a.top + a.height / 2) + 'px';
+    document.body.appendChild(dot);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
+        const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+        dot.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(0.25)';
+        dot.style.opacity = '0.15';
+      });
+    });
+    dot.addEventListener('transitionend', () => dot.remove());
+    setTimeout(() => dot.remove(), 900);
   }
 
   function escapeHtml(s) {
@@ -384,6 +417,42 @@
   }
 
   // ============================================================
+  // Scroll reveals
+  // ------------------------------------------------------------
+  // Classes are added here (not in HTML) so content stays visible
+  // when JS is unavailable. Staggers siblings within one parent.
+  // ============================================================
+  const REVEAL_SELECTORS = [
+    '.msec__head', '.msec__more', '.mbuy__card', '.mstory',
+    '.mfinal__title', '.mfinal__sub',
+    '.section-head', '.about-cell', '.stats__item', '.path', '.notify',
+    '.faq-item', '.co-card', '.co-pricing', '.co-step', '.pdp__gallery',
+  ];
+
+  function wireReveals() {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const els = document.querySelectorAll(REVEAL_SELECTORS.join(','));
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('is-in');
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    els.forEach((el) => {
+      el.classList.add('reveal');
+      const sibs = el.parentElement
+        ? [...el.parentElement.children].filter(c => c.classList.contains('reveal'))
+        : [];
+      const idx = Math.max(0, sibs.indexOf(el));
+      el.style.setProperty('--rv-d', Math.min(idx * 70, 350) + 'ms');
+      io.observe(el);
+    });
+  }
+
+  // ============================================================
   // Init
   // ============================================================
   document.addEventListener('DOMContentLoaded', () => {
@@ -391,6 +460,7 @@
     wireMobileMenu();
     renderCart();
     updateBadge();
+    wireReveals();
 
     document.querySelectorAll('[data-cart-open]').forEach(el => el.addEventListener('click', (e) => { e.preventDefault(); openCart(); }));
     document.querySelectorAll('[data-cart-close]').forEach(el => el.addEventListener('click', closeCart));
@@ -414,6 +484,7 @@
         variantId: d.variantId || '',
         image: d.image || '',
       });
+      flyToCart(btn);
       btn.classList.add('added');
       const label = btn.querySelector('.label');
       if (label) {
