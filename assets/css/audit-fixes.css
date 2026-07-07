@@ -43,7 +43,8 @@ body[data-active-tab="pink-patch"] .shop-filter-panel { display: none; }
 }
 .site-header.is-scrolled {
   padding-block: 6px;
-  background: rgba(10, 22, 51, 0.92);
+  /* Warm near-black to match the site palette (was a stray navy blue). */
+  background: rgba(14, 12, 10, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 2px 18px rgba(0, 0, 0, 0.3);
