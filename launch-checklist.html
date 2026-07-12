@@ -104,7 +104,8 @@
 
       <h2 class="section-head">2 · Shopify connection</h2>
       <div class="check-list">
-        <div class="check-row"><span class="mark partial" data-check="shop-domain">!</span><div><h4>SHOP_DOMAIN: <code>micropatches.myshopify.com</code></h4><p>Set in <code>assets/js/shopify-config.js?v=20260520</code>. Product page links and checkout route to the real Shopify storefront. <strong>Verify checkout end-to-end with a real test order before announcing launch.</strong></p></div></div>
+        <div class="check-row"><span class="mark partial" data-check="shop-domain">!</span><div><h4>SHOP_DOMAIN: <code>y1aqhh-dq.myshopify.com</code></h4><p>Set in <code>assets/js/shopify-config.js?v=20260712</code>. Corrected from the old <code>micropatches.myshopify.com</code> handle, which the Shopify Admin API no longer reports as this store's domain. Product page links and checkout route to the real Shopify storefront. <strong>Verify checkout end-to-end with a real test order before announcing launch.</strong></p></div></div>
+        <div class="check-row"><span class="mark partial" data-check="judgeme-token">!</span><div><h4>Judge.me public token</h4><p>Judge.me is installed on the store but has 0 reviews so far. The site's review widgets (<code>assets/js/judgeme-reviews.js</code>) need a Public Token pasted in to go live — Shopify Admin → Apps → Judge.me → Settings → Integrations → Developers → Public token. Until then, pages fall back to the static Etsy reviews in <code>reviews.json</code>.</p></div></div>
         <div class="check-row"><span class="mark done" data-check="storefront">✓</span><div><h4>Live product/inventory sync</h4><p>Storefront API token + <code>shopify-loader.js</code> wired up on the live site (per Claude Code handoff). Shop grid populates from Shopify, inventory is live.</p></div></div>
         <div class="check-row"><span class="mark todo">○</span><div><h4>Variant IDs for one-click cart checkout (optional polish)</h4><p>Current flow: each product card opens its Shopify product page directly. Multi-item cart-bridge requires variant IDs per product. Not blocking — just polish.</p></div></div>
         <div class="check-row"><span class="mark done">✓</span><div><h4>No fake checkout in code</h4><p>Removed the "Stripe checkout opens here" placeholder. Cart drawer is hidden site-wide now that SHOP_DOMAIN is set; every <em>Buy</em> button opens a real Shopify product page.</p></div></div>
@@ -169,7 +170,7 @@
 <div data-cart-drawer-mount></div>
 
 <script src="assets/js/image-slot.js?v=20260520"></script>
-<script src="assets/js/shopify-config.js?v=20260520"></script>
+<script src="assets/js/shopify-config.js?v=20260712"></script>
 <script src="assets/js/site.js?v=20260535"></script>
 <script>
 /* Live config self-check — flips the static marks in the Shopify section

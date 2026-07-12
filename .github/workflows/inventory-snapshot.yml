@@ -34,7 +34,7 @@ jobs:
         run: |
           set +e
           set -uo pipefail
-          STORE="https://micropatches.myshopify.com"
+          STORE="https://y1aqhh-dq.myshopify.com"
           UA="Mozilla/5.0 (compatible; MicroPatchesInventoryBot/1.0)"
 
           handles=""
