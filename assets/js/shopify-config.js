@@ -1,6 +1,6 @@
 // Shopify store configuration
 // site.js reads window.SHOPIFY for cart/checkout routing.
-const SHOP_DOMAIN = 'micropatches.myshopify.com';
+const SHOP_DOMAIN = 'y1aqhh-dq.myshopify.com';
 
 // Back-compat: some inline scripts read the bare domain.
 window.SHOP_DOMAIN = SHOP_DOMAIN;
@@ -38,7 +38,7 @@ window.SHOPIFY = {
             arr.forEach(function (pr) {
               var v = (pr.variants && pr.variants[0]) || {};
               if (pr.handle && v.id) {
-                map[pr.handle] = { variantId: v.id, price: v.price, available: v.available };
+                map[pr.handle] = { variantId: v.id, productId: pr.id, price: v.price, available: v.available };
               }
             });
             if (arr.length === 250) page(n + 1);

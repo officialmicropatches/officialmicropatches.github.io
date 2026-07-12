@@ -16,7 +16,7 @@ conventions discovered through a complete site audit.
 - **Hosting:** GitHub Pages, repo `officialmicropatches/officialmicropatches.github.io`.
 - **Custom domain:** `officialmicropatches.com` (see `CNAME`). All canonical
   URLs / og:url must use `officialmicropatches.com`, NOT the github.io domain.
-- **Commerce backend:** Shopify store `micropatches.myshopify.com`. Checkout
+- **Commerce backend:** Shopify store `y1aqhh-dq.myshopify.com`. Checkout
   is performed on Shopify via cart permalinks; this site only hosts a local
   preview cart and routes to Shopify.
 
@@ -116,7 +116,7 @@ Single unified flow — do not reintroduce per-page carts:
 2. `site.js` delegates clicks → `addToCart()` → localStorage cart. (There is
    NO "bounce to Shopify if no variant ID" anymore — that was the main bug.)
 3. `checkout()` calls `window.SHOPIFY.buildCheckoutUrl(cart)`:
-   - `loadCatalog()` fetches `https://micropatches.myshopify.com/products.json?limit=250&page=N`
+   - `loadCatalog()` fetches `https://y1aqhh-dq.myshopify.com/products.json?limit=250&page=N`
      (paginated, cached) → map of `handle → {variantId, price, available}`.
    - Resolves each cart item's variant ID (from the item or by handle) and
      returns ONE Shopify cart permalink `…/cart/<vid>:<qty>,<vid>:<qty>`.
@@ -195,6 +195,17 @@ Internal: `internal/*`, `launch-checklist.html` (uses inline `<style>`).
 6. Some Shopify product **tags/product-types** still contain
    "embroidered"/"45x45mm"/"Micro Patch" wording (descriptions were already
    rewritten via the Shopify Admin API; tags/types were intentionally left).
+7. **Judge.me public token not set.** Judge.me is installed on the Shopify
+   store (0 reviews so far) but this site is static, not the Shopify theme,
+   so its Liquid snippets don't apply. `assets/js/judgeme-reviews.js` calls
+   Judge.me's public Reviews API directly from the browser instead —
+   paste the Public Token into `PUBLIC_TOKEN` at the top of that file
+   (Shopify Admin → Apps → Judge.me → Settings → Integrations → Developers
+   → Public token). Until set, every page falls back to the static Etsy
+   reviews in `reviews.json`. Once real Judge.me reviews exist, verify the
+   `product_handle`/`external_id` query params against Judge.me's current
+   API docs — they were implemented from documentation search, not a live
+   response, since this store had no reviews to test against.
 
 ## 11. Conventions for changes
 
@@ -215,8 +226,8 @@ Internal: `internal/*`, `launch-checklist.html` (uses inline `<style>`).
 
 ## 12. Useful Shopify references
 
-- Storefront JSON: `https://micropatches.myshopify.com/products.json?limit=250&page=N`
-- Cart permalink: `https://micropatches.myshopify.com/cart/<variantId>:<qty>,...`
-- Product page: `https://micropatches.myshopify.com/products/<handle>`
+- Storefront JSON: `https://y1aqhh-dq.myshopify.com/products.json?limit=250&page=N`
+- Cart permalink: `https://y1aqhh-dq.myshopify.com/cart/<variantId>:<qty>,...`
+- Product page: `https://y1aqhh-dq.myshopify.com/products/<handle>`
 - Product descriptions are managed via the Shopify Admin API (not in this
   repo). The repo only routes buyers to Shopify.

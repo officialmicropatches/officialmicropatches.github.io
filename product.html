@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css?v=20260536" />
+<link rel="stylesheet" href="assets/css/reviews.css?v=20260712" />
 </head>
 <body data-page="shop">
 
@@ -107,7 +108,8 @@
 <div data-cart-drawer-mount></div>
 
 <script src="assets/js/image-slot.js?v=20260520"></script>
-<script src="assets/js/shopify-config.js?v=20260520"></script>
+<script src="assets/js/shopify-config.js?v=20260712"></script>
+<script src="assets/js/judgeme-reviews.js?v=20260712"></script>
 <script src="assets/js/site.js?v=20260535"></script>
 <script id="pdp-jsonld" type="application/ld+json"></script>
 <script>
@@ -124,12 +126,13 @@ function adjustQty(d) {
 
   async function loadProduct() {
     try {
-      const liveRes = await fetch('https://' + (window.SHOPIFY && window.SHOPIFY.SHOP_DOMAIN ? window.SHOPIFY.SHOP_DOMAIN : 'micropatches.myshopify.com') + '/products/' + encodeURIComponent(handle) + '.js');
+      const liveRes = await fetch('https://' + (window.SHOPIFY && window.SHOPIFY.SHOP_DOMAIN ? window.SHOPIFY.SHOP_DOMAIN : 'y1aqhh-dq.myshopify.com') + '/products/' + encodeURIComponent(handle) + '.js');
       if (liveRes.ok) {
         const lp = await liveRes.json();
         const v = (lp.variants && lp.variants[0]) || {};
         return {
           handle: lp.handle,
+          id: lp.id,
           title: lp.title,
           body: lp.description,
           price: Number(v.price || 0) / 100,
@@ -254,39 +257,16 @@ function adjustQty(d) {
   };
 
   try {
-    const rv = await (await fetch('reviews.json', { cache: 'no-store' })).json();
-    const overall = Number(rv.overall) || 5;
-    const total = Number(rv.total) || (rv.reviews || []).length;
-    const list = (rv.reviews || []).filter(r => r && r.quote).slice(0, 5);
-    const starStr = n => '★★★★★'.slice(0, Math.round(n)) + '☆☆☆☆☆'.slice(0, 5 - Math.round(n));
-
-    ld.aggregateRating = { "@type": "AggregateRating", "ratingValue": overall.toFixed(1), "reviewCount": String(total) };
-    ld.review = list.map(r => ({
-      "@type": "Review",
-      "reviewRating": { "@type": "Rating", "ratingValue": String(r.stars || 5), "bestRating": "5" },
-      "author": { "@type": "Person", "name": r.name || "Verified buyer" },
-      "reviewBody": r.quote
-    }));
-
     const wrap = document.getElementById('pdp-reviews');
-    if (wrap && list.length) {
-      wrap.innerHTML =
-        '<div style="border-top:1px solid var(--line);padding-top:22px">' +
-          '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px">' +
-            '<span style="color:var(--accent);font-size:18px;letter-spacing:2px">' + starStr(overall) + '</span>' +
-            '<strong style="font-family:var(--f-display);font-size:18px">' + overall.toFixed(1) + '</strong>' +
-            '<span style="font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim)">' +
-              total + ' reviews · ' + (rv.platform || 'Verified') + '</span>' +
-          '</div>' +
-          list.map(r =>
-            '<figure style="margin:0 0 14px;padding:14px 16px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px">' +
-              '<span style="color:var(--accent);font-size:12px;letter-spacing:2px">' + starStr(r.stars || 5) + '</span>' +
-              '<blockquote style="margin:8px 0 6px;color:var(--ink);font-size:14px;line-height:1.55">“' +
-                String(r.quote).replace(/[<>]/g, '') + '”</blockquote>' +
-              '<figcaption style="font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)">— ' +
-                String(r.name || 'Verified buyer').replace(/[<>]/g, '') + '</figcaption>' +
-            '</figure>').join('') +
-        '</div>';
+    const summary = window.MPReviews && await window.MPReviews.renderProductBlock(wrap, { productId: p.id, handle: p.handle });
+    if (summary && summary.total) {
+      ld.aggregateRating = { "@type": "AggregateRating", "ratingValue": summary.overall.toFixed(1), "reviewCount": String(summary.total) };
+      ld.review = summary.reviews.map(r => ({
+        "@type": "Review",
+        "reviewRating": { "@type": "Rating", "ratingValue": String(r.rating || 5), "bestRating": "5" },
+        "author": { "@type": "Person", "name": r.name || "Verified buyer" },
+        "reviewBody": r.body
+      }));
     }
   } catch (e) {}
 

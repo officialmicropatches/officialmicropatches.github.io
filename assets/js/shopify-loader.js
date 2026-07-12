@@ -11,7 +11,7 @@
 (function () {
   'use strict';
 
-  var STORE_URL = 'https://micropatches.myshopify.com';
+  var STORE_URL = 'https://y1aqhh-dq.myshopify.com';
 
   /**
    * Category / type are derived from the (standardized) product TITLE, not
@@ -136,6 +136,7 @@
     card.setAttribute('data-category', category);
     card.setAttribute('data-type',     type);
     card.setAttribute('data-state',    state);
+    if (product.id) card.setAttribute('data-product-id', product.id);
 
     var inv = (window.__MP_INV || {})[handle];
     var invQ = inv && typeof inv.q === 'number' ? inv.q : null;
@@ -154,6 +155,7 @@
         '<h3 class="pcard__title product-title">' +
           '<a href="' + escapeAttr(productUrl) + '">' + escapeHtml(name) + '</a>' +
         '</h3>' +
+        '<div class="pcard__rating" data-jm-rating' + (product.id ? ' data-product-id="' + escapeAttr(product.id) + '"' : '') + (handle ? ' data-handle="' + escapeAttr(handle) + '"' : '') + '></div>' +
         '<div class="pcard__foot">' +
           '<span class="pcard__price"><span class="cur">$</span>' + escapeHtml(priceNum) + '</span>' +
           (inStock
@@ -211,6 +213,7 @@
 
     console.log('[MicroPatches] Loaded ' + display.length + ' live products from Shopify.');
     setupFilters();
+    if (window.MPReviews) window.MPReviews.hydrateBadges();
   }
 
   function fetchAllProducts(onDone) {

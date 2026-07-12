@@ -16,10 +16,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
-<link rel="dns-prefetch" href="https://micropatches.myshopify.com" />
+<link rel="dns-prefetch" href="https://y1aqhh-dq.myshopify.com" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/css/style.css?v=20260536" />
 <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
+<link rel="stylesheet" href="assets/css/reviews.css?v=20260712">
 <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
 <script type="application/ld+json">
 {
@@ -105,6 +106,17 @@
   </div>
 </section>
 
+<!-- ============ 9b · REVIEWS ============ -->
+<section class="msection" data-screen-label="03b Home / Reviews">
+  <div class="container">
+    <header class="msec__head">
+      <h2 class="msec__title">Customers Are Saying.</h2>
+      <div class="jm-store-badge" id="jm-store-badge" hidden></div>
+    </header>
+    <div class="jm-testimonials" id="jm-testimonials" hidden></div>
+  </div>
+</section>
+
 <!-- ============ 10 · OUR STORY ============ -->
 <section class="msection" data-screen-label="04 Home / Story">
   <div class="container">
@@ -133,14 +145,15 @@
 </div>
 
 <script src="assets/js/image-slot.js?v=20260520"></script>
-<script src="assets/js/shopify-config.js?v=20260520"></script>
+<script src="assets/js/shopify-config.js?v=20260712"></script>
+<script src="assets/js/judgeme-reviews.js?v=20260712"></script>
 <script src="assets/js/product-carousel.js?v=20260524"></script>
 <script src="assets/js/site.js?v=20260535"></script>
 
 <script>
 /* ---- Featured grid + hero + texture, from live Shopify (listings.json fallback) ---- */
 (function () {
-  var STORE = 'https://micropatches.myshopify.com';
+  var STORE = 'https://y1aqhh-dq.myshopify.com';
 
   function categoryOf(title) {
     var t = (title || '').toLowerCase();
@@ -310,6 +323,13 @@
     .catch(function () {
       fromListings().then(render);
     });
+})();
+
+/* ---- Reviews: store badge + testimonial carousel ---- */
+(function () {
+  if (!window.MPReviews) return;
+  window.MPReviews.renderStoreBadge(document.getElementById('jm-store-badge'));
+  window.MPReviews.renderTestimonials(document.getElementById('jm-testimonials'));
 })();
 
 /* ---- Sticky mobile CTA: reveal after hero scrolls away ---- */

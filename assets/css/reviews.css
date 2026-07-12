@@ -1,0 +1,129 @@
+/* =========================================================
+   MicroPatches — Judge.me review widgets
+   Styled to match style.css (--bg-2 cards, --accent gold stars,
+   mono spec captions, Barlow Condensed headings). See
+   assets/js/judgeme-reviews.js for the rendering logic.
+   ========================================================= */
+
+.jm-stars {
+  color: var(--accent);
+  font-size: 15px;
+  letter-spacing: 2px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.jm-stars--xs { font-size: 10px; letter-spacing: 1px; }
+.jm-stars--sm { font-size: 12px; letter-spacing: 1.5px; }
+.jm-stars--lg { font-size: 18px; letter-spacing: 2.5px; }
+
+.jm-block { border-top: 1px solid var(--line); padding-top: 22px; }
+
+.jm-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.jm-summary__num {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 18px;
+}
+.jm-summary__meta {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.jm-review-card {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.jm-review-card:last-child { margin-bottom: 0; }
+.jm-review-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.jm-review-card__title {
+  margin: 8px 0 0;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.jm-review-card blockquote {
+  margin: 8px 0 6px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.jm-review-card figcaption {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.jm-verified {
+  padding: 3px 8px;
+  font-size: 9.5px;
+}
+
+/* ---- Shop grid card badge ---- */
+.pcard__rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.pcard__rating:empty { display: none; }
+.pcard__rating-num {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-dim);
+}
+.pcard__rating-count {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--ink-mute);
+}
+
+/* ---- Homepage store badge ---- */
+.jm-store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.jm-store-badge[hidden] { display: none; }
+
+/* ---- Homepage testimonial carousel ---- */
+.jm-testimonials {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(82vw, 340px);
+  gap: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.jm-testimonials[hidden] { display: none; }
+.jm-testimonials .jm-review-card {
+  scroll-snap-align: start;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 880px) {
+  .jm-testimonials { grid-auto-columns: minmax(0, 1fr); grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow-x: visible; }
+}

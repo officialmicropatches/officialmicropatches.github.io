@@ -1426,7 +1426,7 @@ if (copyEmailBtn) {
 
 // Set this once you have a Shopify Storefront API token
 const SHOPIFY_STOREFRONT_TOKEN = "";
-const SHOPIFY_DOMAIN = "micropatches.myshopify.com";
+const SHOPIFY_DOMAIN = "y1aqhh-dq.myshopify.com";
 const CART_KEY = "mp_cart";
 
 function cartGet() {
