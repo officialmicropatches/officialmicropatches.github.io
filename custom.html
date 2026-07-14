@@ -23,6 +23,7 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css?v=20260536">
   <link rel="stylesheet" href="assets/css/audit-fixes.css?v=20260531">
+  <link rel="stylesheet" href="assets/css/reviews.css?v=20260712">
   <script src="assets/js/audit-fixes.js?v=20260520" defer></script>
   <style>
     /* Custom-order success panel (scoped here to avoid a site-wide style.css cache bump) */
@@ -255,6 +256,18 @@ Referrer-Policy: strict-origin-when-cross-origin -->
   </div>
 </section>
 
+<!-- ===== 4.5 · CUSTOM ORDER REVIEWS ===== -->
+<section class="co-section" aria-label="Custom order reviews">
+  <div class="co-wrap co-wrap--narrow">
+    <header class="co-head">
+      <p class="co-eyebrow">Customer Reviews</p>
+      <h2 class="co-h2">What custom order customers say</h2>
+      <p class="co-head__sub">After your order ships, we'll email you a link to leave a rating, a note, and photos of your piece.</p>
+    </header>
+    <div id="custom-order-reviews" style="margin-top:18px"></div>
+  </div>
+</section>
+
 <!-- ===== 5 · REQUEST FORM ===== -->
 <section class="co-section" id="request">
   <div class="co-wrap co-wrap--narrow">
@@ -379,6 +392,15 @@ Referrer-Policy: strict-origin-when-cross-origin -->
 
 <!-- ===== SCRIPTS ===== -->
 <script src="assets/js/shopify-config.js?v=20260712"></script>
+<script src="assets/js/judgeme-reviews.js?v=20260712"></script>
+<script>
+  (function () {
+    var wrap = document.getElementById('custom-order-reviews');
+    if (wrap && window.MPReviews) {
+      window.MPReviews.renderProductBlock(wrap, { handle: 'custom-order', productId: '7953890017322' });
+    }
+  })();
+</script>
 
 <!-- Custom-order form: Cloudinary photo upload + Web3Forms AJAX submit.
      The optional patch photo uploads to Cloudinary the moment it's picked
