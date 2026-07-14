@@ -20,7 +20,7 @@
 window.MPReviews = (function () {
   'use strict';
 
-  var PUBLIC_TOKEN = ''; // <-- paste your Judge.me Public token here
+  var PUBLIC_TOKEN = '3c7odCzAfMA3HYyBjAar86gfTKo';
 
   var cfg = {
     shopDomain: (window.SHOPIFY && window.SHOPIFY.SHOP_DOMAIN) || 'y1aqhh-dq.myshopify.com',
